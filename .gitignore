@@ -1,0 +1,65 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Odoo generated files
+*.log
+*.db
+*.dat
+*.zip
+*.pot
+*.mo
+*.pyo
+*.pyd
+*.conf
+
+# Odoo build artifacts
+*.egg-info/
+*.eggs/
+dist/
+build/
+*.manifest
+*.spec
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+/odoo/
+/odoo
+/odoo.venv/
+.python-version
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Test and coverage reports
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Odoo custom addons
+addons/*/static/*/lib/
+addons/*/static/*/node_modules/
+addons/*/static/*/dist/
+addons/*/static/*/build/
+
+# Misc
+*.bak
+*.swp
+*.tmp
+*.orig

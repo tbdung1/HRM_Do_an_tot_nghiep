@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hrm_recruitment_hrm_recruitment,hrm_recruitment.hrm_recruitment,model_hrm_recruitment_hrm_recruitment,base.group_user,1,1,1,1

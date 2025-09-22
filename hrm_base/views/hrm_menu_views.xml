@@ -1,0 +1,22 @@
+<odoo>
+  <data>
+    <menuitem id="menu_hrm_root"
+      name="HRM"
+      sequence="10"
+      groups="base.group_user" />
+
+    <!-- Action bất kỳ (ví dụ mở danh sách nhân viên) -->
+    <record id="action_hrm_overview" model="ir.actions.act_window">
+      <field name="name">HRM Overview</field>
+      <field name="res_model">hr.employee</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <!-- Submenu có action -->
+    <menuitem id="menu_hrm_overview"
+      name="Tổng quan"
+      parent="menu_hrm_root"
+      action="action_hrm_overview"
+      sequence="1" />
+  </data>
+</odoo>
