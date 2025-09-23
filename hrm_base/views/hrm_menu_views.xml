@@ -5,6 +5,42 @@
       sequence="10"
       groups="base.group_user" />
 
+    <!-- Employees Section -->
+    <menuitem id="menu_hrm_employees_section"
+      name="Employees"
+      parent="menu_hrm_root"
+      sequence="10" />
+
+    <!-- Employee List Action -->
+    <record id="action_hrm_employees" model="ir.actions.act_window">
+      <field name="name">Employees</field>
+      <field name="res_model">hr.employee</field>
+      <field name="view_mode">kanban,tree,form,activity</field>
+      <field name="context">{'search_default_active': 1}</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+          Create a new employee
+        </p>
+        <p>
+          Add employees and manage their information.
+        </p>
+      </field>
+    </record>
+    
+    <!-- Employee Menu -->
+    <menuitem id="menu_hrm_employees"
+      name="Employees"
+      parent="menu_hrm_employees_section"
+      action="action_hrm_employees"
+      sequence="1" />
+
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_hrm_config"
+      name="Configuration"
+      parent="menu_hrm_root"
+      sequence="100" />
+
     <!-- Action bất kỳ (ví dụ mở danh sách nhân viên) -->
     <record id="action_hrm_overview" model="ir.actions.act_window">
       <field name="name">HRM Overview</field>
