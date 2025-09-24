@@ -1,7 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hrm_employee_education_manager,hrm_employee_education_manager,model_hrm_employee_education,,1,1,1,1
 
-access_hrm_employee_work_history_manager,hrm_employee_work_history_manager,model_hrm_employee_work_history,,1,1,1,1
-access_hrm_employee_family_manager,hrm_employee_family_manager,model_hrm_employee_family,,1,1,1,1
 access_hrm_employee_health_examination_manager,hrm_employee_health_examination_manager,model_hrm_employee_health_examination,,1,1,1,1
 access_hrm_employee_document_manager,hrm_employee_document_manager,model_hrm_employee_document,,1,1,1,1

@@ -28,25 +28,10 @@ class HrmEmployees(models.Model):
             ("high_school", "High School"),
             ("college", "College"),
             ("bachelor", "Bachelor"),
-            ("master", "Master"),
-            ("phd", "PhD"),
-            ("other", "Other"),
         ],
         string="Education Level",
-    )  # Already exists in your model
+    ) 
 
-    # Work history and detailed education background
-    education_background_ids = fields.One2many(
-        "hrm.employee.education", "employee_id", string="Education Background"
-    )
-    work_history_ids = fields.One2many(
-        "hrm.employee.work.history", "employee_id", string="Work History"
-    )
-
-    # Family Information (extending Odoo's spouse info)
-    family_member_ids = fields.One2many(
-        "hrm.employee.family", "employee_id", string="Family Members"
-    )
 
     # Health Information
     health_status = fields.Selection(

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_inherit_update_request" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.update.request</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hrm_base.view_hrm_employees_form" />
+        <field name="arch" type="xml">
+            <!-- Thêm button ở header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_create_update_request"
+                    string="Request Update"
+                    type="object"
+                    class="btn-primary"
+                    groups="base.group_user" />
+            </xpath>
+
+            <!-- Thêm smart button cho HR -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_update_requests"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-pencil-square-o"
+                    invisible="update_request_count == 0" 
+                    groups="hr.group_hr_user">
+                    <field name="update_request_count" widget="statinfo" string="Update Requests" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

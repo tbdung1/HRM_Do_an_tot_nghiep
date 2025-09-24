@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "HRM Base",
+    "name": "Hrm Request",
     "summary": "Short (1 phrase/line) summary of the module's purpose",
     "description": """
 Long description of module's purpose
@@ -13,20 +13,15 @@ Long description of module's purpose
     "category": "Uncategorized",
     "version": "17.0.1.0",
     # any module necessary for this one to work correctly
-    "depends": ["hr", "mail", "contacts"],
-    # always loaded
+    "depends": ["hrm_base", "mail"],
     "data": [
         "security/ir.model.access.csv",
-        # "views/hrm_employee_document_views.xml",
-        # "views/hrm_employee_education_views.xml",
-        # "views/hrm_employee_family_views.xml",
-        # "views/hrm_employee_health_examination_views.xml",
-        # "views/hrm_employee_work_history_views.xml",
+        "views/hrm_employee_update_request_views.xml",
         "views/hrm_employees_views.xml",
-        "views/hrm_menu_views.xml",
     ],
-    "application": True,  # <<< HIỂN THỊ NHƯ APP
+    # always loaded
     "installable": True,
+    "application": False,
     "auto_install": False,
     "license": "LGPL-3",
     "external_dependencies": {

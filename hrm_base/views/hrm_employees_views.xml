@@ -38,48 +38,9 @@
                 <xpath expr="//field[@name='private_email']" position="before">
                         <field name="tax_identification_number" />
                 </xpath>
+                <xpath expr="//page[@name='personal_information']//group[4]" position="replace">
+                </xpath>
                 <xpath expr="//page[@name='personal_information']" position="after">
-                    <page string="Education &amp; Work History" name="education_work_history">
-                        <group>
-                            <field name="education_level" />
-                        </group>
-                        <separator string="Education Background" />
-                        <field name="education_background_ids">
-                            <tree editable="bottom">
-                                <field name="institution" />
-                                <field name="degree" />
-                                <field name="field_of_study" />
-                                <field name="start_date" />
-                                <field name="end_date" />
-                                <field name="is_current" />
-                            </tree>
-                        </field>
-                        <separator string="Work History" />
-                        <field name="work_history_ids">
-                            <tree editable="bottom">
-                                <field name="company" />
-                                <field name="position" />
-                                <field name="start_date" />
-                                <field name="end_date" />
-                                <field name="is_current" />
-                            </tree>
-                        </field>
-                    </page>
-
-
-                    <page string="Family Information" name="family_info">
-                        <field name="family_member_ids">
-                            <tree editable="bottom">
-                                <field name="name" />
-                                <field name="relationship" />
-                                <field name="date_of_birth" />
-                                <field name="phone" />
-                                <field name="occupation" />
-                                <field name="is_dependent" />
-                            </tree>
-                        </field>
-                    </page>
-
 
                     <page string="Health Information" name="health_info">
                         <group>
