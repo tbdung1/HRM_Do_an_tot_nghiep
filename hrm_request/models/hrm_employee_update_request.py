@@ -15,7 +15,7 @@ class HrmEmployeeUpdateRequest(models.Model):
     _rec_name = "display_name"
 
     # Basic Information
-    name = fields.Char("Reference", default=lambda self: _("New"), readonly=True)
+    name = fields.Char("Reference", default=lambda self: _("New"))
     display_name = fields.Char(
         "Display Name", compute="_compute_display_name", store=True
     )
@@ -27,9 +27,8 @@ class HrmEmployeeUpdateRequest(models.Model):
         default=lambda self: self.env.user.employee_id,
         domain=lambda self: (
             "[('user_id', '=', uid)]"
-            if not self.env.user.has_group("hr.group_hr_user")
-            else []
         ),
+        readonly=True
     )
     department_id = fields.Many2one(
         "hr.department", related="employee_id.department_id", store=True
@@ -37,19 +36,13 @@ class HrmEmployeeUpdateRequest(models.Model):
     request_date = fields.Date("Request Date", default=fields.Date.today, tracking=True)
 
     # Request Details
-    description = fields.Text("Description/Reason", required=True)
+    description = fields.Text("Description/Reason")
     attachment_ids = fields.Many2many(
         "ir.attachment",
         "hrm_update_request_attachment_rel",
         "request_id",
         "attachment_id",
         string="Supporting Documents",
-    )
-    # Update Fields - Personal Information
-    update_id_number = fields.Boolean("Update ID Number")
-    new_id_number = fields.Char("New ID Number")
-    current_id_number = fields.Char(
-        "Current ID Number", related="employee_id.id_number", readonly=True
     )
 
     update_tax_identification_number = fields.Boolean("Update Tax ID")
@@ -141,7 +134,6 @@ class HrmEmployeeUpdateRequest(models.Model):
             record.attachment_count = len(record.attachment_ids)
 
     @api.depends(
-        "update_id_number",
         "update_tax_identification_number",
         "update_health_insurance_number",
         "update_work_phone",
@@ -153,7 +145,6 @@ class HrmEmployeeUpdateRequest(models.Model):
         for record in self:
             record.has_changes = any(
                 [
-                    record.update_id_number,
                     record.update_tax_identification_number,
                     record.update_health_insurance_number,
                     record.update_work_phone,
@@ -170,15 +161,10 @@ class HrmEmployeeUpdateRequest(models.Model):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "hrm.employee.update.request"
                 ) or _("New")
-        return super().create(vals_list)
 
-    @api.constrains("update_id_number", "new_id_number")
-    def _check_id_number_update(self):
-        for record in self:
-            if record.update_id_number and not record.new_id_number:
-                raise ValidationError(
-                    _("New ID Number is required when updating ID Number")
-                )
+            if vals.get("hr_manager_id"):
+                vals["hr_manager_id"] = self.env.user.employee_id.parent_id.id
+        return super().create(vals_list)
 
     @api.constrains("update_tax_identification_number", "new_tax_identification_number")
     def _check_tax_id_update(self):
@@ -199,24 +185,6 @@ class HrmEmployeeUpdateRequest(models.Model):
 
             record.state = "submitted"
 
-            # Create activity for HR managers
-            hr_group = self.env.ref("hr.group_hr_user")
-            hr_users = hr_group.users
-            if hr_users:
-                record.activity_schedule(
-                    "mail.mail_activity_data_todo",
-                    user_id=hr_users[0].id,
-                    summary=f"Review Update Request: {record.name}",
-                    note=f"Employee {record.employee_id.name} has submitted an information update request.",
-                )
-
-            # Send notification
-            record.message_post(
-                body=f"Update request has been submitted for review.",
-                subject="Request Submitted",
-                partner_ids=hr_users.mapped("partner_id").ids,
-            )
-
     def action_approve(self):
         """EC01_02: Approve and update employee information"""
         for record in self:
@@ -226,36 +194,26 @@ class HrmEmployeeUpdateRequest(models.Model):
                 raise UserError(_("Only HR users can approve requests"))
 
             record.state = "approved"
-            record.hr_manager_id = self.env.user.employee_id
+            record.hr_manager_id = self.env.user.employee_id.parent_id.id
             record.approval_date = fields.Datetime.now()
 
             # Update employee information
             record._update_employee_data()
 
-            # Complete activities
-            record.activity_feedback(["mail.mail_activity_data_todo"])
-
-            # Notify employee
-            if record.employee_id.user_id:
-                record.message_post(
-                    body="Your information update request has been approved and processed.",
-                    subject="Request Approved",
-                    partner_ids=[record.employee_id.user_id.partner_id.id],
-                )
+            # # Notify employee
+            # if record.employee_id.user_id:
+            #     record.message_post(
+            #         body="Your information update request has been approved and processed.",
+            #         subject="Request Approved",
+            #         partner_ids=[record.employee_id.user_id.partner_id.id],
+            #     )
 
     def action_reject(self):
         """Open reject wizard"""
         if not self.env.user.has_group("hr.group_hr_user"):
             raise UserError(_("Only HR users can reject requests"))
-
-        return {
-            "name": _("Reject Request"),
-            "type": "ir.actions.act_window",
-            "res_model": "hrm.employee.update.request.reject.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_request_id": self.id},
-        }
+        for record in self:
+            record.state = "rejected"
 
     def action_reset_to_draft(self):
         """Reset to draft state"""
@@ -285,8 +243,6 @@ class HrmEmployeeUpdateRequest(models.Model):
         update_vals = {}
 
         # Personal Information
-        if self.update_id_number:
-            update_vals["id_number"] = self.new_id_number
         if self.update_tax_identification_number:
             update_vals["tax_identification_number"] = (
                 self.new_tax_identification_number

@@ -30,11 +30,6 @@
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_form" />
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='mobile_phone']" position="before">
-                            <field name="id_number" />
-                            <field name="health_insurance_number" />
-                </xpath>
-
                 <xpath expr="//field[@name='private_email']" position="before">
                         <field name="tax_identification_number" />
                 </xpath>

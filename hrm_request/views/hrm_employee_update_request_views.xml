@@ -7,16 +7,16 @@
         <field name="arch" type="xml">
             <form string="Employee Update Request">
                 <header>
-                    <button name="action_submit" string="Submit" type="object"
-                        class="oe_highlight" states="draft"
-                        confirm="Are you sure you want to submit this request?" />
+                    <!-- <button name="action_submit" string="Submit" type="object"
+                        class="oe_highlight" invisible="state != 'draft'"
+                        confirm="Are you sure you want to submit this request?" /> -->
                     <button name="action_approve" string="Approve" type="object"
-                        class="oe_highlight" states="submitted" groups="hr.group_hr_user"
+                        class="oe_highlight" invisible="state != 'submitted'" groups="hr.group_hr_user"
                         confirm="Are you sure you want to approve this request? This will update the employee information." />
                     <button name="action_reject" string="Reject" type="object"
-                        states="submitted" groups="hr.group_hr_user" />
+                        invisible="state != 'submitted'" groups="hr.group_hr_user" />
                     <button name="action_reset_to_draft" string="Reset to Draft" type="object"
-                        states="rejected" />
+                        invisible="state != 'rejected'" />
                     <field name="state" widget="statusbar"
                         statusbar_visible="draft,submitted,approved,rejected" />
                 </header>
@@ -31,13 +31,12 @@
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only" />
                         <h1>
-                            <field name="name" readonly="1" class="oe_inline" />
+                            <field name="name" class="oe_inline" />
                         </h1>
                     </div>
                     <group>
                         <group string="Request Information">
-                            <field name="employee_id" options="{'no_create': True, 'no_open': True}"
-                                readonly="state != draft"/>
+                            <field name="employee_id" options="{'no_create': True, 'no_open': True}"/>
                             <field name="department_id" readonly="1" />
                             <field name="request_date" readonly="1" />
                         </group>
@@ -52,28 +51,17 @@
                     <group string="Description">
                         <field name="description" nolabel="1"
                             placeholder="Describe the reason for this update request..."
-                            readonly="state != draft" />
+                            readonly="state != 'draft'" />
                     </group>
 
                     <notebook>
                         <page string="Personal Information">
                             <group>
                                 <group string="ID Information">
-                                    <field name="update_id_number" string="Update ID Number"
-                                        readonly="state != draft" />
-                                    <label for="current_id_number" string="Current ID Number"
-                                        invisible="not update_id_number" />
-                                    <div invisible="not update_id_number">
-                                        <field name="current_id_number" readonly="1"
-                                            class="oe_inline" /> → <field name="new_id_number"
-                                            class="oe_inline"
-                                            attrs="{'required': [('update_id_number', '=', True)]}"
-                                            readonly="state != draft" />
-                                    </div>
 
                                     <field name="update_tax_identification_number"
                                         string="Update Tax ID"
-                                        readonly="state != draft" />
+                                        readonly="state != 'draft'" />
                                     <label for="current_tax_identification_number"
                                         string="Current Tax ID"
                                         invisible="not update_tax_identification_number" />
@@ -82,25 +70,8 @@
                                         <field name="current_tax_identification_number" readonly="1"
                                             class="oe_inline" /> → <field
                                             name="new_tax_identification_number" class="oe_inline"
-                                            attrs="{'required': [('update_tax_identification_number', '=', True)]}"
-                                            readonly="state != draft" />
-                                    </div>
-                                </group>
-
-                                <group string="Insurance Information">
-                                    <field name="update_health_insurance_number"
-                                        string="Update Health Insurance"
-                                        readonly="state != draft" />
-                                    <label for="current_health_insurance_number"
-                                        string="Current Health Insurance"
-                                        invisible="not update_health_insurance_number" />
-                                    <div
-                                        invisible="not update_health_insurance_number" >
-                                        <field name="current_health_insurance_number" readonly="1"
-                                            class="oe_inline" /> → <field
-                                            name="new_health_insurance_number" class="oe_inline"
-                                            attrs="{'required': [('update_health_insurance_number', '=', True)]}"
-                                            readonly="state != draft" />
+                                            required="update_tax_identification_number"
+                                            readonly="state != 'draft'" />
                                     </div>
                                 </group>
                             </group>
@@ -110,29 +81,29 @@
                             <group>
                                 <group string="Phone Information">
                                     <field name="update_work_phone" string="Update Work Phone"
-                                        readonly="state != draft" />
+                                        readonly="state != 'draft'" />
                                     <label for="current_work_phone" string="Current Work Phone"
                                         invisible="not update_work_phone" />
                                     <div invisible="not update_work_phone">
                                         <field name="current_work_phone" readonly="1"
                                             class="oe_inline" /> → <field name="new_work_phone"
                                             class="oe_inline"
-                                            attrs="{'required': [('update_work_phone', '=', True)]}"
-                                            readonly="state != draft" />
+                                            required="update_work_phone"
+                                            readonly="state != 'draft'" />
                                     </div>
                                 </group>
 
                                 <group string="Email Information">
                                     <field name="update_work_email" string="Update Work Email"
-                                        readonly="state != draft" />
+                                        readonly="state != 'draft'" />
                                     <label for="current_work_email" string="Current Work Email"
                                         invisible="not update_work_email" />
                                     <div invisible="not update_work_email">
                                         <field name="current_work_email" readonly="1"
                                             class="oe_inline" /> → <field name="new_work_email"
                                             class="oe_inline"
-                                            attrs="{'required': [('update_work_email', '=', True)]}"
-                                            readonly="state != draft" />
+                                            required="update_work_email"
+                                            readonly="state != 'draft'" />
                                     </div>
                                 </group>
                             </group>
@@ -142,7 +113,7 @@
                             <group>
                                 <group string="Health Status">
                                     <field name="update_health_status" string="Update Health Status"
-                                        readonly="state != draft" />
+                                        readonly="state != 'draft'" />
                                     <label for="current_health_status"
                                         string="Current Health Status"
                                         invisible="not update_health_status" />
@@ -151,15 +122,32 @@
                                         <field name="current_health_status" readonly="1"
                                             class="oe_inline" /> → <field name="new_health_status"
                                             class="oe_inline"
-                                            attrs="{'required': [('update_health_status', '=', True)]}"
-                                            readonly="state != draft" />
+                                            required="update_health_status"
+                                            readonly="state != 'draft'" />
+                                    </div>
+                                </group>
+
+                                <group string="Insurance Information">
+                                    <field name="update_health_insurance_number"
+                                        string="Update Health Insurance"
+                                        readonly="state != 'draft'" />
+                                    <label for="current_health_insurance_number"
+                                        string="Current Health Insurance"
+                                        invisible="not update_health_insurance_number" />
+                                    <div
+                                        invisible="not update_health_insurance_number">
+                                        <field name="current_health_insurance_number" readonly="1"
+                                            class="oe_inline" /> → <field
+                                            name="new_health_insurance_number" class="oe_inline"
+                                            required="update_health_insurance_number"
+                                            readonly="state != 'draft'" />
                                     </div>
                                 </group>
 
                                 <group string="Medical History">
                                     <field name="update_medical_history"
                                         string="Update Medical History"
-                                        readonly="state != draft" />
+                                        readonly="state != 'draft'" />
                                 </group>
                             </group>
                             <group invisible="not update_medical_history">
@@ -168,15 +156,15 @@
                                 </group>
                                 <group string="New Medical History">
                                     <field name="new_medical_history" nolabel="1"
-                                        attrs="{'required': [('update_medical_history', '=', True)]}"
-                                        readonly="state != draft" />
+                                        required="update_medical_history"
+                                        readonly="state != 'draft'" />
                                 </group>
                             </group>
                         </page>
 
                         <page string="Supporting Documents">
                             <field name="attachment_ids" widget="many2many_binary"
-                                readonly="state != draft" />
+                                readonly="state != 'draft'" />
                         </page>
 
                         <page string="Notes" groups="hr.group_hr_user"
@@ -188,6 +176,12 @@
                         </page>
                     </notebook>
                 </sheet>
+                <footer>
+                    <button name="action_submit" type="object" string="Submit"
+                        class="btn-primary" invisible="state != 'draft'" />
+
+                    <button string="Discard" class="btn-secondary" special="cancel" />
+                </footer>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" />
                     <field name="activity_ids" />
@@ -252,56 +246,6 @@
                         context="{'group_by':'request_date'}" />
                 </group>
             </search>
-        </field>
-    </record>
-
-    <!-- Kanban View -->
-    <record id="view_hrm_employee_update_request_kanban" model="ir.ui.view">
-        <field name="name">hrm.employee.update.request.kanban</field>
-        <field name="model">hrm.employee.update.request</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="state" class="o_kanban_small_column">
-                <field name="state" />
-                <field name="employee_id" />
-                <field name="department_id" />
-                <field name="request_date" />
-                <field name="hr_manager_id" />
-                <field name="attachment_count" />
-                <templates>
-                    <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
-                            <div class="o_kanban_record_top">
-                                <div class="o_kanban_record_headings">
-                                    <strong class="o_kanban_record_title">
-                                        <field name="name" />
-                                    </strong>
-                                </div>
-                                <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#">
-                                        <i class="fa fa-ellipsis-v" role="img" aria-label="Manage"
-                                            title="Manage" />
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="o_kanban_record_body">
-                                <div class="o_kanban_record_bottom">
-                                    <div class="oe_kanban_bottom_left">
-                                        <field name="employee_id" />
-                                        <br />
-                                        <i class="fa fa-calendar" />
-                                        <field name="request_date" />
-                                    </div>
-                                    <div class="oe_kanban_bottom_right">
-                                        <span t-if="record.attachment_count.raw_value > 0"
-                                            class="fa fa-paperclip" title="Attachments" />
-                                        <field name="hr_manager_id" widget="many2one_avatar_user" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
         </field>
     </record>
 

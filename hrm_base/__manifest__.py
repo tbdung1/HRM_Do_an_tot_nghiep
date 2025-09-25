@@ -17,6 +17,7 @@ Long description of module's purpose
     # always loaded
     "data": [
         "security/ir.model.access.csv",
+        "security/hr.security.xml",
         # "views/hrm_employee_document_views.xml",
         # "views/hrm_employee_education_views.xml",
         # "views/hrm_employee_family_views.xml",
