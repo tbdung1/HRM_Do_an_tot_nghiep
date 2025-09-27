@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Recruitment parent menu -->
+        <menuitem id="menu_hrm_applicants_section"
+                  name="Recruitment"
+                  parent="hrm_base.menu_hrm_root"
+                  sequence="20"/>
+
+        <record id="action_hrm_applicant" model="ir.actions.act_window">
+            <field name="name">Applicants</field>
+            <field name="res_model">hr.applicant</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Applicants menu -->
+        <menuitem id="menu_hrm_applicant"
+                  name="Applicants"
+                  parent="menu_hrm_applicants_section"
+                  action="action_hrm_applicant"
+                  sequence="1"/>
+    </data>
+</odoo>
