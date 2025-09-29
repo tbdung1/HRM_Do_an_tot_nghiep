@@ -7,9 +7,9 @@
         <field name="arch" type="xml">
             <form string="Employee Update Request">
                 <header>
-                    <!-- <button name="action_submit" string="Submit" type="object"
+                    <button name="action_submit" string="Submit" type="object"
                         class="oe_highlight" invisible="state != 'draft'"
-                        confirm="Are you sure you want to submit this request?" /> -->
+                        confirm="Are you sure you want to submit this request?" />
                     <button name="action_approve" string="Approve" type="object"
                         class="oe_highlight" invisible="state != 'submitted'" groups="hr.group_hr_user"
                         confirm="Are you sure you want to approve this request? This will update the employee information." />
@@ -55,27 +55,6 @@
                     </group>
 
                     <notebook>
-                        <page string="Personal Information">
-                            <group>
-                                <group string="ID Information">
-
-                                    <field name="update_tax_identification_number"
-                                        string="Update Tax ID"
-                                        readonly="state != 'draft'" />
-                                    <label for="current_tax_identification_number"
-                                        string="Current Tax ID"
-                                        invisible="not update_tax_identification_number" />
-                                    <div
-                                        invisible="not update_tax_identification_number">
-                                        <field name="current_tax_identification_number" readonly="1"
-                                            class="oe_inline" /> → <field
-                                            name="new_tax_identification_number" class="oe_inline"
-                                            required="update_tax_identification_number"
-                                            readonly="state != 'draft'" />
-                                    </div>
-                                </group>
-                            </group>
-                        </page>
 
                         <page string="Contact Information">
                             <group>
@@ -176,12 +155,12 @@
                         </page>
                     </notebook>
                 </sheet>
-                <footer>
+                <!-- <footer>
                     <button name="action_submit" type="object" string="Submit"
                         class="btn-primary" invisible="state != 'draft'" />
 
                     <button string="Discard" class="btn-secondary" special="cancel" />
-                </footer>
+                </footer> -->
                 <div class="oe_chatter">
                     <field name="message_follower_ids" />
                     <field name="activity_ids" />

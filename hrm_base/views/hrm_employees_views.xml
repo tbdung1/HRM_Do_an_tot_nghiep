@@ -30,9 +30,12 @@
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_form" />
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='private_email']" position="before">
+                <xpath expr="//field[@name='country_id']" position="before">
                         <field name="tax_identification_number" />
                 </xpath>
+                <xpath expr="//field[@name='identification_id']" position="replace"/>
+                <xpath expr="//field[@name='ssnid']" position="replace" />
+                <xpath expr="//field[@name='passport_id']" position="replace" />
                 <xpath expr="//page[@name='personal_information']//group[4]" position="replace">
                 </xpath>
                 <xpath expr="//page[@name='personal_information']" position="after">
@@ -83,5 +86,13 @@
             <field name="arch" type="xml">
             </field>
         </record> -->
+
+        <record id="action_hrm_employees_private" model="ir.actions.act_window">
+            <field name="name">Employees</field>
+            <field name="res_model">hr.employee</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="context">{'search_default_active': 1}</field>
+            <field name="groups_id" eval="[(4, ref('hr.group_hr_user'))]" />
+        </record>
     </data>
 </odoo>

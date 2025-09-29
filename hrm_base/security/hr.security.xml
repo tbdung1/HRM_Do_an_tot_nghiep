@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <!-- Record Rules for Employee -->
+        <!-- Record Rules for Employee
         <record id="hr_employee_rule_user_own" model="ir.rule">
             <field name="name">Employee: User can only see own employee record</field>
             <field name="model_id" ref="hr.model_hr_employee" />
@@ -13,7 +13,7 @@
             <field name="perm_unlink" eval="False" />
         </record>
 
-        <!-- HR Users can see all records -->
+        HR Users can see all records
         <record id="hr_employee_rule_hr_all" model="ir.rule">
             <field name="name">Employee: HR can see all employees</field>
             <field name="model_id" ref="hr.model_hr_employee" />
@@ -24,6 +24,6 @@
             <field name="perm_write" eval="True" />
             <field name="perm_create" eval="True" />
             <field name="perm_unlink" eval="True" />
-        </record>
+        </record> -->
     </data>
 </odoo>
