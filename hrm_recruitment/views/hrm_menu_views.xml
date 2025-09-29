@@ -19,5 +19,19 @@
                   parent="menu_hrm_applicants_section"
                   action="action_hrm_applicant"
                   sequence="1"/>
+
+        <record id="action_hrm_job" model="ir.actions.act_window">
+            <field name="name">Jobs</field>
+            <field name="res_model">hr.job</field>
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+        
+
+        <!-- Applicants menu -->
+        <menuitem id="menu_hrm_job"
+                  name="Jobs"
+                  parent="menu_hrm_applicants_section"
+                  action="action_hrm_job"
+                  sequence="1"/>
     </data>
 </odoo>

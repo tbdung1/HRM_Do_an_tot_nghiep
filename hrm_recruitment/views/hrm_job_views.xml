@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Kế thừa form view -->
+    <record id="view_hr_job_form_inherit" model="ir.ui.view">
+        <field name="name">hr.job.form.inherit</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_job_simple_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside"/>
+        </field>
+    </record>
+
+    <!-- Kế thừa kanban view -->
+    <record id="view_hr_job_kanban_inherit" model="ir.ui.view">
+    <field name="name">hr.job.kanban.inherit</field>
+    <field name="model">hr.job</field>
+    <field name="inherit_id" ref="hr_recruitment.view_hr_job_kanban"/>
+    <field name="arch" type="xml">
+        <!-- Giữ nguyên nội dung, không thêm bớt gì -->
+        <xpath expr="//templates/t[@t-name='kanban-box']" position="inside"/>
+    </field>
+</record>
+
+</odoo>

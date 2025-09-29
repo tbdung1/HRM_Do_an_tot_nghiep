@@ -2,3 +2,4 @@
 
 from . import models
 from . import hrm_applicant
+from . import hrm_job

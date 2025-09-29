@@ -1,4 +1,4 @@
 from odoo import models, fields, api
 
-class HRMApplicant(models.Model):
+class HRMJob(models.Model):
     _inherit = 'hr.applicant'  # kế thừa model gốc
