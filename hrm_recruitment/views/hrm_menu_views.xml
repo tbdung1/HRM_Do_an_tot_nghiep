@@ -10,7 +10,7 @@
         <record id="action_hrm_applicant" model="ir.actions.act_window">
             <field name="name">Applicants</field>
             <field name="res_model">hr.applicant</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,kanban</field>
         </record>
 
         <!-- Applicants menu -->
