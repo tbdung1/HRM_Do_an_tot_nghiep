@@ -24,8 +24,15 @@ class HrmEmployeeUpdateRequest(models.Model):
         "Employee",
         required=True,
         tracking=True,
-        default=lambda self: self.env.user.employee_id,
-        domain=lambda self: ("[('user_id', '=', uid)]"),
+        readonly=True,
+    )
+
+    user_id = fields.Many2one(
+        "res.users",
+        "User",
+        required=True,
+        tracking=True,
+        default=lambda self: self.env.user,
         readonly=True,
     )
 
@@ -42,10 +49,49 @@ class HrmEmployeeUpdateRequest(models.Model):
     )
 
     # Contact Information
-    update_work_phone = fields.Boolean("Update Work Phone")
-    new_work_phone = fields.Char("New Work Phone")
-    current_work_phone = fields.Char(
-        "Current Work Phone", related="employee_id.work_phone", readonly=True
+    update_private_email = fields.Boolean("Update Private Email")
+    new_private_email = fields.Char("New Private Email")
+    current_private_email = fields.Char(
+        "Current Private Email",
+        related="user_id.private_email",
+        readonly=True,
+    )
+
+    update_private_phone = fields.Boolean("Update Private Phone")
+    new_private_phone = fields.Char("New Private Phone")
+    current_private_phone = fields.Char(
+        "Current Private Phone",
+        related="user_id.private_phone",
+        readonly=True,
+    )
+
+    update_employee_bank_account = fields.Boolean("Update Bank Account")
+    new_employee_bank_account_id = fields.Many2one(
+        "res.partner.bank",
+        "New Bank Account",
+        domain="[('partner_id', '=', employee_id)]",
+    )
+    current_employee_bank_account_id = fields.Many2one(
+        "res.partner.bank",
+        "Current Bank Account",
+        related="user_id.employee_bank_account_id",
+        readonly=True,
+    )
+
+    update_private_street = fields.Boolean("Update Private Street")
+    new_private_street = fields.Char("New Private Street")
+    current_private_street = fields.Char(
+        "Current Private Street",
+        related="user_id.private_street",
+        readonly=True,
+    )
+
+    update_private_street2 = fields.Boolean("Update Private Street 2")
+    new_private_street2 = fields.Char("New Private Street 2")
+    current_private_street2 = fields.Char(
+        "Current Private Street 2",
+        related="user_id.private_street2",
+        readonly=True,
     )
 
     # Health Information
@@ -60,7 +106,46 @@ class HrmEmployeeUpdateRequest(models.Model):
         string="New Health Status",
     )
     current_health_status = fields.Selection(
-        related="employee_id.health_status", readonly=True
+        related="user_id.health_status", readonly=True
+    )
+
+    update_km_home_work = fields.Boolean("Update Distance Home-Work")
+    new_km_home_work = fields.Integer("New Distance (KM)")
+    current_km_home_work = fields.Integer(
+        "Current Distance (KM)", related="user_id.km_home_work", readonly=True
+    )
+
+    update_children = fields.Boolean("Update Number of Children")
+    new_children = fields.Integer("New Number of Children")
+    current_children = fields.Integer(
+        "Current Number of Children", related="user_id.children", readonly=True
+    )
+
+    update_marital = fields.Boolean("Update Marital Status")
+    new_marital = fields.Selection(
+        [
+            ("single", "Single"),
+            ("married", "Married"),
+            ("cohabitant", "Legal Cohabitant"),
+            ("widower", "Widower"),
+            ("divorced", "Divorced"),
+        ],
+        string="New Marital Status",
+    )
+    current_marital = fields.Selection(related="user_id.marital", readonly=True)
+
+    update_emergency_contact = fields.Boolean("Update Emergency Contact")
+    new_emergency_contact = fields.Char("New Emergency Contact")
+    current_emergency_contact = fields.Char(
+        "Current Emergency Contact",
+        related="user_id.emergency_contact",
+        readonly=True,
+    )
+
+    update_emergency_phone = fields.Boolean("Update Emergency Phone")
+    new_emergency_phone = fields.Char("New Emergency Phone")
+    current_emergency_phone = fields.Char(
+        "Current Emergency Phone", related="user_id.emergency_phone", readonly=True
     )
 
     # Process Information
@@ -75,6 +160,10 @@ class HrmEmployeeUpdateRequest(models.Model):
         default="draft",
         tracking=True,
         copy=False,
+    )
+
+    department_id = fields.Many2one(
+        "hr.department", "Department", readonly=True, related="employee_id.department_id"
     )
 
     hr_manager_id = fields.Many2one(
@@ -104,15 +193,65 @@ class HrmEmployeeUpdateRequest(models.Model):
             record.attachment_count = len(record.attachment_ids)
 
     @api.depends(
+        "update_private_email",
+        "update_private_phone",
+        "update_employee_bank_account",
+        "update_km_home_work",
+        "update_marital",
+        "update_children",
         "update_health_status",
+        "attachment_ids",
+        "update_private_street",
+        "update_private_street2",
     )
     def _compute_has_changes(self):
         for record in self:
             record.has_changes = any(
                 [
+                    record.update_private_email,
+                    record.update_private_phone,
+                    record.update_employee_bank_account,
+                    record.update_km_home_work,
+                    record.update_marital,
+                    record.update_children,
                     record.update_health_status,
+                    record.update_private_street,
+                    record.update_private_street2,
+                    len(record.attachment_ids) > 0,
                 ]
             )
+
+    @api.model
+    def default_get(self, fields_list):
+        """Override để set default values khi mở view"""
+        res = super().default_get(fields_list)
+
+        current_user = self.env.user
+        current_employee = current_user.employee_id
+
+        _logger.info(f"Default get - User: {current_user.name}, Employee: {current_employee.name if current_employee else 'None'}")
+
+        # Set default cho employee_id
+        if 'employee_id' in fields_list:
+            if current_employee:
+                res['employee_id'] = current_employee.id
+            else:
+                res['employee_id'] = self._default_employee()
+
+        # Set default cho user_id
+        if 'user_id' in fields_list:
+            res['user_id'] = current_user.id
+
+        return res
+
+    def _default_employee(self):
+        user = self.env.user
+        # Ưu tiên employee đúng theo các công ty đang hoạt động (multi-company safe)
+        emp = self.env['hr.employee'].search([
+            ('user_id', '=', user.id),
+            # ('company_id', 'in', self.env.companies.ids),
+        ], limit=1)
+        return emp.id
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -121,7 +260,6 @@ class HrmEmployeeUpdateRequest(models.Model):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "hrm.employee.update.request"
                 ) or _("New")
-
             if vals.get("hr_manager_id"):
                 vals["hr_manager_id"] = self.env.user.employee_id.parent_id.id
         return super().create(vals_list)
@@ -143,7 +281,8 @@ class HrmEmployeeUpdateRequest(models.Model):
                 "title": "Thành công",
                 "message": "Yêu cầu cập nhật thông tin đã được gửi đi!",
                 "type": "success",
-                "sticky": False,
+                "sticky": True,
+                "next": {"type": "ir.actions.act_window_close"},
             },
         }
 
@@ -250,7 +389,7 @@ class HrmEmployeeUpdateRequest(models.Model):
             "res_model": "ir.attachment",
             "view_mode": "kanban,tree,form",
             "domain": [("id", "in", self.attachment_ids.ids)],
-            "context": {"default_res_model": self._name, "default_res_id": self.id},
+            "context": {"default_res_model": self._name, "default_res_id": self.id, "create": False,},
         }
 
     def _get_updated_fields_summary(self):
@@ -258,14 +397,50 @@ class HrmEmployeeUpdateRequest(models.Model):
         self.ensure_one()
         updates = []
 
-        if self.update_health_insurance_number:
-            updates.append(f"• Số BHYT: {self.current_health_insurance_number or 'Trống'} → {self.new_health_insurance_number}")
+        # Address updates
+        if self.update_private_street:
+            updates.append(
+                f"• Địa chỉ: {self.current_private_street or 'Trống'} → {self.new_private_street}"
+            )
 
-        if self.update_work_phone:
-            updates.append(f"• Điện thoại: {self.current_work_phone or 'Trống'} → {self.new_work_phone}")
+        if self.update_private_street2:
+            updates.append(
+                f"• Địa chỉ 2: {self.current_private_street2 or 'Trống'} → {self.new_private_street2}"
+            )
 
-        if self.update_work_email:
-            updates.append(f"• Email công việc: {self.current_work_email or 'Trống'} → {self.new_work_email}")
+        if self.update_private_email:
+            updates.append(
+                f"• Email: {self.current_private_email or 'Trống'} → {self.new_private_email}"
+            )
+
+        if self.update_private_phone:
+            updates.append(
+                f"• Điện thoại: {self.current_private_phone or 'Trống'} → {self.new_private_phone}"
+            )
+
+        if self.update_employee_bank_account:
+            current_bank = (
+                self.current_employee_bank_account_id.acc_number
+                if self.current_employee_bank_account_id
+                else "Trống"
+            )
+            new_bank = (
+                self.new_employee_bank_account_id.acc_number
+                if self.new_employee_bank_account_id
+                else "Trống"
+            )
+            updates.append(f"• Tài khoản ngân hàng: {current_bank} → {new_bank}")
+
+        if self.update_km_home_work:
+            updates.append(
+                f"• Khoảng cách nhà - công ty: {self.current_km_home_work or 0} km → {self.new_km_home_work} km"
+            )
+
+        if self.update_marital:
+            marital_dict = dict(self._fields["new_marital"].selection)
+            current_marital = marital_dict.get(self.current_marital, "Chưa cập nhật")
+            new_marital = marital_dict.get(self.new_marital, "")
+            updates.append(f"• Tình trạng hôn nhân: {current_marital} → {new_marital}")
 
         if self.update_health_status:
             status_selection = [
@@ -275,47 +450,60 @@ class HrmEmployeeUpdateRequest(models.Model):
                 ("poor", "Poor"),
             ]
             status_dict = dict(status_selection)
-            current_status = status_dict.get(self.current_health_status, 'Chưa cập nhật')
-            new_status = status_dict.get(self.new_health_status, '')
+            current_status = status_dict.get(self.current_health_status, "Chưa cập nhật")
+            new_status = status_dict.get(self.new_health_status, "")
             updates.append(f"• Tình trạng sức khỏe: {current_status} → {new_status}")
 
-        if self.update_medical_history:
-            updates.append(f"• Tiền sử bệnh: Đã cập nhật")
+        if self.update_children:
+            updates.append(
+                f"• Số con: {self.current_children or 0} → {self.new_children}"
+            )
 
-        return '\n'.join(updates) if updates else 'Không có thông tin cụ thể'
+        if self.attachment_ids:
+            attachment_names = [att.name for att in self.attachment_ids]
+            updates.append(f"• Tài liệu đính kèm: {', '.join(attachment_names)}")
+
+        return "\n".join(updates) if updates else "Không có thông tin cụ thể"
 
     def _update_employee_data(self):
         """Update employee information after approval"""
         self.ensure_one()
         employee = self.employee_id
+        user = employee.user_id
 
-        update_vals = {}
+        user_update_vals = {}
 
-        # Personal Information
-        if self.update_health_insurance_number:
-            update_vals["health_insurance_number"] = self.new_health_insurance_number
-
-        # Contact Information
-        if self.update_work_phone:
-            update_vals["work_phone"] = self.new_work_phone
-        if self.update_work_email:
-            update_vals["work_email"] = self.new_work_email
-
-        # Health Information
+        if self.update_private_street:
+            user_update_vals["private_street"] = self.new_private_street
+        if self.update_private_street2:
+            user_update_vals["private_street2"] = self.new_private_street2
+        if self.update_private_email:
+            user_update_vals["private_email"] = self.new_private_email
+        if self.update_private_phone:
+            user_update_vals["private_phone"] = self.new_private_phone
+        if self.update_employee_bank_account:
+            user_update_vals["employee_bank_account_id"] = self.new_employee_bank_account_id
+        if self.update_km_home_work:
+            user_update_vals["km_home_work"] = self.new_km_home_work
+        if self.update_marital:
+            user_update_vals["marital"] = self.new_marital
+        if self.update_children:
+            user_update_vals["children"] = self.new_children
+        if self.update_emergency_contact:
+            user_update_vals["emergency_contact"] = self.new_emergency_contact
+        if self.update_emergency_phone:
+            user_update_vals["emergency_phone"] = self.new_emergency_phone
         if self.update_health_status:
-            update_vals["health_status"] = self.new_health_status
-        if self.update_medical_history:
-            update_vals["medical_history"] = self.new_medical_history
+            user_update_vals["health_status"] = self.new_health_status
 
-        # Process attachments as documents
+        if user_update_vals and user:
+            user.write(user_update_vals)
+
         if self.attachment_ids:
             for attachment in self.attachment_ids:
-                self.env["hrm.employee.document"].create(
-                    {
-                        "name": attachment.name,
-                        "document_type": "other",
-                        "document_file": attachment.datas,
-                        "employee_id": employee.id,
-                        "notes": f"Uploaded through update request {self.name}",
-                    }
-                )
+                # Update attachment để liên kết với employee
+                attachment.write({
+                    'res_model': 'hr.employee',
+                    'res_id': employee.id,
+                    'name': f"[{self.name}] {attachment.name}",  # Prefix với request number
+                })

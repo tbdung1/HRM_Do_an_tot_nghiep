@@ -55,24 +55,6 @@ class ResUsers(models.Model):
         related_sudo=False,
     )
 
-    medical_history = fields.Text(
-        related="employee_id.medical_history",
-        readonly=False,
-        related_sudo=False,
-    )
-
-    health_examination_ids = fields.One2many(
-        "hrm.employee.health.examination",
-        related="employee_id.health_examination_ids",
-        readonly=False,
-    )
-
-    document_ids = fields.One2many(
-        "hrm.employee.document",
-        related="employee_id.document_ids",
-        readonly=False,
-    )
-
     @property
     def SELF_READABLE_FIELDS(self):
         """Extend readable fields with custom fields"""
@@ -87,9 +69,6 @@ class ResUsers(models.Model):
             "tax_identification_number",
             "health_insurance_number",
             "education_level",
-            "medical_history",
-            "health_examination_ids",
-            "document_ids",
         ]
 
         # Combine lists và loại bỏ duplicate
@@ -108,9 +87,6 @@ class ResUsers(models.Model):
             "tax_identification_number",
             "health_insurance_number",
             "education_level",
-            "medical_history",
-            "health_examination_ids",
-            "document_ids",
         ]
 
         # Combine lists và loại bỏ duplicate

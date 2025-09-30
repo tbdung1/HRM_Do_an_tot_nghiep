@@ -23,33 +23,10 @@
                 <page string="Health Information" name="health_info">
                     <group>
                         <field name="health_status" readonly="not can_edit" />
-                        <field name="medical_history" readonly="not can_edit" />
+                        <field name="health_insurance_number" readonly="not can_edit" />
                     </group>
-                    <separator string="Health Examinations" />
-                    <field name="health_examination_ids" readonly="not can_edit">
-                        <tree editable="bottom">
-                            <field name="examination_date" />
-                            <field name="hospital" />
-                            <field name="doctor" />
-                            <field name="diagnosis" />
-                            <field name="next_examination_date" />
-                        </tree>
-                    </field>
                 </page>
 
-
-                <page string="Documents" name="documents">
-                    <field name="document_ids" readonly="not can_edit">
-                        <tree editable="bottom">
-                            <field name="name" />
-                            <field name="document_type" />
-                            <field name="issue_date" />
-                            <field name="expiry_date" />
-                            <field name="document_file" widget="binary" />
-                            <field name="notes" />
-                        </tree>
-                    </field>
-                </page>
             </xpath>
 
             <!-- <xpath expr="//field[@name='job_id']" position="after">

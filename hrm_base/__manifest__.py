@@ -16,13 +16,12 @@ Long description of module's purpose
     "depends": ["hr", "mail", "contacts"],
     # always loaded
     "data": [
-        "security/hr.security.xml",
         "security/ir.model.access.csv",
+        "security/hr.security.xml",
         "views/hrm_employee_public_views.xml",
         "views/hrm_employees_views.xml",
         "views/hrm_menu_views.xml",
         "views/res_users_views.xml",
-        # "#views/hrm_employee_health_examination_views.xml",
     ],
     "application": True,  # <<< HIỂN THỊ NHƯ APP
     "installable": True,

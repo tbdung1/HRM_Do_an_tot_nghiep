@@ -22,7 +22,7 @@ class HrmEmployees(models.Model):
     current_leave_id = fields.Many2one(
         groups="hr_holidays.group_hr_holidays_user,hr.group_hr_user,base.group_user"
     )
-    message_main_attachment_id = fields.Many2one(groups="hr.group_hr_user,base.group_user")
+
     # Personal Information - Civil Status (adding to existing fields)
     id_number = fields.Char("ID Number")  
 
@@ -51,17 +51,7 @@ class HrmEmployees(models.Model):
         string="Health Status",
         groups="hr.group_hr_user",
     )
-    medical_history = fields.Text("Medical History", groups="hr.group_hr_user")
-    health_examination_ids = fields.One2many(
-        "hrm.employee.health.examination", "employee_id", string="Health Examinations", groups="hr.group_hr_user"
-    )
 
-    # employee_group_id = fields.Many2one("hrm.employee.group", string="Employee Group")
-
-    # Document Attachments (beyond what Odoo already has)
-    document_ids = fields.One2many(
-        "hrm.employee.document", "employee_id", string="Documents"
-    )
 
     def get_formview_id(self, access_uid=None):
         """

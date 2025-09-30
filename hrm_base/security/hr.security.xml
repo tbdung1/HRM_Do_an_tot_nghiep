@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
+
         <!-- Record Rules for Employee
         <record id="hr_employee_rule_user_own" model="ir.rule">
             <field name="name">Employee: User can only see own employee record</field>
