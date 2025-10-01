@@ -38,6 +38,8 @@
                 <xpath expr="//field[@name='passport_id']" position="replace" />
                 <xpath expr="//page[@name='personal_information']//group[4]" position="replace">
                 </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                </xpath>
                 <xpath expr="//page[@name='personal_information']" position="after">
 
                     <page string="Health Information" name="health_info">

@@ -20,7 +20,7 @@
       sequence="1" />
 
     <menuitem id="menu_hrm_employees_public_menu"
-      name="Employees"
+      name="Employees (Public)"
       parent="menu_hrm_employees_section"
       action="action_hrm_employees_public"
       groups="base.group_user"
