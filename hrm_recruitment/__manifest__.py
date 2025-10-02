@@ -10,6 +10,9 @@
         "security/ir.model.access.csv",
         "views/hrm_applicant_views.xml",
         "views/hrm_job_views.xml",
-        "views/hrm_menu_views.xml",    ],
+        "views/hrm_menu_views.xml", 
+        "views/hrm_resume_line_views.xml"
+        ],
+    
     'application': True,
 }

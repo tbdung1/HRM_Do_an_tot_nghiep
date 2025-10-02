@@ -5,12 +5,14 @@
         <menuitem id="menu_hrm_applicants_section"
                   name="Recruitment"
                   parent="hrm_base.menu_hrm_root"
-                  sequence="20"/>
+                  sequence="20"
+                  groups="hr.group_hr_user"/>
 
         <record id="action_hrm_applicant" model="ir.actions.act_window">
             <field name="name">Applicants</field>
             <field name="res_model">hr.applicant</field>
             <field name="view_mode">tree,form,kanban</field>
+            <field name="groups_id" eval="[(6, 0, [ref('hr.group_hr_user')])]"/>
         </record>
 
         <!-- Applicants menu -->
@@ -18,20 +20,22 @@
                   name="Applicants"
                   parent="menu_hrm_applicants_section"
                   action="action_hrm_applicant"
-                  sequence="1"/>
+                  sequence="2"
+                  groups="hr.group_hr_user"/>
 
         <record id="action_hrm_job" model="ir.actions.act_window">
             <field name="name">Jobs</field>
             <field name="res_model">hr.job</field>
             <field name="view_mode">tree,form,kanban</field>
+            <field name="groups_id" eval="[(6, 0, [ref('hr.group_hr_user')])]"/>
         </record>
-        
 
-        <!-- Applicants menu -->
+        <!-- Jobs menu -->
         <menuitem id="menu_hrm_job"
                   name="Jobs"
                   parent="menu_hrm_applicants_section"
                   action="action_hrm_job"
-                  sequence="1"/>
+                  sequence="1"
+                  groups="hr.group_hr_user"/>
     </data>
 </odoo>
