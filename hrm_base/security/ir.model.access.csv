@@ -1,15 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hr_employee_user_own,hr.employee.user.own,hr.model_hr_employee,base.group_user,1,0,0,0
-access_hr_employee_hr,hr.employee.hr,hr.model_hr_employee,hr.group_hr_user,1,1,1,0
 access_hr_employee_manager,hr.employee.manager,hr.model_hr_employee,hr.group_hr_manager,1,1,1,1
-access_hr_department_user,hr.department.user,hr.model_hr_department,base.group_user,1,0,0,0
-access_hr_department_hr,hr.department.hr,hr.model_hr_department,hr.group_hr_user,1,1,1,1
-access_hrm_employee_document_user_own,hrm.employee.document.user.own,model_hrm_employee_document,base.group_user,1,0,0,0
-access_hrm_employee_document_hr,hrm.employee.document.hr,model_hrm_employee_document,hr.group_hr_user,1,1,1,0
-access_hrm_employee_document_manager,hrm.employee.document.manager,model_hrm_employee_document,hr.group_hr_manager,1,1,1,1
-access_hrm_employee_family_user_own,hrm.employee.family.user.own,model_hrm_employee_family,base.group_user,1,0,0,0
-access_hrm_employee_family_hr,hrm.employee.family.hr,model_hrm_employee_family,hr.group_hr_user,1,1,1,0
-access_hrm_employee_family_manager,hrm.employee.family.manager,model_hrm_employee_family,hr.group_hr_manager,1,1,1,1
-access_hrm_employee_health_examination_user_own,hrm.employee.health.examination.user.own,model_hrm_employee_health_examination,base.group_user,1,0,0,0
-access_hrm_employee_health_examination_hr,hrm.employee.health.examination.hr,model_hrm_employee_health_examination,hr.group_hr_user,1,1,1,0
-access_hrm_employee_health_examination_manager,hrm.employee.health.examination.manager,model_hrm_employee_health_examination,hr.group_hr_manager,1,1,1,1

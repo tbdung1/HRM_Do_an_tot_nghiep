@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class HrmEmployees(models.Model):
     _inherit = "hr.employee"
-    
+
     is_hr = fields.Boolean(compute="_compute_is_hr", store=False)
 
     def _compute_is_hr(self):
@@ -22,16 +22,12 @@ class HrmEmployees(models.Model):
     current_leave_id = fields.Many2one(
         groups="hr_holidays.group_hr_holidays_user,hr.group_hr_user,base.group_user"
     )
-    message_main_attachment_id = fields.Many2one(groups="hr.group_hr_user,base.group_user")
+
     # Personal Information - Civil Status (adding to existing fields)
     id_number = fields.Char("ID Number")  
 
-    tax_identification_number = fields.Char("Tax Identification Number")
-    health_insurance_number = fields.Char("Health Insurance Number")
-
-    # Additional personal information
-    ethnicity = fields.Char("Ethnicity")
-    religion = fields.Char("Religion")
+    tax_identification_number = fields.Char(string="Tax Identification Number", groups="hr.group_hr_user")
+    health_insurance_number = fields.Char(string="Health Insurance Number", groups="hr.group_hr_user")
 
     # Education (extending Odoo's certificate field)
     education_level = fields.Selection(
@@ -41,6 +37,7 @@ class HrmEmployees(models.Model):
             ("bachelor", "Bachelor"),
         ],
         string="Education Level",
+        groups="hr.group_hr_user",
     ) 
 
     # Health Information
@@ -52,27 +49,48 @@ class HrmEmployees(models.Model):
             ("poor", "Poor"),
         ],
         string="Health Status",
-    )
-    medical_history = fields.Text("Medical History")
-    health_examination_ids = fields.One2many(
-        "hrm.employee.health.examination", "employee_id", string="Health Examinations"
+        groups="hr.group_hr_user",
     )
 
-    # Job Information (extending Odoo's job_id, department_id, etc.)
-    job_level = fields.Selection(
-        [
-            ("staff", "Staff"),
-            ("senior", "Senior"),
-            ("lead", "Lead"),
-            ("manager", "Manager"),
-            ("director", "Director"),
-            ("executive", "Executive"),
-        ],
-        string="Job Level",
-    )
-    # employee_group_id = fields.Many2one("hrm.employee.group", string="Employee Group")
 
-    # Document Attachments (beyond what Odoo already has)
-    document_ids = fields.One2many(
-        "hrm.employee.document", "employee_id", string="Documents"
-    )
+    def get_formview_id(self, access_uid=None):
+        """
+        Override để tự động redirect view dựa trên user groups
+        """
+
+        _logger.info("=== GET_FORMVIEW_ID CALLED ===")
+        _logger.info(f"access_uid: {access_uid}")
+        _logger.info(f"current user: {self.env.user.name}")
+
+        if access_uid:
+            self_sudo = self.with_user(access_uid)
+        else:
+            self_sudo = self
+
+        _logger.info(f"has hr.group_hr_user: {self_sudo.user_has_groups('hr.group_hr_user')}")
+
+        # HR Users → Dùng view gốc (full access)
+        if self_sudo.user_has_groups('hr.group_hr_user'):
+            return super().get_formview_id(access_uid=access_uid)
+
+        # Non-HR Users → Extended public view
+        return self.env.ref('hrm_base.hr_employee_extended_public_view_form').id
+
+    def get_formview_action(self, access_uid=None):
+        """
+        Override để redirect model cho non-HR users
+        """
+        res = super().get_formview_action(access_uid=access_uid)
+        _logger.info(f"Original action: {res}")
+
+        if access_uid:
+            self_sudo = self.with_user(access_uid)
+        else:
+            self_sudo = self
+
+        # Non-HR Users → Redirect sang hr.employee.public
+        if not self_sudo.user_has_groups('hr.group_hr_user'):
+            res['res_model'] = 'hr.employee.public'
+            _logger.info(f"Redirected to public model: {res}")
+
+        return res

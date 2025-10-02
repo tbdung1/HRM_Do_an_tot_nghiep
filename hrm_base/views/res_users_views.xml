@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <!-- View res.users form -->
+    <record id="view_res_users_form" model="ir.ui.view">
+        <field name="name">view.res.users.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="hr.res_users_view_form_profile" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_country_id']" position="before">
+                <field name="tax_identification_number" readonly="not can_edit" />
+            </xpath>
+            <xpath expr="//field[@name='identification_id']" position="replace" />
+            <xpath expr="//field[@name='ssnid']" position="replace" />
+            <xpath expr="//field[@name='passport_id']" position="replace" />
+            <xpath expr="//page[@name='personal_information']//group[4]" position="replace">
+            </xpath>
+            <xpath expr="//group[@name='has_work_permit']" position="replace" />
+
+            <xpath expr="//page[@name='personal_information']" position="after">
+
+                <page string="Health Information" name="health_info">
+                    <group>
+                        <field name="health_status" readonly="not can_edit" />
+                        <field name="health_insurance_number" readonly="not can_edit" />
+                    </group>
+                </page>
+
+            </xpath>
+
+            <!-- <xpath expr="//field[@name='job_id']" position="after">
+                <field name="job_level" />
+            </xpath> -->
+        </field>
+    </record>
+
+</odoo>

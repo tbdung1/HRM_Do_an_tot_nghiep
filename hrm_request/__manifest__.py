@@ -18,6 +18,7 @@ Long description of module's purpose
         "security/ir.model.access.csv",
         "views/hrm_employee_update_request_views.xml",
         "views/hrm_employees_views.xml",
+        "views/res_users_views.xml"
     ],
     # always loaded
     "installable": True,

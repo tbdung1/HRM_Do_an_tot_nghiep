@@ -28,13 +28,3 @@ class HrmEmployees(models.Model):
             "context": {"default_employee_id": self.id},
         }
 
-    def action_create_update_request(self):
-        self.ensure_one()
-        return {
-            "name": _("Create Update Request"),
-            "type": "ir.actions.act_window",
-            "res_model": "hrm.employee.update.request",
-            "view_mode": "form",
-            "context": {"default_employee_id": self.id},
-            "target": "new",
-        }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View res.users form -->
+    <record id="view_res_users_form" model="ir.ui.view">
+        <field name="name">view.res.users.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="hr.res_users_view_form_profile" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_id']" position="after">
+            <field name="is_hr" invisible="1"></field>                
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_create_update_request"
+                    string="Request Update"
+                    type="object"
+                    class="btn-primary"
+                    groups="base.group_user"
+                    invisible="is_hr"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
