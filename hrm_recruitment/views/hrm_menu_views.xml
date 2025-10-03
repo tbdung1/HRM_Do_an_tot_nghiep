@@ -30,12 +30,59 @@
             <field name="groups_id" eval="[(6, 0, [ref('hr.group_hr_user')])]"/>
         </record>
 
-        <!-- Jobs menu -->
         <menuitem id="menu_hrm_job"
                   name="Jobs"
                   parent="menu_hrm_applicants_section"
                   action="action_hrm_job"
                   sequence="1"
                   groups="hr.group_hr_user"/>
+
+        <menuitem id="menu_hrm_recruitment_configuration"
+                  name="Configuration"
+                  parent="menu_hrm_applicants_section"
+                  sequence="20"
+                  groups="hr.group_hr_user"/>
+
+        <!-- Action cho Recruitment Stages -->
+        <record id="action_hrm_recruitment_stage" model="ir.actions.act_window">
+            <field name="name">Recruitment Stages</field>
+            <field name="res_model">hr.recruitment.stage</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu con Recruitment Stages -->
+        <menuitem id="menu_hrm_recruitment_stage"
+                name="Recruitment Stages"
+                parent="menu_hrm_recruitment_configuration"
+                action="action_hrm_recruitment_stage"
+                sequence="1"
+                groups="hr.group_hr_user"/>
+
+        <record id="action_hrm_recruitment_source" model="ir.actions.act_window">
+            <field name="name">Recruitment sources</field>
+            <field name="res_model">utm.source</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu con Recruitment Stages -->
+        <menuitem id="menu_hrm_recruitment_source"
+                name="Recruitment Sources"
+                parent="menu_hrm_recruitment_configuration"
+                action="action_hrm_recruitment_source"
+                sequence="1"
+                groups="hr.group_hr_user"/>
+
+        <record id="action_hrm_recruitment_employment_type" model="ir.actions.act_window">
+            <field name="name">Employment Types</field>
+            <field name="res_model">hr.contract.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_hrm_recruitment_employment_type"
+                name="Employment Types"
+                parent="menu_hrm_recruitment_configuration"
+                action="action_hrm_recruitment_employment_type"
+                sequence="1"
+                groups="hr.group_hr_user"/>
     </data>
 </odoo>

@@ -13,6 +13,5 @@
         "views/hrm_menu_views.xml", 
         "views/hrm_resume_line_views.xml"
         ],
-    
     'application': True,
 }
