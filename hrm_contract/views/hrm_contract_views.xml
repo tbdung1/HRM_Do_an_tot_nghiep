@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_contract_view_form_inherit_clickable" model="ir.ui.view">
+        <field name="name">hr.contract.form.inherit.clickable.for.non.manager</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//header/field[@name='state'][@groups='!hr_contract.group_hr_contract_manager']"
+                position="attributes">
+                <attribute name="groups">
+                    !hr_contract.group_hr_contract_manager,!hr_contract.group_hr_contract_employee_manager</attribute>
+            </xpath>
+
+            <xpath
+                expr="//header/field[@name='state'][@groups='hr_contract.group_hr_contract_manager']"
+                position="attributes">
+                <attribute name="groups">hr_contract.group_hr_contract_manager,hr_contract.group_hr_contract_employee_manager</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <menuitem id="menu_hrm_contract_public_menu"
+        name="Contracts"
+        parent="hrm_base.menu_hrm_employees_section"
+        action="hr_contract.action_hr_contract"
+        groups="hr_contract.group_hr_contract_employee_manager"
+        sequence="2" />
+</odoo>

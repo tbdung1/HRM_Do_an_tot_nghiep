@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View hrm_contract_draft View Tree -->
+    <record id="hrm_contract_view_tree" model="ir.ui.view">
+        <field name="name">hrm.contract.tree</field>
+        <field name="model">hrm.contract.draft</field>
+        <field name="arch" type="xml">
+            <tree string="Contracts" multi_edit="1" sample="1" default_order='date_start DESC'>
+                <field name="company_id" column_invisible="True" />
+                <field name="employee_id" readonly="1" widget="many2one_avatar_employee" />
+                <field name="name" readonly="1" />
+                <field name="department_id" readonly="1" optional="show" />
+                <field name="job_id" optional="show" />
+                <field name="date_start" readonly="1" />
+                <field name="date_end" readonly="1" />
+                <field name="contract_type_id" optional="show" />
+                <field name="wage" widget="monetary" readonly="1" optional="hidden" />
+                <field name="resource_calendar_id" optional="show" />
+                <field name="structure_type_id" optional="hidden" />
+                <field name="state_hr_contract" widget="badge"
+                    decoration-info="state_hr_contract == 'draft'"
+                    decoration-warning="state_hr_contract == 'rejected'"
+                    decoration-success="state_hr_contract == 'approved'" />
+                <field name="company_id" groups="base.group_multi_company" readonly="1"
+                    optional="hidden" />
+            </tree>
+        </field>
+    </record>
+
+
+    <!-- View hrm_contract_draft form -->
+    <record id="hrm_contract_view_form" model="ir.ui.view">
+        <field name="name">hrm.contract.form</field>
+        <field name="model">hrm.contract.draft</field>
+        <field name="arch" type="xml">
+            <form string="Current Contract">
+                <field name="contracts_count" invisible="1" />
+                <header invisible="not id">
+                    <!-- <field name="state_hr_contract" groups="!hr_contract.group_hr_contract_manager"
+                        widget="statusbar" /> -->
+                    <field name="state_hr_contract"
+                        widget="statusbar" options="{'clickable': 0}" />
+
+                    <button name="action_submit_contract"
+                        type="object"
+                        string="Submit"
+                        class="oe_highlight"
+                        invisible="state_hr_contract != 'draft' and state_hr_contract != 'rejected'"
+                        groups="!hr_contract.group_hr_contract_manager"
+                        confirm="Are you sure you want to submit this contract for approval?" />
+
+                    <button name="action_approve_contract"
+                        type="object"
+                        string="Approve"
+                        class="oe_highlight"
+                        invisible="state_hr_contract != 'submitted'"
+                        groups="hr_contract.group_hr_contract_manager"
+                        confirm="Are you sure you want to submit this contract for approval?" />
+
+                    <button name="action_reject_contract"
+                        type="object"
+                        string="Reject"
+                        class="oe_highlight"
+                        invisible="state_hr_contract != 'submitted'"
+                        groups="hr_contract.group_hr_contract_manager"
+                        confirm="Are you sure you want to submit this contract for approval?" />
+                
+                </header>
+                <sheet>
+                    <field name="state_hr_contract" invisible="1" />
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_contract_list"
+                            class="oe_stat_button"
+                            icon="fa-book"
+                            type="object"
+                            invisible="contracts_count == 0"
+                            groups="hr_contract.group_hr_contract_manager">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="contracts_count" />
+                                </span>
+                                <span invisible="contracts_count == 1" class="o_stat_text">
+                                    Contracts
+                                </span>
+                                <span invisible="contracts_count &gt; 1" class="o_stat_text">
+                                    Contract
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                        invisible="active" />
+                    <div class="oe_title pe-0 w-100 mw-100" name="title">
+                        <h1 class="d-flex flex-row justify-content-between">
+                            <field name="name" class="text-truncate"
+                                placeholder="Contract Reference" />
+                            <field name="kanban_state"
+                                class="d-flex align-items-center"
+                                groups="!hr_contract.group_hr_contract_manager"
+                                widget="state_selection" readonly="1" />
+                            <field name="kanban_state"
+                                class="d-flex align-items-center"
+                                groups="hr_contract.group_hr_contract_manager"
+                                widget="state_selection" readonly="0" />
+                        </h1>
+                        <h2>
+                            <field name="company_id" groups="base.group_multi_company" invisible="1" />
+                        </h2>
+                    </div>
+                    <group name="top_info">
+                        <group name="top_info_left">
+                            <field name="active" invisible="1" />
+                            <field name="company_id" invisible="1" />
+                            <field name="employee_id" widget="many2one_avatar_employee" required="1"/>
+                            <field name="date_start" string="Contract Start Date" />
+                            <field name="date_end" string="Contract End Date" />
+                            <field name="company_country_id" invisible="1" />
+                            <field name="country_code" invisible="1" />
+                            <field name="calendar_mismatch" invisible="1" />
+                            <label for="resource_calendar_id" />
+                            <div id="resource_calendar_warning" class="d-flex align-items-center">
+                                <field name="resource_calendar_id"
+                                    groups="!hr_contract.group_hr_contract_manager"
+                                    required="1"
+                                    options="{'no_open': True, 'no_create': True}" />
+                                <field name="resource_calendar_id"
+                                    groups="hr_contract.group_hr_contract_manager"
+                                    required="1" />
+                                <widget
+                                    name="contract_warning_tooltip"
+                                    invisible="not calendar_mismatch or state_hr_contract != 'approved'" />
+                            </div>
+                        </group>
+                        <group name="top_info_right">
+                            <field name="structure_type_id"
+                                groups="!hr_contract.group_hr_contract_manager"
+                                domain="['|', ('country_id', '=', False), ('country_id', '=', company_country_id)]"
+                                options="{'no_open': True, 'no_create': True}" />
+                            <field name="structure_type_id"
+                                groups="hr_contract.group_hr_contract_manager"
+                                domain="['|', ('country_id', '=', False), ('country_id', '=', company_country_id)]" />
+                            <field name="department_id"
+                                groups="!hr_contract.group_hr_contract_manager"
+                                options="{'no_open': True, 'no_create': True}" />
+                            <field name="department_id"
+                                groups="hr_contract.group_hr_contract_manager" />
+                            <field name="job_id" groups="!hr_contract.group_hr_contract_manager"
+                                options="{'no_open': True, 'no_create': True}" />
+                            <field name="job_id" groups="hr_contract.group_hr_contract_manager" />
+                            <field name="contract_type_id"
+                                groups="!hr_contract.group_hr_contract_manager"
+                                options="{'no_open': True, 'no_create': True}" />
+                            <field name="contract_type_id"
+                                groups="hr_contract.group_hr_contract_manager" />
+                            <field name="hr_responsible_id" widget="many2one_avatar_user"
+                                invisible="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Salary Information" name="information"
+                            class="o_hr_contract_salary_information">
+                            <group name="salary_info">
+                                <group name="salary">
+                                    <label for="wage" />
+                                    <div class="o_row mw-50" name="wage">
+                                        <field name="wage" class="oe_inline o_hr_narrow_field"
+                                            nolabel="1" />
+                                        <div class="mb-3" name="wage_period_label">/ month</div>
+                                    </div>
+                                </group>
+                                <group name="yearly_benefits" />
+                            </group>
+                        </page>
+                        <page string="Contract Details" name="other"
+                            groups="hr_contract.group_hr_contract_manager">
+                            <group name="contract_details_0" />
+                            <group name="contract_details" col="2" />
+                            <group name="contract_details_2" />
+                            <group name="notes_group" string="Notes">
+                                <field name="notes" nolabel="1" colspan="2"
+                                    placeholder="Type in notes about this contract..." />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <!-- Action hrm_contract_draft -->
+    <record id="action_hrm_contract_draft" model="ir.actions.act_window">
+        <field name="name">HrmContractDraft</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hrm.contract.draft</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                There is no examples click here to add new HrmContractDraft.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_hrm_contract_hr_menu"
+        name="Contracts (HR)"
+        parent="hrm_base.menu_hrm_employees_section"
+        action="action_hrm_contract_draft"
+        groups="hr_contract.group_hr_contract_employee_manager"
+        sequence="4" />
+</odoo>

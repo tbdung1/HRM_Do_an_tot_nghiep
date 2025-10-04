@@ -16,12 +16,12 @@ Long description of module's purpose
     "depends": ["hrm_base", "hr_contract"],
     # always loaded
     "data": [
-        # 'security/ir.model.access.csv',
-        "views/views.xml",
+        "security/ir.model.access.csv",
+        "security/security.xml",
+        "views/hrm_contract_draft_views.xml",
+        "views/hrm_contract_views.xml",
         "views/templates.xml",
+        "views/views.xml"
     ],
-    # only loaded in demonstration mode
-    "demo": [
-        "demo/demo.xml",
-    ],
+
 }

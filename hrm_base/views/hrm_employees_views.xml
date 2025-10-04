@@ -65,10 +65,85 @@
             </field>
         </record> -->
 
+        <!-- Alternative: Simple kanban layout -->
+        <record id="view_hrm_employees_kanban_simple" model="ir.ui.view">
+            <field name="name">view.hr.employee.kanban.simple</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.hr_kanban_view_employees" />
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="replace">
+                    <kanban class="o_hr_employee_kanban">
+                        <field name="name" />
+                        <field name="work_email" />
+                        <field name="work_phone" />
+                        <field name="department_id" />
+                        <field name="job_id" />
+                        <field name="job_level" />
+                        <field name="id_number" />
+                        <field name="company_id" />
+                        <field name="image_1920" />
+
+                        <templates>
+                            <t t-name="kanban-box">
+                                <div class="oe_kanban_card oe_kanban_global_click">
+                                    <!-- Header with image and name -->
+                                    <div class="oe_kanban_content">
+                                        <div class="o_kanban_image">
+                                            <img
+                                                t-att-src="kanban_image('hr.employee', 'image_1920', record.id.raw_value)"
+                                                t-att-title="record.name.value"
+                                                width="64" height="64" />
+                                        </div>
+
+                                        <!-- Employee info -->
+                                        <div class="oe_kanban_details">
+                                            <strong>
+                                                <field name="name" />
+                                            </strong>
+                                            <br />
+                                            <field name="job_id" />
+                                            <t t-if="record.job_level.value"> (<field
+                                                    name="job_level" />) </t>
+                                            <br />
+                                            <span class="text-muted">
+                                                <field name="department_id" />
+                                            </span>
+                                            <br />
+                                            <span class="text-muted" t-if="record.id_number.value">
+                                                ID: <field name="id_number" />
+                                            </span>
+                                            <br />
+                                            <span class="text-muted" t-if="record.work_email.value">
+                                                <field name="work_email" />
+                                            </span>
+                                            <br />
+                                            <span class="text-muted" t-if="record.work_phone.value">
+                                                <field name="work_phone" />
+                                            </span>
+                                        </div>
+
+                                        <!-- Company info -->
+                                        <div class="oe_kanban_footer"
+                                            groups="base.group_multi_company">
+                                            <div class="o_kanban_record_bottom">
+                                                <small class="text-muted">
+                                                    <field name="company_id" />
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </templates>
+                    </kanban>
+                </xpath>
+            </field>
+        </record>
+
         <record id="action_hrm_employees_private" model="ir.actions.act_window">
             <field name="name">Employees</field>
             <field name="res_model">hr.employee</field>
-            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="view_mode">tree,kanban,form,activity</field>
             <field name="context">{'search_default_active': 1}</field>
             <field name="groups_id" eval="[(4, ref('hr.group_hr_user'))]" />
         </record>
