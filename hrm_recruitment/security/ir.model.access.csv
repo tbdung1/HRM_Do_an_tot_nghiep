@@ -1,2 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hrm_recruitment_hrm_recruitment,hrm_recruitment.hrm_recruitment,model_hrm_recruitment_hrm_recruitment,base.group_user,1,1,1,1
+access_hrm_applicant_user,hr.applicant.user,model_hr_applicant,base.group_user,1,1,1,1
+
+access_hrm_resume_line_manager,hrm_resume_line_manager,model_hrm_resume_line,,1,1,1,1

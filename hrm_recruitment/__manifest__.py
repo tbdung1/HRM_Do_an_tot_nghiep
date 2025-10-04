@@ -1,27 +1,17 @@
-# -*- coding: utf-8 -*-
 {
-    "name": "hrm_recruitment",
-    "summary": "Short (1 phrase/line) summary of the module's purpose",
-    "description": """
-Long description of module's purpose
-    """,
-    "author": "My Company",
-    "website": "https://www.yourcompany.com",
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
-    # for the full list
-    "category": "Uncategorized",
-    "version": "17.0.1.0",
-    # any module necessary for this one to work correctly
-    "depends": ["hrm_base", "hr_recruitment"],
-    # always loaded
+    'name': 'HRM Recruitment',
+    'version': '17.0',
+    'summary': 'Quản lý tuyển dụng nhân sự (giống hr.applicant)',
+    'description': 'Module quản lý ứng viên, quy trình tuyển dụng',
+    'category': 'Human Resources',
+    'author': 'Bạn',
+    'depends': ['hr', 'hr_recruitment', 'hrm_base', 'hr_skills', 'hr_recruitment_skills'],
     "data": [
-        # 'security/ir.model.access.csv',
-        "views/views.xml",
-        "views/templates.xml",
-    ],
-    # only loaded in demonstration mode
-    "demo": [
-        "demo/demo.xml",
-    ],
+        "security/ir.model.access.csv",
+        "views/hrm_applicant_views.xml",
+        "views/hrm_job_views.xml",
+        "views/hrm_menu_views.xml", 
+        "views/hrm_resume_line_views.xml"
+        ],
+    'application': True,
 }
