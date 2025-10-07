@@ -1,0 +1,13 @@
+<odoo>
+  <record id="ir_cron_notify_expiring_contracts" model="ir.cron">
+    <field name="name">HRM: Notify expiring contracts</field>
+    <field name="model_id" ref="hr_contract.model_hr_contract"/>
+    <field name="state">code</field>
+    <!-- Gọi phương thức cron -->
+    <field name="code">model._sent_expired_contract()</field>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+    <field name="numbercall">-1</field>
+    <field name="active">True</field>
+  </record>
+</odoo>

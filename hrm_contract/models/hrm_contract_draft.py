@@ -12,6 +12,16 @@ class HrmContractDraft(models.Model):
     _description = "HrmContractDraft"
     _inherit = ["hr.contract"]
 
+    emp_name = fields.Char("Employee Name")
+    gender = fields.Selection(
+        [("male", "Male"), ("female", "Female"), ("other", "Other")],
+        string="Gender",
+        required=True,
+    )
+    permanent_address = fields.Char("Permanent Address")
+    residential_address = fields.Char("Residential Address")
+    birth_date = fields.Date("Birth Date")
+
     state_hr_contract = fields.Selection(
         [
             ("draft", "Draft"),
@@ -27,11 +37,32 @@ class HrmContractDraft(models.Model):
         default="draft",
     )
 
+    def _gender_label(self):
+        self.ensure_one()
+        return dict(self._fields["gender"]._description_selection(self.env)).get(self.gender)
+
+    # def action_print_contract_pdf(self):
+    #     self.ensure_one()
+    #     return self.env.ref(
+    #         "hrm_contract.action_report_hrm_contract_draft_pdf"
+    #     ).report_action(self)
+
     def action_submit_contract(self):
         for record in self:
             if record.state_hr_contract != "draft":
                 raise UserError(_("Only contracts in draft state can be submitted."))
             record.state_hr_contract = "submitted"
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Thành công",
+                "message": "Đã gửi yêu cầu duyệt!",
+                "type": "success",
+                "sticky": False,
+            },
+        }
 
     def action_reject_contract(self):
         for record in self:
@@ -39,24 +70,45 @@ class HrmContractDraft(models.Model):
                 raise UserError(_("Only contracts in submitted state can be rejected."))
             record.state_hr_contract = "rejected"
 
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Thành công",
+                "message": "Không duyệt hợp đồng",
+                "type": "success",
+                "sticky": False,
+            },
+        }
+
     def action_approve_contract(self):
         for record in self:
             if record.state_hr_contract != "submitted":
                 raise UserError(_("Only contracts in submitted state can be approved."))
             record.state_hr_contract = "approved"
-            record.map_to_hr_contract()
-            lines = [
-                "Yêu cầu lập hợp đồng đã được duyệt.",
-                f"Người duyệt: {self.env.user.name}",
-                f"Thời gian: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')}",
-                f"Nhân viên: {record.employee_id.name}",
-            ]
-            body = "<br/>".join(lines)
+            # record.map_to_hr_contract()
+            body = f"""
+                Yêu cầu lập hợp đồng đã được duyệt
+                Người duyệt: {self.env.user.name}
+                Thời gian: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')}
+                Nhân viên: {record.employee_id.name}
+            """
             record.message_post(
                 body=body,
                 subject="Yêu cầu lập hợp đồng đã được duyệt",
                 subtype_xmlid="mail.mt_note",
             )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Thành công",
+                "message": "Đã duyệt thành công!",
+                "type": "success",
+                "sticky": False,
+            },
+        }
 
     def map_to_hr_contract(self):
         self.ensure_one()

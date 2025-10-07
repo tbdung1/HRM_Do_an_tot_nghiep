@@ -21,7 +21,10 @@ Long description of module's purpose
         "views/hrm_contract_draft_views.xml",
         "views/hrm_contract_views.xml",
         "views/templates.xml",
-        "views/views.xml"
+        "views/views.xml",
+        "report/hrm_contract_templates.xml",
+        "report/hrm_contract_reports.xml",
+        "data/ir_cron.xml"
     ],
 
 }

@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <tree string="Contracts" multi_edit="1" sample="1" default_order='date_start DESC'>
                 <field name="company_id" column_invisible="True" />
-                <field name="employee_id" readonly="1" widget="many2one_avatar_employee" />
+                <!-- <field name="employee_id" readonly="1" widget="many2one_avatar_employee" /> -->
                 <field name="name" readonly="1" />
                 <field name="department_id" readonly="1" optional="show" />
                 <field name="job_id" optional="show" />
@@ -62,9 +62,11 @@
                         type="object"
                         string="Reject"
                         class="oe_highlight"
-                        invisible="state_hr_contract != 'submitted'"
+                        invisible="state_hr_contract != 'submitted' and state_hr_contract != 'approved'"
                         groups="hr_contract.group_hr_contract_manager"
                         confirm="Are you sure you want to submit this contract for approval?" />
+                    
+
                 
                 </header>
                 <sheet>
@@ -112,9 +114,15 @@
                         <group name="top_info_left">
                             <field name="active" invisible="1" />
                             <field name="company_id" invisible="1" />
-                            <field name="employee_id" widget="many2one_avatar_employee" required="1"/>
-                            <field name="date_start" string="Contract Start Date" />
-                            <field name="date_end" string="Contract End Date" />
+                            <field name="emp_name" string="Employee Name" required="1"
+                                readonly="state_hr_contract != 'draft'" />
+                            <field name="gender" string="Gender" required="1" readonly="state_hr_contract != 'draft'" />
+                            <field name="permanent_address" string="Permanent Address" readonly="state_hr_contract != 'draft'" />
+                            <field name="residential_address" string="Residential Address" readonly="state_hr_contract != 'draft'" />
+                            <field name="birth_date" string="Birth Date" readonly="state_hr_contract != 'draft'" />
+                            <!-- <field name="employee_id" widget="many2one_avatar_employee" required="1"/> -->
+                            <field name="date_start" string="Contract Start Date" readonly="state_hr_contract != 'draft'" />
+                            <field name="date_end" string="Contract End Date" readonly="state_hr_contract != 'draft'" />
                             <field name="company_country_id" invisible="1" />
                             <field name="country_code" invisible="1" />
                             <field name="calendar_mismatch" invisible="1" />
@@ -126,7 +134,7 @@
                                     options="{'no_open': True, 'no_create': True}" />
                                 <field name="resource_calendar_id"
                                     groups="hr_contract.group_hr_contract_manager"
-                                    required="1" />
+                                    required="1" readonly="state_hr_contract != 'draft'" />
                                 <widget
                                     name="contract_warning_tooltip"
                                     invisible="not calendar_mismatch or state_hr_contract != 'approved'" />
@@ -134,25 +142,10 @@
                         </group>
                         <group name="top_info_right">
                             <field name="structure_type_id"
-                                groups="!hr_contract.group_hr_contract_manager"
-                                domain="['|', ('country_id', '=', False), ('country_id', '=', company_country_id)]"
-                                options="{'no_open': True, 'no_create': True}" />
-                            <field name="structure_type_id"
-                                groups="hr_contract.group_hr_contract_manager"
-                                domain="['|', ('country_id', '=', False), ('country_id', '=', company_country_id)]" />
-                            <field name="department_id"
-                                groups="!hr_contract.group_hr_contract_manager"
-                                options="{'no_open': True, 'no_create': True}" />
-                            <field name="department_id"
-                                groups="hr_contract.group_hr_contract_manager" />
-                            <field name="job_id" groups="!hr_contract.group_hr_contract_manager"
-                                options="{'no_open': True, 'no_create': True}" />
-                            <field name="job_id" groups="hr_contract.group_hr_contract_manager" />
-                            <field name="contract_type_id"
-                                groups="!hr_contract.group_hr_contract_manager"
-                                options="{'no_open': True, 'no_create': True}" />
-                            <field name="contract_type_id"
-                                groups="hr_contract.group_hr_contract_manager" />
+                                domain="['|', ('country_id', '=', False)]" readonly="state_hr_contract != 'draft'" />
+                            <field name="department_id" readonly="state_hr_contract != 'draft'" />
+                            <field name="job_id" readonly="state_hr_contract != 'draft'" />
+                            <field name="contract_type_id" readonly="state_hr_contract != 'draft'" />
                             <field name="hr_responsible_id" widget="many2one_avatar_user"
                                 invisible="1" />
                         </group>
@@ -165,15 +158,14 @@
                                     <label for="wage" />
                                     <div class="o_row mw-50" name="wage">
                                         <field name="wage" class="oe_inline o_hr_narrow_field"
-                                            nolabel="1" />
+                                            nolabel="1" readonly="state_hr_contract != 'draft'" />
                                         <div class="mb-3" name="wage_period_label">/ month</div>
                                     </div>
                                 </group>
                                 <group name="yearly_benefits" />
                             </group>
                         </page>
-                        <page string="Contract Details" name="other"
-                            groups="hr_contract.group_hr_contract_manager">
+                        <page string="Contract Details" name="other">
                             <group name="contract_details_0" />
                             <group name="contract_details" col="2" />
                             <group name="contract_details_2" />
