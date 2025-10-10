@@ -1,2 +1,1 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hrm_attendance_integration_hrm_attendance_integration,hrm_attendance_integration.hrm_attendance_integration,model_hrm_attendance_integration_hrm_attendance_integration,base.group_user,1,1,1,1
