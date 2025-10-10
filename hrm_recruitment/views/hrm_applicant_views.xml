@@ -67,6 +67,14 @@
                         </div>
                     </div>
                 </xpath>
+                <xpath expr="//header" position="inside">
+                    <field name="is_last_stage" invisible="1"/>
+                    <button string="Next" name="next_stage" type="object" class="btn-primary" invisible="is_last_stage"/>
+                </xpath>
+                <xpath expr="//field[@name='stage_id']" position="attributes">
+                    <attribute name="options">{'clickable': false}</attribute>
+                </xpath>
+
             </field>
         </record>
     </data>
