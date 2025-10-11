@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="report_hrm_contract_draft_pdf">
+    <template id="report_hrm_contract_pdf">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="c">
                 <t t-call="web.external_layout">
@@ -84,21 +84,20 @@
                             <!-- Bên B -->
                             <div class="contract-section">
                                 <h3>Bên B: Người lao động</h3>
-                                <p>Ông/Bà: <span t-field="c.emp_name" /></p>
-                                <p>Ngày sinh: <span t-if="c.birth_date"
-                                        t-esc="c.birth_date.strftime('%d/%m/%Y')" />
+                                <p>Ông/Bà: <span t-field="c.employee_id.name" /></p>
+                                <p>Ngày sinh: <span t-if="c.employee_id.birthday"
+                                        t-esc="c.employee_id.birthday.strftime('%d/%m/%Y')" />
                                     <span t-else="">
                                     ____/____/________</span>
                                 </p>
-                                <p>Giới tính: <span t-esc="c._gender_label()" /></p>
-                                <p>Địa chỉ thường trú: <span t-field="c.permanent_address" /></p>
-                                <p>Địa chỉ cư trú: <span t-field="c.residential_address"
-                                        t-if="c.residential_address" />
+                                <p>Giới tính: <span t-esc="c.employee_id.gender" /></p>
+                                <p>Địa chỉ thường trú: <span t-field="c.employee_id.private_street" /></p>
+                                <p>Địa chỉ cư trú: <span t-field="c.employee_id.private_street2"
+                                        t-if="c.employee_id.private_street2" />
                                 </p>
                             </div>
 
-                            <p style="margin-top: 15px;">Thỏa thuận ký kết hợp đồng lao động và cam
-                                kết như sau:</p>
+                            <p style="margin-top: 15px;">Thỏa thuận ký kết hợp đồng lao động và cam kết như sau:</p>
 
                             <!-- Điều 1 -->
                             <div class="contract-section">
@@ -107,10 +106,12 @@
                                 <p>Địa điểm làm việc: <span t-field="c.company_id.city" /></p>
                                 <p>Loại hợp đồng: <span t-field="c.contract_type_id.name" /></p>
                                 <p> Từ ngày: <span t-if="c.date_start"
-                                        t-esc="c.date_start.strftime('%d/%m/%Y')"/>
-                                        <span t-else="____/____/________" /> Đến ngày: <span
-                                        t-if="c.date_end" t-esc="c.date_end.strftime('%d/%m/%Y')"/>
-                                        <span t-else="Không xác định" />
+                                        t-esc="c.date_start.strftime('%d/%m/%Y')" />
+                                        <span
+                                        t-else="____/____/________" /> Đến ngày: <span
+                                        t-if="c.date_end" t-esc="c.date_end.strftime('%d/%m/%Y')" />
+                                        <span
+                                        t-else="Không xác định" />
                                 </p>
                             </div>
 
@@ -133,7 +134,8 @@
                                 <h4>Điều 3. Thời giờ làm việc, nghỉ ngơi, BHLĐ, BHXH, BHYT, BHTN</h4>
                                 <p>Thời giờ làm việc: <span t-field="c.resource_calendar_id.name"
                                         t-if="c.resource_calendar_id.name" />
-                                        <span t-else="8 giờ/ngày, 48 giờ/tuần" />. Nghỉ hàng tuần:
+                                        <span
+                                        t-else="8 giờ/ngày, 48 giờ/tuần" />. Nghỉ hàng tuần:
                                     ..........</p>
                                 <p>Nghỉ lễ, tết, phép năm: theo luật và quy định nội bộ.</p>
                                 <p>Trang bị BHLĐ: ................................................</p>
@@ -178,8 +180,7 @@
                                         <strong>NGƯỜI LAO ĐỘNG</strong><br /> (Ký, ghi rõ họ tên)<br /><br /><br /><br />
                                         <div
                                             style="margin-top: 40px;">
-                                            <span t-field="c.emp_name" />
-                                            <span t-if="not c.emp_name" t-field="c.employee_id.name" />
+                                            <span t-field="c.employee_id.name" />
                                         </div>
                                     </td>
                                 </tr>

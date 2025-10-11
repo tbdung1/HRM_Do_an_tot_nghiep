@@ -39,7 +39,13 @@ class HrmContractDraft(models.Model):
 
     def _gender_label(self):
         self.ensure_one()
-        return dict(self._fields["gender"]._description_selection(self.env)).get(self.gender)
+        gender_mapping = {
+            'male' : 'Nam',
+            'female' : 'Nữ',
+            'other' : 'Khác',
+        }
+        return gender_mapping.get(self.gender)
+        # return dict(self._fields["gender"]._description_selection(self.env)).get(self.gender)
 
     # def action_print_contract_pdf(self):
     #     self.ensure_one()

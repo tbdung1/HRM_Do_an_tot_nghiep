@@ -143,7 +143,7 @@
         <record id="action_hrm_employees_private" model="ir.actions.act_window">
             <field name="name">Employees</field>
             <field name="res_model">hr.employee</field>
-            <field name="view_mode">tree,kanban,form,activity</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
             <field name="context">{'search_default_active': 1}</field>
             <field name="groups_id" eval="[(4, ref('hr.group_hr_user'))]" />
         </record>

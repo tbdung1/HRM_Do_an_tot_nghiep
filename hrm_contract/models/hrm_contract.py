@@ -10,6 +10,9 @@ _logger = logging.getLogger(__name__)
 class HrmContract(models.Model):
     _inherit = "hr.contract"
     
+    allowance = fields.Monetary('Allowance', tracking=True, help="Employee's monthly allowance.", group_operator="avg")
+
+    
     def _get_bot_hrm(self):
         bot_user = self.env['res.users'].sudo().search([('login', '=', 'bot_hrm')], limit=1)
         if not bot_user:
@@ -37,7 +40,7 @@ class HrmContract(models.Model):
     
     def _sent_notify(self, emp_contract):
         try:
-            chat_message = f"Hợp đồng của nhân viên \"{emp_contract.employee_id.name}\" còn {(emp_contract.date_end - fields.Date.today()).days} ngày nữa sẽ hết hạn."
+            chat_message = f"Hợp đồng tên \"{emp_contract.name}\" của nhân viên \"{emp_contract.employee_id.name}\" còn {(emp_contract.date_end - fields.Date.today()).days} ngày nữa sẽ hết hạn."
             bot_user = self._get_bot_hrm()
             hr = emp_contract.employee_id.parent_id.user_id.partner_id
             
@@ -48,6 +51,17 @@ class HrmContract(models.Model):
             partners |= emp_contract.employee_id.user_id.partner_id
             for partner in partners:
                 self._create_channel(partner.id, bot_user, chat_message)
+                mail = self.env['mail.mail'].create({
+                    'subject': 'Thông báo hợp đồng sắp hết hạn',
+                    'body_html': f"""
+                        <p>Kính gửi {partner.name},</p>
+                        <p>{chat_message}</p>
+                        <p>Trân trọng.</p>
+                                """,
+                    'email_to': partner.email,
+                    'email_from': 'n21dccn112@student.ptithcm.edu.vn',
+                })
+                mail.send()
         except Exception as e:
             _logger.error(f"Error sending contract expiration notification: {e}")
 
@@ -60,3 +74,19 @@ class HrmContract(models.Model):
                                  ('state', '=', 'open')])
         for contract in contracts:
             contract.sudo()._sent_notify(contract)
+            
+
+    def action_active_contract(self):
+        self.ensure_one()
+        for rec in self:
+            if rec.state != 'draft':
+                raise UserError(_('Only contracts in draft state can be activated.'))
+            rec.sudo().write({'state': 'open'})
+        
+
+    def action_cancel_contract(self):
+        self.ensure_one()
+        for rec in self:
+            if rec.state != 'open':
+                raise UserError(_('Only contracts in open state can be cancelled.'))
+            rec.sudo().write({'state': 'cancel'})
