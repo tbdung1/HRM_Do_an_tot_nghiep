@@ -1,0 +1,28 @@
+<odoo>
+    <!-- Rule cho người dùng bình thường -->
+    <record id="hr_attendance_user_own_rule" model="ir.rule">
+        <field name="name">Attendance: user can see own records</field>
+        <field name="model_id" ref="hr_attendance.model_hr_attendance"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <!-- nhóm user cơ bản -->
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+    </record>
+
+    <!-- HR thấy toàn bộ -->
+    <record id="hr_attendance_hr_rule" model="ir.rule">
+        <field name="name">Attendance: HR can see all</field>
+        <field name="model_id" ref="hr_attendance.model_hr_attendance"/>
+        <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+        <!-- HR group -->
+        <field name="domain_force">[(1, '=', 1)]</field>        <!-- xem hết -->
+    </record>
+
+    <!-- HR Manager thấy toàn bộ -->
+    <record id="hr_attendance_hr_manager_rule" model="ir.rule">
+        <field name="name">Attendance: HR Manager can see all</field>
+        <field name="model_id" ref="hr_attendance.model_hr_attendance"/>
+        <field name="groups" eval="[(4, ref('hr.group_hr_manager'))]"/>
+        <!-- HR Manager group -->
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>
