@@ -49,7 +49,7 @@
                         <group string="Description">
                             <field name="description" nolabel="1"
                                 placeholder="Describe the reason for this update request..."
-                                readonly="state != 'draft'"/>
+                                />
                         </group>
                     </group>
 
@@ -243,12 +243,12 @@
                         </page>
                     </notebook>
                 </sheet>
-                <footer>
+                <!-- <footer>
                     <button name="action_submit" type="object" string="Submit"
                         class="btn-primary" invisible="state != 'draft'" />
 
                     <button string="Discard" class="btn-secondary" special="cancel" />
-                </footer>
+                </footer> -->
                 <div class="oe_chatter">
                     <field name="message_follower_ids" />
                     <field name="activity_ids" />

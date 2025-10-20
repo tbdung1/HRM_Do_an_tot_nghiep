@@ -25,7 +25,9 @@ Long description of module's purpose
         "report/hrm_contract_templates_draft.xml",
         "report/hrm_contract_reports.xml",
         "report/hrm_contract_templates.xml",
-        "data/ir_cron.xml"
+        "data/ir_cron.xml",
     ],
-
+    "installable": True,
+    "application": False,
+    "auto_install": False,
 }
