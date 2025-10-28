@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_hr_attendance_form_inherit_add_header" model="ir.ui.view">
+        <field name="name">hr.attendance.form.add.header</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button name="action_open_adjustment" string="Điều chỉnh Checkout" type="object" class="btn-primary"/>
+                </header>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
