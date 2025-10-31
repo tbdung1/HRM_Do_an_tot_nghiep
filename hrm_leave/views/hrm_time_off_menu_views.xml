@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_hrm_my_leave"
+        name="My Leave"
+        parent="hrm_base.menu_hrm_time_off"
+        sequence="10"/>
+    <menuitem
+        id="menu_hrm_time_off_dashboard"
+        name="Dashboard Time Off"
+        parent="menu_hrm_my_leave"
+        action="hr_holidays.hr_leave_action_new_request"
+        sequence="10" />
+
+    <menuitem
+        id="menu_hrm_time_off_open_allocation"
+        name="My Allocations"
+        parent="menu_hrm_my_leave"
+        action="hr_holidays.hr_leave_allocation_action_my"
+        sequence="15" />
+    
+    <menuitem
+        id="menu_hrm_holidays_dashboard"
+        name="Overview"
+        parent="hrm_base.menu_hrm_time_off"
+        sequence="15"
+        groups="hr_holidays.group_hr_holidays_responsible"/>
+    
+    <menuitem
+        id="menu_hrm_holidays_dashboard_child"
+        name="Overview"
+        parent="menu_hrm_holidays_dashboard"
+        sequence="10"
+        action="hr_holidays.action_hr_holidays_dashboard" />
+
+    <!-- <menuitem id="menu_hrm_time_off_my_time"
+        name="My Time Off"
+        parent="menu_hrm_my_leave"
+        action="hr_holidays.hr_leave_action_my"
+        sequence="20"/> -->
+
+    <menuitem id="menu_hrm_time_off_management"
+        name="Management"
+        parent="hrm_base.menu_hrm_time_off"
+        sequence="20"
+        groups="hr_holidays.group_hr_holidays_responsible" />
+    
+    <menuitem id="menu_hrm_time_off_management_time_off"
+        name="Time Off"
+        parent="menu_hrm_time_off_management"
+        action="hr_holidays.hr_leave_action_action_approve_department"
+        sequence="10" />
+
+    <menuitem
+        id="hrm_holidays_menu_manager_approve_allocations"
+        name="Allocations"
+        parent="menu_hrm_time_off_management"
+        action="hr_holidays.hr_leave_allocation_action_approve_department"
+        sequence="15"
+        groups="hr_holidays.group_hr_holidays_user" />
+
+    <menuitem id="menu_hrm_time_off_report"
+        name="Report"
+        parent="hrm_base.menu_hrm_time_off"
+        groups="hr_holidays.group_hr_holidays_user"
+        sequence="30" />
+
+    <menuitem
+        id="menu_hrm_available_holidays_report_tree"
+        name="by Employee"
+        parent="menu_hrm_time_off_report"
+        action="hr_holidays.action_hr_available_holidays_report"
+        sequence="1" />
+
+    <menuitem
+        id="menu_hrm_holidays_summary_all"
+        name="by Type"
+        parent="menu_hrm_time_off_report"
+        action="hr_holidays.act_hr_employee_holiday_type"
+        sequence="3" />
+
+    <menuitem id="menu_hrm_time_off_configuration"
+        name="Configuration"
+        parent="hrm_base.menu_hrm_time_off"
+        groups="hr_holidays.group_hr_holidays_manager"
+        sequence="40" />
+
+    <menuitem
+        id="hr_holidays_status_menu_configuration"
+        action="hr_holidays.open_view_holiday_status"
+        name="Time Off Types"
+        parent="menu_hrm_time_off_configuration"
+        groups="hr_holidays.group_hr_holidays_manager"
+        sequence="1" />
+
+</odoo>
