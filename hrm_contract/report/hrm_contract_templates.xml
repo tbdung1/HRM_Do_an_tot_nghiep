@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_hrm_contract_pdf">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="c">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            .contract-content {
+                            font-size: 12pt;
+                            line-height: 1.4;
+                            padding: 20px;
+                            }
+                            .contract-header {
+                            text-align: center;
+                            font-weight: bold;
+                            margin-bottom: 20px;
+                            }
+                            .contract-title {
+                            text-align: center;
+                            margin: 20px 0 15px 0;
+                            font-size: 16pt;
+                            font-weight: bold;
+                            }
+                            .contract-section {
+                            margin-top: 15px;
+                            }
+                            .signature-table {
+                            width: 100%;
+                            margin-top: 30px;
+                            }
+                            .signature-cell {
+                            width: 50%;
+                            text-align: center;
+                            vertical-align: top;
+                            padding: 10px;
+                            }
+                            @media print {
+                            .contract-content {
+                            padding: 0;
+                            }
+                            }
+                        </style>
+
+                        <div class="contract-content">
+                            <!-- Header -->
+                            <div class="contract-header">
+                                <div>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                                <div>Độc lập - Tự do - Hạnh phúc</div>
+                                <div>---------------</div>
+                            </div>
+
+                            <!-- Date and Number -->
+                            <div
+                                style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div>Số: <span>......</span></div>
+                                <div> Ngày <span t-if="c.date_start"
+                                        t-esc="c.date_start.strftime('%d/%m/%Y')" />
+                                    <span t-else="">
+                                    ____/____/________</span>
+                                </div>
+                            </div>
+
+                            <!-- Title -->
+                            <h2 class="contract-title">HỢP ĐỒNG LAO ĐỘNG</h2>
+
+                            <p>- Căn cứ Bộ luật lao động năm 2019;</p>
+                            <p>Hôm nay, tại <span t-if="c.company_id.city"
+                                    t-field="c.company_id.city" />
+                                <span t-else="">
+                                ................................</span> chúng tôi gồm: </p>
+
+                            <!-- Bên A -->
+                            <div class="contract-section">
+                                <h3>Bên A: Người sử dụng lao động</h3>
+                                <p>Tên doanh nghiệp: XBOSS</p>
+                                <p>Địa chỉ: 97 Man Thiện</p>
+                                <p>Điện thoại: 0123456789</p>
+                                <p>Đại diện bởi Ông/Bà: Mr.TranBaDung</p>
+
+                            </div>
+
+                            <!-- Bên B -->
+                            <div class="contract-section">
+                                <h3>Bên B: Người lao động</h3>
+                                <p>Ông/Bà: <span t-field="c.employee_id.name" /></p>
+                                <p>Ngày sinh: <span t-if="c.employee_id.birthday"
+                                        t-esc="c.employee_id.birthday.strftime('%d/%m/%Y')" />
+                                    <span t-else="">
+                                    ____/____/________</span>
+                                </p>
+                                <p>Giới tính: <span t-esc="c.employee_id.gender" /></p>
+                                <p>Địa chỉ thường trú: <span t-field="c.employee_id.private_street" /></p>
+                                <p>Địa chỉ cư trú: <span t-field="c.employee_id.private_street2"
+                                        t-if="c.employee_id.private_street2" />
+                                </p>
+                            </div>
+
+                            <p style="margin-top: 15px;">Thỏa thuận ký kết hợp đồng lao động và cam kết như sau:</p>
+
+                            <!-- Điều 1 -->
+                            <div class="contract-section">
+                                <h4>Điều 1. Công việc, địa điểm làm việc và thời hạn của hợp đồng</h4>
+                                <p>Công việc phải làm: <span t-field="c.job_id.name" /></p>
+                                <p>Địa điểm làm việc: <span t-field="c.company_id.city" /></p>
+                                <p>Loại hợp đồng: <span t-field="c.contract_type_id.name" /></p>
+                                <p> Từ ngày: <span t-if="c.date_start"
+                                        t-esc="c.date_start.strftime('%d/%m/%Y')" />
+                                        <span
+                                        t-else="____/____/________" /> Đến ngày: <span
+                                        t-if="c.date_end" t-esc="c.date_end.strftime('%d/%m/%Y')" />
+                                        <span
+                                        t-else="Không xác định" />
+                                </p>
+                            </div>
+
+                            <!-- Điều 2 -->
+                            <div class="contract-section">
+                                <h4>Điều 2. Lương, phụ cấp, các khoản bổ sung khác</h4>
+                                <p>Lương căn bản: <span t-field="c.wage"
+                                        t-options="{'widget': 'monetary', 'display_currency': c.company_id.currency_id}" />
+                                    / tháng </p>
+                                <p>Phụ cấp: ................................................</p>
+                                <p>Các khoản bổ sung khác: theo quy định của Doanh nghiệp.</p>
+                                <p>Hình thức trả lương: Tiền mặt hoặc chuyển khoản. Trả vào ngày
+                                    ...... mỗi tháng.</p>
+                                <p>Chế độ nâng lương: theo quy định của Doanh nghiệp và kết quả làm
+                                    việc.</p>
+                            </div>
+
+                            <!-- Điều 3 -->
+                            <div class="contract-section">
+                                <h4>Điều 3. Thời giờ làm việc, nghỉ ngơi, BHLĐ, BHXH, BHYT, BHTN</h4>
+                                <p>Thời giờ làm việc: <span t-field="c.resource_calendar_id.name"
+                                        t-if="c.resource_calendar_id.name" />
+                                        <span
+                                        t-else="8 giờ/ngày, 48 giờ/tuần" />. Nghỉ hàng tuần:
+                                    ..........</p>
+                                <p>Nghỉ lễ, tết, phép năm: theo luật và quy định nội bộ.</p>
+                                <p>Trang bị BHLĐ: ................................................</p>
+                                <p>BHXH, BHYT, BHTN: theo luật hiện hành.</p>
+                            </div>
+
+                            <!-- Điều 4-7 -->
+                            <div class="contract-section">
+                                <h4>Điều 4. Đào tạo, bồi dưỡng, quyền lợi và nghĩa vụ liên quan</h4>
+                                <p>Đào tạo: theo nhu cầu công việc và quy định nội bộ.</p>
+                                <p>Thưởng có điều kiện, phụ cấp khác: theo quy định của DN.</p>
+                            </div>
+
+                            <div class="contract-section">
+                                <h4>Điều 5. Cam kết về Bản quyền và Bảo mật</h4>
+                                <p>Người lao động cam kết bảo mật thông tin công ty và không tiết lộ
+                                    cho bên thứ ba.</p>
+                            </div>
+
+                            <div class="contract-section">
+                                <h4>Điều 6. Nghĩa vụ và quyền lợi của người sử dụng lao động</h4>
+                                <p>Thực hiện đúng cam kết, thanh toán đầy đủ, điều hành NLĐ theo
+                                    HĐLĐ...</p>
+                            </div>
+
+                            <div class="contract-section">
+                                <h4>Điều 7. Điều khoản thi hành</h4>
+                                <p>Hợp đồng lập 02 bản có giá trị như nhau, mỗi bên giữ 01 bản.</p>
+                            </div>
+
+                            <!-- Signatures -->
+                            <table class="signature-table">
+                                <tr>
+                                    <td class="signature-cell">
+                                        <strong>NGƯỜI SỬ DỤNG LAO ĐỘNG</strong><br /> (Ký, ghi rõ họ
+                                        tên)<br /><br /><br /><br />
+                                        <div style="margin-top: 40px;">
+                                            <span t-field="c.company_id.name" />
+                                        </div>
+                                    </td>
+                                    <td class="signature-cell">
+                                        <strong>NGƯỜI LAO ĐỘNG</strong><br /> (Ký, ghi rõ họ tên)<br /><br /><br /><br />
+                                        <div
+                                            style="margin-top: 40px;">
+                                            <span t-field="c.employee_id.name" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
