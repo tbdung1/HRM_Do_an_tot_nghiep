@@ -7,6 +7,8 @@
             <field name="view_mode">tree,form</field>
             <field name="target">current</field>
         </record>
-        <menuitem id="menu_hrm_applicants_section" name="Attendance" parent="hrm_base.menu_hrm_root" sequence="20" action="action_hrm_attendance_list"/>
+        <menuitem id="menu_hrm_applicants_section" name="Attendance" parent="hrm_base.menu_hrm_root" sequence="20"/>
+        <menuitem id="menu_hrm_attendance" name="Attendance" parent="menu_hrm_applicants_section"
+            sequence="10" action="action_hrm_attendance_list" />
     </data>
 </odoo>

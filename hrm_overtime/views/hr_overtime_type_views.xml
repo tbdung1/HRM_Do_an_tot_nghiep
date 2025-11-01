@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="view_hr_overtime_type_form" model="ir.ui.view">
+        <field name="name">hr.overtime.type.form</field>
+        <field name="model">hr.overtime.type</field>
+        <field name="arch" type="xml">
+            <form string="Overtime Type">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                        invisible="active == True" />
+
+                    <group>
+                        <group string="Basic Information">
+                            <field name="name" placeholder="e.g., Weekday Overtime" />
+                            <field name="code" placeholder="e.g., WEEKDAY" />
+                            <field name="sequence" />
+                            <field name="active" widget="boolean_toggle" />
+                        </group>
+
+                        <group string="Configuration">
+                            <label for="coefficient" />
+                            <div class="o_row">
+                                <field name="coefficient" class="oe_inline" />
+                                <span class="oe_inline"> = </span>
+                                <span class="oe_inline text-success">
+                                    <field name="coefficient" widget="percentage" readonly="1" />
+                                </span>
+                            </div>
+                        </group>
+                    </group>
+
+                    <group string="Description">
+                        <field name="description"
+                            nolabel="1"
+                            placeholder="Enter additional information..." />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_hr_overtime_type_tree" model="ir.ui.view">
+        <field name="name">hr.overtime.type.tree</field>
+        <field name="model">hr.overtime.type</field>
+        <field name="arch" type="xml">
+            <tree string="Overtime Types">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" />
+                <field name="coefficient" widget="percentage" />
+                <field name="active" widget="boolean_toggle" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_hr_overtime_type_search" model="ir.ui.view">
+        <field name="name">hr.overtime.type.search</field>
+        <field name="model">hr.overtime.type</field>
+        <field name="arch" type="xml">
+            <search string="Search Overtime Types">
+                <field name="name" />
+                <field name="code" />
+
+                <filter string="Active" name="active" domain="[('active', '=', True)]" />
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]" />
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hr_overtime_type" model="ir.actions.act_window">
+        <field name="name">Overtime Types</field>
+        <field name="res_model">hr.overtime.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first overtime type
+            </p>
+            <p>
+                Define overtime types with different coefficients.
+            </p>
+        </field>
+    </record>
+    <menuitem id="menu_hr_overtime_type"
+        name="Config Overtime Types"
+        parent="hrm_attendance_integration.menu_hrm_applicants_section"
+        action="action_hr_overtime_type"
+        sequence="10"
+        groups="hr.group_hr_user" />
+</odoo>

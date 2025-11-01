@@ -13,15 +13,18 @@ Long description of module's purpose
     "category": "Uncategorized",
     "version": "17.0.1.0",
     # any module necessary for this one to work correctly
-    "depends": ["hrm_base", "hrm_attendance_integration", "hrm_salary"],
+    "depends": [
+        "hrm_base",
+        "hr_attendance",
+        "hrm_attendance_integration",
+        "hrm_salary",
+    ],
     # always loaded
     "data": [
-        # 'security/ir.model.access.csv',
-        "views/views.xml",
-        "views/templates.xml",
-    ],
-    # only loaded in demonstration mode
-    "demo": [
-        "demo/demo.xml",
+        "security/hr_attendance_overtime_request_security.xml",
+        "security/ir.model.access.csv",
+        "views/hr_attendance_overtime_request_views.xml",
+        "views/hr_attendance_overtime_views.xml",
+        "views/hr_overtime_type_views.xml",
     ],
 }

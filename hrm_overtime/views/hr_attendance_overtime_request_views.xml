@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="view_hr_attendance_overtime_request_form" model="ir.ui.view">
+        <field name="name">hr.attendance.overtime.request.form</field>
+        <field name="model">hr.attendance.overtime.request</field>
+        <field name="arch" type="xml">
+            <form string="Overtime Request">
+                <header>
+                    <button name="action_submit"
+                        string="Submit"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="state != 'draft'" />
+
+                    <button name="action_manager_approve"
+                        string="Approve (Manager)"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="state != 'submitted'"
+                        groups="hr.group_hr_user" />
+
+                    <button name="action_hr_approve"
+                        string="Approve (HR)"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="state != 'manager_approved'"
+                        groups="hr.group_hr_manager" />
+
+                    <button name="action_done"
+                        string="Mark as Done"
+                        type="object"
+                        invisible="state != 'hr_approved'"
+                        groups="hr.group_hr_manager" />
+
+                    <button name="action_refuse"
+                        string="Refuse"
+                        type="object"
+                        invisible="state != 'submitted' and state != 'manager_approved'"
+                        groups="hr.group_hr_user" />
+
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,submitted,manager_approved,hr_approved,done" />
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Có thể thêm smart button sau -->
+                    </div>
+
+                    <!-- Alert khi bị từ chối -->
+                    <div class="alert alert-danger" role="alert"
+                        invisible="state != 'refused'">
+                        <strong>Refused:</strong>
+                        <field name="refusal_reason" readonly="1" />
+                    </div>
+
+                    <group>
+                        <group string="Employee Information">
+                            <field name="employee_id"
+                                options="{'no_create': True, 'no_open': True}"
+                                readonly="1" />
+                            <field name="department_id" />
+                            <field name="manager_id" />
+                        </group>
+
+                        <group string="Overtime Type">
+                            <field name="overtime_type_id"
+                                options="{'no_create': True}"
+                                readonly="state != 'draft'" />
+                            <field name="coefficient" />
+                            <!-- <field name="compensation_method" /> -->
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Time Period">
+                            <label for="date_start" />
+                            <div class="o_row">
+                                <field name="date_start"
+                                    widget="datetime"
+                                    readonly="state != 'draft'" />
+                                <span class="mx-2">to</span>
+                                <field name="date_end"
+                                    widget="datetime"
+                                    readonly="state != 'draft'" />
+                            </div>
+                            <field name="duration" widget="float_time" />
+                            <field name="duration_compensated" widget="float_time" />
+                        </group>
+
+                        <group string="Request Details">
+                            <field name="reason"
+                                placeholder="Describe the reason for overtime work..."
+                                readonly="state != 'draft'" />
+                            <field name="attachment_ids" widget="many2many_binary"
+                                readonly="state != 'draft'" />
+                        </group>
+                    </group>
+
+                </sheet>
+
+                <!-- Chatter -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_hr_attendance_overtime_request_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.overtime.request.tree</field>
+        <field name="model">hr.attendance.overtime.request</field>
+        <field name="arch" type="xml">
+            <tree string="Overtime Requests"
+                decoration-info="state=='draft'"
+                decoration-warning="state=='submitted'"
+                decoration-success="state in ('hr_approved', 'done')"
+                decoration-danger="state=='refused'">
+                <field name="employee_id" />
+                <field name="department_id" />
+                <field name="overtime_type_id" />
+                <field name="date_start" />
+                <field name="date_end" />
+                <field name="duration" widget="float_time" sum="Total Hours" />
+                <field name="duration_compensated" widget="float_time" sum="Total Compensated" />
+                <field name="state" widget="badge"
+                    decoration-info="state=='draft'"
+                    decoration-warning="state in ('submitted', 'manager_approved')"
+                    decoration-success="state in ('hr_approved', 'done')"
+                    decoration-danger="state=='refused'" />
+            </tree>
+        </field>
+    </record>
+
+
+    <!-- Action -->
+    <record id="action_hr_attendance_overtime_request" model="ir.actions.act_window">
+        <field name="name">Overtime Requests</field>
+        <field name="res_model">hr.attendance.overtime.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_my_requests': 1, 'search_default_this_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first overtime request
+            </p>
+            <p>
+                Request overtime work and track approval status through the workflow.
+            </p>
+        </field>
+    </record>
+    <!-- Action: My Overtime Hours (Employee) -->
+    <record id="action_hr_attendance_overtime_my" model="ir.actions.act_window">
+        <field name="name">My Overtime Hours</field>
+        <field name="res_model">hr.attendance.overtime</field>
+        <field name="view_mode">tree,calendar</field>
+        <field name="context">{'search_default_my_overtime': 1, 'search_default_this_month': 1}</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                You don't have any overtime hours yet
+            </p>
+            <p>
+                Your approved overtime hours will appear here.
+            </p>
+        </field>
+    </record>
+
+    <!-- Action: All Overtime Records (HR Manager) -->
+    <record id="action_hr_attendance_overtime_all" model="ir.actions.act_window">
+        <field name="name">Overtime Records</field>
+        <field name="res_model">hr.attendance.overtime</field>
+        <field name="view_mode">tree,calendar</field>
+        <field name="context">{'search_default_this_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No overtime records yet
+            </p>
+            <p>
+                Overtime hours are automatically created when HR approves overtime requests.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_hrm_attendance_request" name="Request"
+        parent="hrm_attendance_integration.menu_hrm_applicants_section"
+        sequence="10" action="action_hr_attendance_overtime_request" />
+
+    <menuitem id="menu_hr_overtime_my_hours"
+        name="My Overtime Hours"
+        parent="hrm_attendance_integration.menu_hrm_applicants_section"
+        action="action_hr_attendance_overtime_my"
+        sequence="20"
+        groups="base.group_user" />
+
+    <menuitem id="menu_hr_overtime_all_records"
+        name="All Overtime"
+        parent="hrm_attendance_integration.menu_hrm_applicants_section"
+        action="action_hr_attendance_overtime_all"
+        sequence="30"
+        groups="hr.group_hr_manager" />
+
+</odoo>
