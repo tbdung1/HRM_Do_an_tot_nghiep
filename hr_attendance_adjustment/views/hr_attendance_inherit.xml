@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <xpath expr="//form/sheet" position="before">
                 <header>
-                    <button name="action_open_adjustment" string="Điều chỉnh Checkout" type="object" class="btn-primary"/>
+                    <button name="action_open_adjustment" string="Điều chỉnh" type="object" class="btn-primary"/>
                 </header>
             </xpath>
 

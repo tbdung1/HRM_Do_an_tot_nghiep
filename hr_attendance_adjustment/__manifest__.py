@@ -9,7 +9,8 @@
     "data": [
         "security/ir.model.access.csv",
         "views/hr_attendance_adjustment_views.xml",
-        "views/hr_attendance_inherit.xml"
+        "views/hr_attendance_inherit.xml",
+        "security/hr_attendance_adjustment_rules.xml"
         ],
     'application': True,
     'installable': True,

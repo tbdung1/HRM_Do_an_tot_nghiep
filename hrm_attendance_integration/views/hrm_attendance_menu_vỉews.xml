@@ -7,6 +7,14 @@
             <field name="view_mode">tree,form</field>
             <field name="target">current</field>
         </record>
-        <menuitem id="menu_hrm_applicants_section" name="Attendance" parent="hrm_base.menu_hrm_root" sequence="20" action="action_hrm_attendance_list"/>
+        <record id="action_hrm_attendance_adjustment_list" model="ir.actions.act_window">
+            <field name="name">Adjustments</field>
+            <field name="res_model">hr.attendance.adjustment</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+        </record>
+        <menuitem id="menu_attendace_section" name="Attendance" parent="hrm_base.menu_hrm_root" sequence="20"/>
+        <menuitem id="menu_attendace" name="Attendance" parent="menu_attendace_section" action="action_hrm_attendance_list" sequence="2"/>
     </data>
+    <menuitem id="menu_attendace_adjustment" name="Adjustment" parent="menu_attendace_section" action="action_hrm_attendance_adjustment_list" sequence="2"/>
 </odoo>
