@@ -1,9 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hr_overtime_type_employee,hr.overtime.type.employee,model_hr_overtime_type,base.group_user,1,0,0,0
-access_hr_overtime_type_hr_user,hr.overtime.type.hr.user,model_hr_overtime_type,hr.group_hr_user,1,1,0,0
-access_hr_overtime_type_hr_manager,hr.overtime.type.hr.manager,model_hr_overtime_type,hr.group_hr_manager,1,1,1,1
-access_hr_attendance_overtime_request_employee,hr.attendance.overtime.request.employee,model_hr_attendance_overtime_request,base.group_user,1,1,1,1
-access_hr_attendance_overtime_request_hr_user,hr.attendance.overtime.request.hr.user,model_hr_attendance_overtime_request,hr.group_hr_user,1,1,1,0
-access_hr_attendance_overtime_request_hr_manager,hr.attendance.overtime.request.hr.manager,model_hr_attendance_overtime_request,hr.group_hr_manager,1,1,1,1
-access_hr_attendance_overtime_employee,hr.attendance.overtime.employee,hr_attendance.model_hr_attendance_overtime,base.group_user,1,0,0,0
-access_hr_attendance_overtime_hr_manager,hr.attendance.overtime.hr.manager,hr_attendance.model_hr_attendance_overtime,hr.group_hr_manager,1,1,1,1
