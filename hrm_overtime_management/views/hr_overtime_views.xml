@@ -19,7 +19,7 @@
                             groups="hr_holidays.group_hr_holidays_user"/>
                     <button name="action_draft" string="Draft" type="object"
                         class="btn-primary"
-                        invisible="state != 'approved'"
+                        invisible="state == 'draft'"
                         groups="hr_holidays.group_hr_holidays_user" />
                     <button name="action_reject" string="Refuse" type="object"
                             class="btn-primary"
@@ -152,10 +152,14 @@
         </field>
     </record>
     <!-- MenuItems -->
-    <menuitem id="hr_overtime_menu_root" name="Overtime Request"
-              groups="base.group_user"/>
+    <!-- <menuitem id="hr_overtime_menu_root" name="Overtime Request"
+              groups="base.group_user"/> -->
+    <menuitem id="menu_hr_overtime_all_records"
+        name="All Overtime"
+        parent="hrm_attendance_integration.menu_hrm_applicants_section"
+        sequence="30"/>
     <menuitem id="hr_overtime_menu" name="Overtime Request"
-              parent="hr_overtime_menu_root"
-              action="hr_overtime_action"
-              groups="base.group_user"/>
+        parent="menu_hr_overtime_all_records"
+        action="hr_overtime_action"
+        groups="base.group_user" />
 </odoo>

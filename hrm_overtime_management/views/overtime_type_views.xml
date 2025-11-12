@@ -65,7 +65,7 @@
     </record>
     <!-- MenuItems -->
     <menuitem id="overtime_type_menu" name="Overtime Types"
-              parent="hr_overtime_menu_root"
-              groups="hr_holidays.group_hr_holidays_user"
-              action="hr_overtime_type_action"/>
+        parent="menu_hr_overtime_all_records"
+        groups="hr_holidays.group_hr_holidays_user"
+        action="hr_overtime_type_action" />
 </odoo>

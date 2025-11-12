@@ -30,7 +30,7 @@ class HrOvertime(models.Model):
     """ Model to manage Overtime requests for employees."""
     _name = 'hr.overtime'
     _description = "HR Overtime"
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'hr.notification.mixin']
 
     def _get_employee_domain(self):
         """Get the domain for the employee field based on the current user."""
@@ -226,6 +226,11 @@ class HrOvertime(models.Model):
     def action_submit_to_finance(self):
         """Submit the overtime request for finance approval."""
         # notification to employee
+        self.notify_hr(
+            subject=f"Yêu cầu làm thêm giờ - {self.employee_id.name}",
+            message=f"Nhân viên {self.employee_id.name} đã gửi yêu cầu làm thêm {self.days_no_tmp} giờ từ {self.date_from} đến {self.date_to}",
+            priority="2",
+        )
         return self.sudo().write({
             'state': 'f_approve'
         })
@@ -258,18 +263,20 @@ class HrOvertime(models.Model):
             holiday = self.env['hr.leave.allocation'].sudo().create(
                 holiday_vals)
             self.leave_id = holiday.id
+        if self.employee_id.user_id:
+            message = f"Yêu cầu làm thêm giờ đã được duyệt - {self.name} | Người duyệt: {self.env.user.name} | Thời gian: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')}"
+            self.notify_staff(message=message, employee_id=self.employee_id)
 
-        # notification to employee :
-        body = "Your Time In Lieu Request Has been Approved ..."
-        return self.sudo().write({
-            'state': 'approved',
-
-        })
+        self.state = 'approved'
 
     def action_reject(self):
         """Set the state of the overtime request to 'refused'."""
+        if self.employee_id.user_id:
+            message = f"Yêu cầu làm thêm giờ đã được từ chối - {self.name} | Người từ chối: {self.env.user.name} | Thời gian: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')}"
+            self.notify_staff(message=message, employee_id=self.employee_id)
+
         self.state = 'refused'
-        
+
     def action_draft(self):
         """Set the state of the overtime request back to 'draft'."""
         self.state = 'draft'
