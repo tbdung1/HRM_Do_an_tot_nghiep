@@ -13,7 +13,7 @@ Long description of module's purpose
     "category": "Uncategorized",
     "version": "17.0.1.0",
     # any module necessary for this one to work correctly
-    "depends": ["hrm_base", "hr_contract"],
+    "depends": ["hrm_base", "hr_contract", "hrm_notify"],
     # always loaded
     "data": [
         "security/ir.model.access.csv",

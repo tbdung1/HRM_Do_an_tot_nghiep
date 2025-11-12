@@ -142,7 +142,7 @@
                         </group>
                         <group name="top_info_right">
                             <field name="structure_type_id"
-                                domain="['|', ('country_id', '=', False)]" readonly="state_hr_contract != 'draft'" />
+                                domain="[('country_id', '=', False)]" readonly="state_hr_contract != 'draft'" />
                             <field name="department_id" readonly="state_hr_contract != 'draft'" />
                             <field name="job_id" readonly="state_hr_contract != 'draft'" />
                             <field name="contract_type_id" readonly="state_hr_contract != 'draft'" />
