@@ -11,7 +11,7 @@
 #    GENERAL PUBLIC LICENSE (LGPL v3), Version 3.
 #
 #############################################################################
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class HrPayslipWorkedDays(models.Model):
@@ -41,3 +41,22 @@ class HrPayslipWorkedDays(models.Model):
                                   required=True,
                                   help="The contract for which applied"
                                        "this input")
+    hourly_rate = fields.Float(string='Hourly Rate', 
+                               compute='_compute_hourly_rate',
+                               store=True,
+                               help="Hourly rate calculated from contract wage and number of hours")
+
+    @api.depends('contract_id.wage', 'number_of_hours')
+    def _compute_hourly_rate(self):
+        """
+        Tính lương 1 giờ dựa trên:
+        - Lương trong hợp đồng (contract.wage)
+        - Số giờ làm việc trong tháng (number_of_hours)
+        
+        Công thức: Lương 1 giờ = Lương hợp đồng / Số giờ làm việc
+        """
+        for record in self:
+            if record.number_of_hours and record.number_of_hours > 0:
+                record.hourly_rate = record.contract_id.wage / record.number_of_hours
+            else:
+                record.hourly_rate = 0.0
