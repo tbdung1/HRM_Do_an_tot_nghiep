@@ -1,0 +1,128 @@
+<odoo>
+    <!-- Tree view -->
+    <record id="view_hr_attendance_supplement_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.supplement.tree</field>
+        <field name="model">hr.attendance.supplement</field>
+        <field name="arch" type="xml">
+            <tree string="Bổ sung chấm công" create="true" edit="false">
+                <field name="employee_id"/>
+                <field name="supplement_type"/>
+                <field name="date_from" optional="show"/>
+                <field name="date_to" optional="show"/>
+                <field name="single_date" optional="show"/>
+                <field name="period" optional="show"/>
+                <field name="reason"/>
+                <field name="state" decoration-info="state == 'draft'" decoration-warning="state == 'submitted'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'"/>
+                <field name="approved_by"/>
+                <field name="attendance_count"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_hr_attendance_supplement_form" model="ir.ui.view">
+        <field name="name">hr.attendance.supplement.form</field>
+        <field name="model">hr.attendance.supplement</field>
+        <field name="arch" type="xml">
+            <form string="Bổ sung chấm công">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
+
+                    <!-- Nút gửi phê duyệt cho nhân viên -->
+                    <button name="action_submit" type="object" string="Gửi phê duyệt" class="btn-primary" invisible="state != 'draft'" groups="base.group_user"/>
+
+                    <!-- Nút duyệt cho HR Manager -->
+                    <button name="action_approve" type="object" string="Duyệt" class="btn-success" groups="hr.group_hr_manager" invisible="state != 'submitted'"/>
+
+                    <!-- Nút từ chối cho HR Manager -->
+                    <button name="action_reject" type="object" string="Từ chối" class="btn-danger" groups="hr.group_hr_manager" invisible="state != 'submitted'"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_attendance" type="object" class="oe_stat_button" icon="fa-calendar-check-o" invisible="attendance_count == 0">
+                            <field name="attendance_count" widget="statinfo" string="Chấm công"/>
+                        </button>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="supplement_type" widget="radio" readonly="state != 'draft'"/>
+
+                            <!-- Fields cho Cả Ngày -->
+                            <field name="date_from" readonly="state != 'draft'" invisible="supplement_type != 'full_day'" required="supplement_type == 'full_day'"/>
+                            <field name="date_to" readonly="state != 'draft'" invisible="supplement_type != 'full_day'" required="supplement_type == 'full_day'"/>
+
+                            <!-- Fields cho Nửa Ngày -->
+                            <field name="single_date" readonly="state != 'draft'" invisible="supplement_type != 'half_day'" required="supplement_type == 'half_day'"/>
+                            <field name="period" widget="radio" readonly="state != 'draft'" invisible="supplement_type != 'half_day'" required="supplement_type == 'half_day'"/>
+
+                            <field name="reason" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="approved_by" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="File đính kèm" name="attachments">
+                            <field name="attachment_ids" widget="many2many_binary" readonly="state != 'draft'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <!-- Chatter -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_hr_attendance_supplement_search" model="ir.ui.view">
+        <field name="name">hr.attendance.supplement.search</field>
+        <field name="model">hr.attendance.supplement</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm bổ sung chấm công">
+                <field name="employee_id"/>
+                <field name="reason"/>
+                <filter string="Cả Ngày" name="full_day" domain="[('supplement_type', '=', 'full_day')]"/>
+                <filter string="Nửa Ngày" name="half_day" domain="[('supplement_type', '=', 'half_day')]"/>
+                <separator/>
+                <filter string="Nháp" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Chờ duyệt" name="submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="Đã duyệt" name="approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Từ chối" name="rejected" domain="[('state', '=', 'rejected')]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter string="Nhân viên" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Loại" name="group_type" context="{'group_by': 'supplement_type'}"/>
+                    <filter string="Trạng thái" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hr_attendance_supplement" model="ir.actions.act_window">
+        <field name="name">Bổ sung chấm công</field>
+        <field name="res_model">hr.attendance.supplement</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_submitted': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tạo yêu cầu bổ sung chấm công
+            </p>
+            <p>
+                Sử dụng chức năng này để tạo yêu cầu bổ sung chấm công khi bạn quên chấm công.
+                Sau khi được duyệt, hệ thống sẽ tự động tạo bản ghi chấm công mới.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_hr_attendance_supplement_root" name="Bổ sung chấm công" parent="hr_attendance.menu_hr_attendance_root" action="action_hr_attendance_supplement" sequence="15"/>
+</odoo>

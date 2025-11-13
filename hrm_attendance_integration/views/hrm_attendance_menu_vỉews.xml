@@ -13,8 +13,15 @@
             <field name="view_mode">tree,form</field>
             <field name="target">current</field>
         </record>
+        <record id="action_hrm_attendance_supplement_list" model="ir.actions.act_window">
+            <field name="name">Supplement</field>
+            <field name="res_model">hr.attendance.supplement</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+        </record>
         <menuitem id="menu_attendace_section" name="Attendance" parent="hrm_base.menu_hrm_root" sequence="20"/>
         <menuitem id="menu_attendace" name="Attendance" parent="menu_attendace_section" action="action_hrm_attendance_list" sequence="2"/>
     </data>
-    <menuitem id="menu_attendace_adjustment" name="Adjustment" parent="menu_attendace_section" action="action_hrm_attendance_adjustment_list" sequence="2"/>
+    <menuitem id="menu_attendace_adjustment" name="Adjustment" parent="menu_attendace_section" action="action_hrm_attendance_adjustment_list" sequence="3"/>
+    <menuitem id="menu_attendace_supplement" name="Supplement" parent="menu_attendace_section" action="action_hrm_attendance_supplement_list" sequence="4"/>
 </odoo>
