@@ -209,15 +209,29 @@ class HrPayslip(models.Model):
                 'salary.slip')
             # delete old payslip lines
             payslip.line_ids.unlink()
+            # delete old worked days lines
+            payslip.worked_days_line_ids.unlink()
             # set the list of contract for which the rules have to be applied
             # if we don't give the contract, then the rules to apply should be
             # for all current contracts of the employee
             contract_ids = payslip.contract_id.ids or \
                            self.get_contract(payslip.employee_id,
                                              payslip.date_from, payslip.date_to)
+            
+            # Re-compute worked days
+            contracts = self.env['hr.contract'].browse(contract_ids)
+            worked_days_lines_data = self.get_worked_day_lines(contracts, payslip.date_from, payslip.date_to)
+            worked_days_lines = [(0, 0, line) for line in worked_days_lines_data]
+            
+            # Re-compute payslip lines - pass worked_days_lines_data
             lines = [(0, 0, line) for line in
-                     self._get_payslip_lines(contract_ids, payslip.id)]
-            payslip.write({'line_ids': lines, 'number': number})
+                     self._get_payslip_lines(contract_ids, payslip.id, worked_days_lines_data)]
+            
+            payslip.write({
+                'line_ids': lines,
+                'worked_days_line_ids': worked_days_lines,
+                'number': number
+            })
         return True
 
     @api.model
@@ -262,6 +276,7 @@ class HrPayslip(models.Model):
                             'code': holiday.holiday_status_id.code or 'GLOBAL',
                             'number_of_days': 0.0,
                             'number_of_hours': 0.0,
+                            'number_of_work_days': 0.0,
                             'contract_id': contract.id,
                         })
                     current_leave_struct['number_of_hours'] += hours
@@ -297,6 +312,7 @@ class HrPayslip(models.Model):
                         'number_of_hours': c_leaves[item]['hours'],
                         'number_of_days': c_leaves[item][
                                               'hours'] / work_hours,
+                        'number_of_work_days': 0.0,
                         'contract_id': contract.id,
                     }
                     res.append(data)
@@ -333,7 +349,7 @@ class HrPayslip(models.Model):
         return res
 
     @api.model
-    def _get_payslip_lines(self, contract_ids, payslip_id):
+    def _get_payslip_lines(self, contract_ids, payslip_id, worked_days_lines_data=None):
         """Function for getting Payslip Lines"""
 
         def _sum_salary_rule_category(localdict, category, amount):
@@ -358,8 +374,11 @@ class HrPayslip(models.Model):
                 self.env = env
 
             def __getattr__(self, attr):
-                """Function for return dict"""
-                return attr in self.dict and self.dict.__getitem__(attr) or 0.0
+                """Function for return dict value or record object"""
+                # Tránh infinite recursion với các attribute đặc biệt
+                if attr in ('employee_id', 'dict', 'env'):
+                    return object.__getattribute__(self, attr)
+                return self.dict.get(attr, 0.0)
 
         class InputLine(BrowsableObject):
             """a class that will be used into the python code, mainly for
@@ -381,9 +400,59 @@ class HrPayslip(models.Model):
                                         code))
                 return self.env.cr.fetchone()[0] or 0.0
 
+        class WorkedDaysLine(object):
+            """Wrapper to access worked days fields - NO CACHING, direct access"""
+            def __init__(self, record):
+                self._record = record
+            
+            def __getattr__(self, attr):
+                """Get attribute directly from record each time"""
+                if attr == '_record':
+                    return object.__getattribute__(self, '_record')
+                
+                record = object.__getattribute__(self, '_record')
+                if not record:
+                    return 0.0
+                
+                # Direct field access from recordset
+                if attr in ('number_of_days', 'number_of_work_days', 'number_of_hours'):
+                    try:
+                        value = getattr(record, attr)
+                        return float(value) if value else 0.0
+                    except:
+                        return 0.0
+                
+                return 0.0
+            
+            def __bool__(self):
+                record = object.__getattribute__(self, '_record')
+                return bool(record)
+            
+            __nonzero__ = __bool__
+
         class WorkedDays(BrowsableObject):
             """a class that will be used into the python code, mainly for
             usability purposes"""
+
+            def __getattr__(self, attr):
+                """
+                Override to return a wrapper object that provides access to record attributes
+                """
+                # Let BrowsableObject handle these
+                if attr in ('employee_id', 'dict', 'env'):
+                    return BrowsableObject.__getattribute__(self, attr)
+                
+                # Get dict using object.__getattribute__ to avoid recursion
+                try:
+                    worked_days_dict = object.__getattribute__(self, 'dict')
+                except AttributeError:
+                    return WorkedDaysLine(None)
+                
+                # Get the record from dict
+                record = worked_days_dict.get(attr, None) if worked_days_dict else None
+                
+                # Return a wrapper that caches the field values
+                return WorkedDaysLine(record)
 
             def _sum(self, code, from_date, to_date=None):
                 """Function for getting sum of Payslip days with respect to
@@ -443,8 +512,20 @@ class HrPayslip(models.Model):
         inputs_dict = {}
         blacklist = []
         payslip = self.env['hr.payslip'].browse(payslip_id)
-        for worked_days_line in payslip.worked_days_line_ids:
-            worked_days_dict[worked_days_line.code] = worked_days_line
+        
+        # Build worked_days_dict from passed data or from payslip
+        if worked_days_lines_data:
+            # Create temporary recordset from dict data for computation
+            WorkedDaysModel = self.env['hr.payslip.worked.days']
+            for wd_data in worked_days_lines_data:
+                # Create a new record (not saved to DB) for computation
+                temp_record = WorkedDaysModel.new(wd_data)
+                worked_days_dict[wd_data.get('code')] = temp_record
+        else:
+            # Fallback to existing worked days
+            for worked_days_line in payslip.worked_days_line_ids:
+                worked_days_dict[worked_days_line.code] = worked_days_line
+        
         for input_line in payslip.input_line_ids:
             inputs_dict[input_line.code] = input_line
         categories = BrowsableObject(payslip.employee_id.id, {}, self.env)
@@ -455,7 +536,7 @@ class HrPayslip(models.Model):
         rules = BrowsableObject(payslip.employee_id.id, rules_dict, self.env)
         baselocaldict = {'categories': categories, 'rules': rules,
                          'payslip': payslips, 'worked_days': worked_days,
-                         'inputs': inputs}
+                         'inputs': inputs, 'payslip_obj': payslip}
         # get the ids of the structures on the contracts and their
         # parent id as well
         contracts = self.env['hr.contract'].browse(contract_ids)
