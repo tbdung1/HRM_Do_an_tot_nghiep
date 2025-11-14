@@ -1,4 +1,3 @@
-
 {
     'name': 'Odoo 17 HR Payroll',
     'version': '17.0.1.0.0',

@@ -62,7 +62,6 @@ class HrPayslip(models.Model):
                           default=lambda self: fields.Date.to_string(
                               (datetime.now() + relativedelta(months=+1, day=1,
                                                               days=-1)).date()))
-
     state = fields.Selection(selection=[
         ('draft', 'Draft'),
         ('verify', 'Waiting'),

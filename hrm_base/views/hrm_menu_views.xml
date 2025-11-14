@@ -32,6 +32,11 @@
       name="Configuration"
       parent="menu_hrm_root"
       sequence="100" />
+    
+    <menuitem id="menu_hrm_time_off"
+      name="Time Off"
+      parent="menu_hrm_root"
+      sequence="20" />
 
   </data>
 </odoo>

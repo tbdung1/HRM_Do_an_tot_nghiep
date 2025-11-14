@@ -1,4 +1,3 @@
-
 from datetime import datetime
 from dateutil import relativedelta
 from odoo import fields, models

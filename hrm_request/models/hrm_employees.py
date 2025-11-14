@@ -28,3 +28,23 @@ class HrmEmployees(models.Model):
             "context": {"default_employee_id": self.id},
         }
 
+class HrmEmployeesPublic(models.Model):
+    _inherit = "hr.employee.public"
+
+    # @api.depends()
+    # def _compute_update_request_count(self):
+    #     for record in self:
+    #         employee = self.env["hr.employee"].sudo().browse(record.id)
+    #         if employee.exists():
+    #             record.update_request_count = len(employee.update_request_ids)
+    #         else:
+    #             record.update_request_count = 0
+
+    update_request_count = fields.Integer(
+        "Update Request Count", related='employee_id.update_request_count', store=False
+    )
+
+    def action_view_update_requests(self):
+        # Delegate to hr.employee
+        employee = self.env["hr.employee"].browse(self.id)
+        return employee.action_view_update_requests()

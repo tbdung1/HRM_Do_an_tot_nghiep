@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button type="object" name="action_active_contract" string="Kích hoạt" invisible="state != 'draft'"></button>
-                <button type="object" name="action_cancel_contract" string="Hủy hợp đồng" invisible="state != 'open'"></button>
+                <button type="object" name="action_cancel_contract" string="Hủy hợp đồng" invisible="state != 'open' and state != 'close'"></button>
             </xpath>
 
             <xpath
@@ -33,6 +33,16 @@
 
             <xpath expr="//page[@name='other']" position="attributes">
                 <attribute name="groups">hr_contract.group_hr_contract_employee_manager,hr_contract.group_hr_contract_manager</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='notes_group']" position="inside">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_attachments" type="object" 
+                    class="oe_stat_button" icon="fa-paperclip"
+                    string="Attachments">
+                        <!-- <field name="attachment_ids" string="" widget="statinfo"/> -->
+                    </button>
+                </div>
             </xpath>
         </field>
     </record>

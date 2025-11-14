@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Cấu hình IP được phép check-in -->
+        <record id="allowed_ips_config" model="ir.config_parameter">
+            <field name="key">hrm_attendance.allowed_ips</field>
+            <field name="value">192.168.3.0/24</field>
+        </record>
+    </data>
+</odoo>

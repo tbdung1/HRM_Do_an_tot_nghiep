@@ -74,7 +74,7 @@ class HrmEmployees(models.Model):
             return super().get_formview_id(access_uid=access_uid)
 
         # Non-HR Users → Extended public view
-        return self.env.ref('hrm_base.hr_employee_extended_public_view_form').id
+        return self.env.ref('hr.hr_employee_public_view_form').id
 
     def get_formview_action(self, access_uid=None):
         """
