@@ -16,12 +16,15 @@ Long description of module's purpose
     "depends": ["hrm_base", "hr_holidays"],
     # always loaded
     "data": [
-        # 'security/ir.model.access.csv',
-        "views/views.xml",
-        "views/templates.xml",
+        "security/ir.model.access.csv",
+        "views/hrm_leave_views.xml",
+        "views/hrm_time_off_menu_views.xml",
     ],
     # only loaded in demonstration mode
     "demo": [
         "demo/demo.xml",
     ],
+    "installable": True,
+    "application": False,
+    "auto_install": False,
 }

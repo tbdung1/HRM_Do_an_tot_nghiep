@@ -9,9 +9,17 @@ _logger = logging.getLogger(__name__)
 
 class HrmContract(models.Model):
     _inherit = "hr.contract"
-    
+
     allowance = fields.Monetary('Allowance', tracking=True, help="Employee's monthly allowance.", group_operator="avg")
 
+    def _gender_label(self):
+        self.ensure_one()
+        mapping = {
+            'male' : 'Nam',
+            'female' : 'Nữ',
+            'other' : 'Khác',
+        }
+        return mapping.get(self.employee_id.gender)
     
     def _get_bot_hrm(self):
         bot_user = self.env['res.users'].sudo().search([('login', '=', 'bot_hrm')], limit=1)
@@ -22,6 +30,20 @@ class HrmContract(models.Model):
                 'email': 'bot_hrm@example.com'
             })
         return bot_user
+
+    def action_view_attachments(self):
+        """View attachments"""
+        return {
+            "name": _("Supporting Documents"),
+            "type": "ir.actions.act_window",
+            "res_model": "ir.attachment",
+            "view_mode": "kanban,tree,form",
+            "domain": [("res_model", "=", self._name), ("res_id", "=", self.id)],
+            "context": {
+                "default_res_model": self._name,
+                "default_res_id": self.id,
+            },
+        }
 
     def _create_channel(self, partner_id, bot_user, chat_message):
         try:
@@ -37,13 +59,13 @@ class HrmContract(models.Model):
             )
         except Exception as e:
             _logger.error(f"Error creating channel or sending message: {e}")
-    
+
     def _sent_notify(self, emp_contract):
         try:
             chat_message = f"Hợp đồng tên \"{emp_contract.name}\" của nhân viên \"{emp_contract.employee_id.name}\" còn {(emp_contract.date_end - fields.Date.today()).days} ngày nữa sẽ hết hạn."
             bot_user = self._get_bot_hrm()
             hr = emp_contract.employee_id.parent_id.user_id.partner_id
-            
+
             job_ceo = self.env.ref('hr.job_ceo')
             employees = self.env['hr.employee'].search([('job_id', '=', job_ceo.id)])
             partners = employees.mapped('user_id.partner_id')
@@ -74,7 +96,6 @@ class HrmContract(models.Model):
                                  ('state', '=', 'open')])
         for contract in contracts:
             contract.sudo()._sent_notify(contract)
-            
 
     def action_active_contract(self):
         self.ensure_one()
@@ -82,11 +103,35 @@ class HrmContract(models.Model):
             if rec.state != 'draft':
                 raise UserError(_('Only contracts in draft state can be activated.'))
             rec.sudo().write({'state': 'open'})
-        
 
     def action_cancel_contract(self):
         self.ensure_one()
         for rec in self:
-            if rec.state != 'open':
-                raise UserError(_('Only contracts in open state can be cancelled.'))
+            if rec.state == 'open':
+                attachments = self.env['ir.attachment'].search([
+                        ('res_model', '=', self._name),
+                        ('res_id', '=', rec.id)
+                    ])
+                if not attachments:
+                    raise UserError(_(
+                        'Cannot cancel contract "%s" without supporting documents. '
+                        'Please attach required documents first.',
+                        rec.name
+                    ))
             rec.sudo().write({'state': 'cancel'})
+            
+    def write(self, vals):
+        if vals.get('state') == 'cancel':
+            for rec in self.filtered(lambda r: r.state == 'open'):
+                attachments = self.env['ir.attachment'].search([
+                    ('res_model', '=', self._name),
+                    ('res_id', '=', rec.id)
+                ])
+                if not attachments:
+                    raise UserError(_(
+                        'Cannot cancel contract "%s" without supporting documents. '
+                        'Please attach required documents first.',
+                        rec.name
+                    ))
+        
+        return super().write(vals)

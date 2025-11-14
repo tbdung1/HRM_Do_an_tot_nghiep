@@ -13,7 +13,7 @@ Long description of module's purpose
     "category": "Uncategorized",
     "version": "17.0.1.0",
     # any module necessary for this one to work correctly
-    "depends": ["hrm_base", "hr_contract"],
+    "depends": ["hrm_base", "hr_contract", "hrm_notify"],
     # always loaded
     "data": [
         "security/ir.model.access.csv",
@@ -25,7 +25,9 @@ Long description of module's purpose
         "report/hrm_contract_templates_draft.xml",
         "report/hrm_contract_reports.xml",
         "report/hrm_contract_templates.xml",
-        "data/ir_cron.xml"
+        "data/ir_cron.xml",
     ],
-
+    "installable": True,
+    "application": False,
+    "auto_install": False,
 }

@@ -10,8 +10,9 @@ _logger = logging.getLogger(__name__)
 class HrmContractDraft(models.Model):
     _name = "hrm.contract.draft"
     _description = "HrmContractDraft"
-    _inherit = ["hr.contract"]
+    _inherit = ["hr.contract", "hr.notification.mixin", "mail.thread"]
 
+    employee_submit = fields.Many2one("hr.employee", "Employee Submit", default=lambda self: self.env.user.employee_id)
     emp_name = fields.Char("Employee Name")
     gender = fields.Selection(
         [("male", "Male"), ("female", "Female"), ("other", "Other")],
@@ -58,7 +59,13 @@ class HrmContractDraft(models.Model):
             if record.state_hr_contract != "draft":
                 raise UserError(_("Only contracts in draft state can be submitted."))
             record.state_hr_contract = "submitted"
-
+        hr_groups = ["hr_contract.group_hr_contract_manager"]
+        self.notify_hr(
+            subject=f"Yêu cầu làm phê duyệt hợp đồng - {self.emp_name}",
+            message=f"Nhân viên {self.emp_name} đã gửi yêu cầu làm phê duyệt hợp đồng",
+            additional_hr_groups=hr_groups,
+            priority="2",
+        )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -71,11 +78,11 @@ class HrmContractDraft(models.Model):
         }
 
     def action_reject_contract(self):
-        for record in self:
-            if record.state_hr_contract != "submitted":
-                raise UserError(_("Only contracts in submitted state can be rejected."))
-            record.state_hr_contract = "rejected"
-
+        self.state_hr_contract = "rejected"
+        self.notify_staff(
+            message=f"Đã từ chối hợp đồng - {self.emp_name}",
+            employee_id=self.employee_submit,
+        )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -88,23 +95,10 @@ class HrmContractDraft(models.Model):
         }
 
     def action_approve_contract(self):
+        self.state_hr_contract = "approved"
         for record in self:
-            if record.state_hr_contract != "submitted":
-                raise UserError(_("Only contracts in submitted state can be approved."))
-            record.state_hr_contract = "approved"
             # record.map_to_hr_contract()
-            body = f"""
-                Yêu cầu lập hợp đồng đã được duyệt
-                Người duyệt: {self.env.user.name}
-                Thời gian: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')}
-                Nhân viên: {record.employee_id.name}
-            """
-            record.message_post(
-                body=body,
-                subject="Yêu cầu lập hợp đồng đã được duyệt",
-                subtype_xmlid="mail.mt_note",
-            )
-
+            record.notify_staff(message=f"Đã phê duyệt hợp đồng - {self.emp_name}", employee_id=self.employee_submit)
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -116,33 +110,33 @@ class HrmContractDraft(models.Model):
             },
         }
 
-    def map_to_hr_contract(self):
-        self.ensure_one()
-        if self.state_hr_contract != "approved":
-            raise UserError(_("Only approved contracts can be mapped to hr.contract."))
-        HrContract = self.env["hr.contract"]
-        existing_contract = HrContract.search(
-            [("employee_id", "=", self.employee_id.id), ("state", "in", ["approved"])],
-            limit=1,
-        )
-        if existing_contract:
-            raise UserError(
-                _(
-                    "The employee already has an active contract. Cannot map to hr.contract."
-                )
-            )
-        new_contract = HrContract.create(
-            {
-                "name": self.name,
-                "employee_id": self.employee_id.id,
-                "date_start": self.date_start,
-                "date_end": self.date_end,
-                "resource_calendar_id": self.resource_calendar_id.id,
-                "structure_type_id": self.structure_type_id.id,
-                "department_id": self.department_id.id,
-                "job_id": self.job_id.id,
-                "contract_type_id": self.contract_type_id.id,
-                "wage": self.wage,
-                "state": "draft",
-            }
-        )
+    # def map_to_hr_contract(self):
+    #     self.ensure_one()
+    #     if self.state_hr_contract != "approved":
+    #         raise UserError(_("Only approved contracts can be mapped to hr.contract."))
+    #     HrContract = self.env["hr.contract"]
+    #     existing_contract = HrContract.search(
+    #         [("employee_id", "=", self.employee_id.id), ("state", "in", ["approved"])],
+    #         limit=1,
+    #     )
+    #     if existing_contract:
+    #         raise UserError(
+    #             _(
+    #                 "The employee already has an active contract. Cannot map to hr.contract."
+    #             )
+    #         )
+    #     new_contract = HrContract.create(
+    #         {
+    #             "name": self.name,
+    #             "employee_id": self.employee_id.id,
+    #             "date_start": self.date_start,
+    #             "date_end": self.date_end,
+    #             "resource_calendar_id": self.resource_calendar_id.id,
+    #             "structure_type_id": self.structure_type_id.id,
+    #             "department_id": self.department_id.id,
+    #             "job_id": self.job_id.id,
+    #             "contract_type_id": self.contract_type_id.id,
+    #             "wage": self.wage,
+    #             "state": "draft",
+    #         }
+    #     )

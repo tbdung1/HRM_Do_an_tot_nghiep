@@ -2,192 +2,233 @@
 <odoo>
 
     <template id="report_hrm_contract_pdf">
-        <t t-call="web.html_container">
+        <t t-call="web.basic_layout">
             <t t-foreach="docs" t-as="c">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <style>
-                            .contract-content {
-                            font-size: 12pt;
-                            line-height: 1.4;
-                            padding: 20px;
-                            }
-                            .contract-header {
-                            text-align: center;
-                            font-weight: bold;
-                            margin-bottom: 20px;
-                            }
-                            .contract-title {
-                            text-align: center;
-                            margin: 20px 0 15px 0;
-                            font-size: 16pt;
-                            font-weight: bold;
-                            }
-                            .contract-section {
-                            margin-top: 15px;
-                            }
-                            .signature-table {
-                            width: 100%;
-                            margin-top: 30px;
-                            }
-                            .signature-cell {
-                            width: 50%;
-                            text-align: center;
-                            vertical-align: top;
-                            padding: 10px;
-                            }
-                            @media print {
-                            .contract-content {
-                            padding: 0;
-                            }
-                            }
-                        </style>
+                <!-- <t t-call="web.external_layout"> -->
+                <div class="page">
+                    <style> * { margin:0; padding:0; box-sizing:border-box; } html, body { margin:0
+                        !important; padding:0 !important; font-family:"DejaVu Sans", Arial,
+                        sans-serif; font-size:13px; } @media screen { html, body { min-height:100vh;
+                        display:flex; justify-content:center; align-items:flex-start; <!--
+                        background:#f0f0f0; --> } .page{
+                        width:210mm; min-height:297mm; margin:10mm auto; padding:15mm;
+                        background:white; border:1px solid #ddd; border-radius:4px; } }
+                        .contract-content{ font-size:13pt; line-height:1.4; padding:20px; margin:0;
+                        text-align: justify; } .contract-header{ text-align:center;
+                        font-weight:bold; margin:0 0 20px 0; } .contract-title{ text-align:center;
+                        margin:15px 0; font-size:16pt; font-weight:bold; } .contract-section{
+                        margin-top:15px; margin-left:15px; } .signature-table{ width:100%;
+                        margin-top:30px; } .signature-cell{ width:50%; text-align:center;
+                        vertical-align:top; padding:10px; } h2,h3,h4{ margin:10px 0;
+                        font-weight:bold; } p{ margin-bottom:5px; } </style>
 
-                        <div class="contract-content">
-                            <!-- Header -->
-                            <div class="contract-header">
-                                <div>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-                                <div>Độc lập - Tự do - Hạnh phúc</div>
-                                <div>---------------</div>
-                            </div>
+                    <div class="contract-content">
+                        <!-- Header -->
+                        <div class="contract-header">
+                            <div>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                            <div>Độc lập - Tự do - Hạnh phúc</div>
+                            <div>---------------</div>
+                        </div>
 
-                            <!-- Date and Number -->
-                            <div
-                                style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                                <div>Số: <span>......</span></div>
-                                <div> Ngày <span t-if="c.date_start"
-                                        t-esc="c.date_start.strftime('%d/%m/%Y')" />
+                        <!-- Date and Number -->
+                        <div
+                            style="display: flex; justify-content: space-between; margin-bottom: 15px; margin-left: 15px; margin-right: 15px;">
+                            <div>Số: <span>......</span></div>
+                            <div> Ngày <span t-if="c.date_start"
+                                    t-esc="c.date_start.strftime('%d/%m/%Y')" />
                                     <span t-else="">
-                                    ____/____/________</span>
-                                </div>
+                                ____/____/________</span>
                             </div>
+                        </div>
 
-                            <!-- Title -->
-                            <h2 class="contract-title">HỢP ĐỒNG LAO ĐỘNG</h2>
+                        <!-- Title -->
+                        <h2 class="contract-title">HỢP ĐỒNG LAO ĐỘNG</h2>
 
-                            <p>- Căn cứ Bộ luật lao động năm 2019;</p>
-                            <p>Hôm nay, tại <span t-if="c.company_id.city"
+                        <!-- Bên A -->
+                        <div class="contract-section">
+                            <p style="font-style: italic;">- Căn cứ Bộ luật lao động năm 2019;</p>
+                            <br />
+                            <p>Hôm nay, <span t-esc="datetime.date.today()" /> tại <span
+                                    t-if="c.company_id.city"
                                     t-field="c.company_id.city" />
                                 <span t-else="">
                                 ................................</span> chúng tôi gồm: </p>
+                            <h3>
+                                <u>Bên A: Người sử dụng lao động</u>
+                            </h3>
+                            <p>Tên doanh nghiệp: XBOSS</p>
+                            <p>Địa chỉ: 97 Man Thiện</p>
+                            <p>Điện thoại: 0123456789</p>
+                            <p>Đại diện bởi Ông/Bà: Mr.TranBaDung</p>
 
-                            <!-- Bên A -->
-                            <div class="contract-section">
-                                <h3>Bên A: Người sử dụng lao động</h3>
-                                <p>Tên doanh nghiệp: XBOSS</p>
-                                <p>Địa chỉ: 97 Man Thiện</p>
-                                <p>Điện thoại: 0123456789</p>
-                                <p>Đại diện bởi Ông/Bà: Mr.TranBaDung</p>
-
-                            </div>
-
-                            <!-- Bên B -->
-                            <div class="contract-section">
-                                <h3>Bên B: Người lao động</h3>
-                                <p>Ông/Bà: <span t-field="c.employee_id.name" /></p>
-                                <p>Ngày sinh: <span t-if="c.employee_id.birthday"
-                                        t-esc="c.employee_id.birthday.strftime('%d/%m/%Y')" />
-                                    <span t-else="">
-                                    ____/____/________</span>
-                                </p>
-                                <p>Giới tính: <span t-esc="c.employee_id.gender" /></p>
-                                <p>Địa chỉ thường trú: <span t-field="c.employee_id.private_street" /></p>
-                                <p>Địa chỉ cư trú: <span t-field="c.employee_id.private_street2"
-                                        t-if="c.employee_id.private_street2" />
-                                </p>
-                            </div>
-
-                            <p style="margin-top: 15px;">Thỏa thuận ký kết hợp đồng lao động và cam kết như sau:</p>
-
-                            <!-- Điều 1 -->
-                            <div class="contract-section">
-                                <h4>Điều 1. Công việc, địa điểm làm việc và thời hạn của hợp đồng</h4>
-                                <p>Công việc phải làm: <span t-field="c.job_id.name" /></p>
-                                <p>Địa điểm làm việc: <span t-field="c.company_id.city" /></p>
-                                <p>Loại hợp đồng: <span t-field="c.contract_type_id.name" /></p>
-                                <p> Từ ngày: <span t-if="c.date_start"
-                                        t-esc="c.date_start.strftime('%d/%m/%Y')" />
-                                        <span
-                                        t-else="____/____/________" /> Đến ngày: <span
-                                        t-if="c.date_end" t-esc="c.date_end.strftime('%d/%m/%Y')" />
-                                        <span
-                                        t-else="Không xác định" />
-                                </p>
-                            </div>
-
-                            <!-- Điều 2 -->
-                            <div class="contract-section">
-                                <h4>Điều 2. Lương, phụ cấp, các khoản bổ sung khác</h4>
-                                <p>Lương căn bản: <span t-field="c.wage"
-                                        t-options="{'widget': 'monetary', 'display_currency': c.company_id.currency_id}" />
-                                    / tháng </p>
-                                <p>Phụ cấp: ................................................</p>
-                                <p>Các khoản bổ sung khác: theo quy định của Doanh nghiệp.</p>
-                                <p>Hình thức trả lương: Tiền mặt hoặc chuyển khoản. Trả vào ngày
-                                    ...... mỗi tháng.</p>
-                                <p>Chế độ nâng lương: theo quy định của Doanh nghiệp và kết quả làm
-                                    việc.</p>
-                            </div>
-
-                            <!-- Điều 3 -->
-                            <div class="contract-section">
-                                <h4>Điều 3. Thời giờ làm việc, nghỉ ngơi, BHLĐ, BHXH, BHYT, BHTN</h4>
-                                <p>Thời giờ làm việc: <span t-field="c.resource_calendar_id.name"
-                                        t-if="c.resource_calendar_id.name" />
-                                        <span
-                                        t-else="8 giờ/ngày, 48 giờ/tuần" />. Nghỉ hàng tuần:
-                                    ..........</p>
-                                <p>Nghỉ lễ, tết, phép năm: theo luật và quy định nội bộ.</p>
-                                <p>Trang bị BHLĐ: ................................................</p>
-                                <p>BHXH, BHYT, BHTN: theo luật hiện hành.</p>
-                            </div>
-
-                            <!-- Điều 4-7 -->
-                            <div class="contract-section">
-                                <h4>Điều 4. Đào tạo, bồi dưỡng, quyền lợi và nghĩa vụ liên quan</h4>
-                                <p>Đào tạo: theo nhu cầu công việc và quy định nội bộ.</p>
-                                <p>Thưởng có điều kiện, phụ cấp khác: theo quy định của DN.</p>
-                            </div>
-
-                            <div class="contract-section">
-                                <h4>Điều 5. Cam kết về Bản quyền và Bảo mật</h4>
-                                <p>Người lao động cam kết bảo mật thông tin công ty và không tiết lộ
-                                    cho bên thứ ba.</p>
-                            </div>
-
-                            <div class="contract-section">
-                                <h4>Điều 6. Nghĩa vụ và quyền lợi của người sử dụng lao động</h4>
-                                <p>Thực hiện đúng cam kết, thanh toán đầy đủ, điều hành NLĐ theo
-                                    HĐLĐ...</p>
-                            </div>
-
-                            <div class="contract-section">
-                                <h4>Điều 7. Điều khoản thi hành</h4>
-                                <p>Hợp đồng lập 02 bản có giá trị như nhau, mỗi bên giữ 01 bản.</p>
-                            </div>
-
-                            <!-- Signatures -->
-                            <table class="signature-table">
-                                <tr>
-                                    <td class="signature-cell">
-                                        <strong>NGƯỜI SỬ DỤNG LAO ĐỘNG</strong><br /> (Ký, ghi rõ họ
-                                        tên)<br /><br /><br /><br />
-                                        <div style="margin-top: 40px;">
-                                            <span t-field="c.company_id.name" />
-                                        </div>
-                                    </td>
-                                    <td class="signature-cell">
-                                        <strong>NGƯỜI LAO ĐỘNG</strong><br /> (Ký, ghi rõ họ tên)<br /><br /><br /><br />
-                                        <div
-                                            style="margin-top: 40px;">
-                                            <span t-field="c.employee_id.name" />
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
                         </div>
+
+                        <!-- Bên B -->
+                        <div class="contract-section">
+                            <h3>
+                                <u>Bên B: Người lao động</u>
+                            </h3>
+                            <p>Ông/Bà: <span t-field="c.employee_id.name" /></p>
+                            <p>Ngày sinh: <span t-if="c.employee_id.birthday"
+                                    t-esc="c.employee_id.birthday.strftime('%d/%m/%Y')" />
+                                    <span t-else="">
+                                ____/____/________</span>
+                            </p>
+                            <p>Giới tính: <span t-esc="c._gender_label()" /></p>
+                            <p>Địa chỉ thường trú: <span t-field="c.employee_id.private_street" /></p>
+                            <p>Địa chỉ cư trú: <span t-field="c.employee_id.private_street2"
+                                    t-if="c.employee_id.private_street2" />
+                            </p>
+                        </div>
+
+                        <p style="margin-top: 15px; margin-left: 15px;">Thỏa thuận ký kết hợp đồng
+                            lao động và cam
+                            kết như sau:</p>
+
+                        <!-- Điều 1 -->
+                        <div class="contract-section">
+                            <h4>Điều 1. Công việc, địa điểm làm việc và thời hạn của hợp đồng</h4>
+                            <p>Công việc phải làm: <span t-field="c.job_id.name" /></p>
+                            <p>Địa điểm làm việc: <span t-field="c.company_id.city" /></p>
+                            <p>Loại hợp đồng: <span t-field="c.contract_type_id.name" /></p>
+                            <p> Từ ngày: <span t-if="c.date_start"
+                                    t-esc="c.date_start.strftime('%d/%m/%Y')" />
+                                        <span
+                                    t-else="____/____/________" /> Đến ngày: <span
+                                    t-if="c.date_end" t-esc="c.date_end.strftime('%d/%m/%Y')" />
+                                        <span
+                                    t-else="Không xác định" />
+                            </p>
+                        </div>
+
+                        <!-- Điều 2 -->
+                        <div class="contract-section">
+                            <h4>Điều 2. Lương, phụ cấp, các khoản bổ sung khác</h4>
+                            <p>Lương căn bản: <span t-field="c.wage"
+                                    t-options="{'widget': 'monetary', 'display_currency': c.company_id.currency_id}" />
+                                / tháng </p>
+                            <p>Phụ cấp: <span t-field="c.allowance" />/ tháng</p>
+                            <p>Các khoản bổ sung khác: theo quy định của Doanh nghiệp.</p>
+                            <p>Hình thức trả lương: Tiền mặt hoặc chuyển khoản. Trả vào ngày 10 mỗi
+                                tháng.</p>
+                            <p>Chế độ nâng lương: theo quy định của Doanh nghiệp và kết quả làm
+                                việc.</p>
+                        </div>
+
+                        <!-- Điều 3 -->
+                        <div class="contract-section">
+                            <h4>Điều 3. Thời giờ làm việc, nghỉ ngơi, BHLĐ, BHXH, BHYT, BHTN</h4>
+                            <h5 style="font-weight: bold;">1. Thời giờ làm việc, thời gian nghỉ ngơi</h5>
+                            <p>Thời giờ làm việc: <span t-field="c.resource_calendar_id.name"
+                                    t-if="c.resource_calendar_id.name" />
+                                        <span
+                                    t-else="8 giờ/ngày, 48 giờ/tuần" />. </p>
+                            <p>- Chế độ nghỉ ngơi các ngày lễ, tết, phép năm:</p>
+                            <p>+ Người lao động được nghỉ lễ, tết theo luật định; các ngày nghỉ lễ
+                                nếu trùng với ngày Chủ nhật thì sẽ được nghỉ bù vào ngày trước hoặc
+                                ngày kế tiếp tùy theo tình hình cụ thể mà Ban lãnh đạo Công ty sẽ
+                                chỉ đạo trực tiếp.</p>
+                            <p>+ Người lao động đã ký hợp đồng lao động chính thức và có thâm niên
+                                công tác 12 tháng thì sẽ được nghỉ phép năm có hưởng lương 12 ngày
+                                phép/01 năm; trường hợp có thâm niên làm việc dưới 12 tháng thì thời
+                                gian nghỉ hằng năm được tính theo tỷ lệ tương ứng với số thời gian
+                                làm việc.</p>
+
+                            <h5 style="font-weight: bold;">2. Bảo hộ lao động</h5>
+                            <p>- Được cấp phát dụng cụ làm việc gồm: đồng phục, dụng cụ văn phòng
+                                phẩm…</p>
+                            <p>- Được trang bị bảo hộ lao động</p>
+
+                            <h5 style="font-weight: bold;">3. Bảo hiểm xã hội, bảo hiểm y tế, bảo
+                                hiểm thất nghiệp</h5>
+                            <p>- Bảo hiểm xã hội, bảo hiểm y tế và bảo hiểm thất nghiệp: Người sử
+                                dụng lao động đóng … % (bảo hiểm xã hội 17%, bảo hiểm y tế 3%, bảo
+                                hiểm thất nghiệp ... %, bảo hiểm tai nạn lao động, bệnh nghề nghiệp
+                                … %); người lao động đóng 10.5% (bảo hiểm xã hội 8%, bảo hiểm y tế
+                                1.5%, bảo hiểm thất nghiệp 1%) mức lương căn bản của Điều 2; tỷ lệ
+                                đóng của các năm tiếp theo sẽ được điều chỉnh theo đúng quy định
+                                pháp luật, nếu có.</p>
+                            <p>
+                                - Phương thức và thời gian đóng: Hằng tháng, vào ngày , Doanh nghiệp
+                                trích tiền đóng BHXH bắt buộc trên quỹ tiền lương tháng của những
+                                người lao động tham gia BHXH bắt buộc, đồng thời trích từ tiền lương
+                                tháng đóng BHXH bắt buộc của từng người lao động theo mức quy định,
+                                và đóng cho cơ quan BHXH</p>
+                        </div>
+
+                        <!-- Điều 4-7 -->
+                        <div class="contract-section">
+                            <h4>Điều 4. Đào tạo, bồi dưỡng, quyền lợi và nghĩa vụ liên quan</h4>
+                            <p>- Đào tạo: theo nhu cầu công việc và quy định nội bộ.</p>
+                            <p>- Thưởng có điều kiện, phụ cấp khác: theo quy định của DN.</p>
+                            <p>- Các khoản thỏa thuận khác gồm: tiền cơm trưa, thưởng mặc định, hỗ
+                                trợ xăng xe, điện thoại, nhà ở, trang phục…, theo quy định của Doanh
+                                nghiệp.</p>
+                            <p>- Trừ trường hợp có phản hồi bằng văn bản của người lao động, các
+                                Quyết định/Thông báo lương, thưởng của Doanh nghiệp được xem là các
+                                phụ lục sửa đổi, bổ sung, điều chỉnh kèm theo hợp đồng lao động này,
+                                cụ thể các khoản trả cho người lao động trong suốt quá trình làm
+                                việc.</p>
+                        </div>
+
+                        <div class="contract-section">
+                            <h4>Điều 5. Cam kết về Bản quyền và Bảo mật</h4>
+                            <p>Người lao động cam kết bảo mật thông tin công ty và không tiết lộ
+                                cho bên thứ ba.</p>
+                        </div>
+
+                        <div class="contract-section">
+                            <h4>Điều 6. Nghĩa vụ và quyền lợi của người sử dụng lao động</h4>
+                            <h5 style="font-weight: normal;">1. Nghĩa vụ</h5>
+                            <p>- Bảo đảm có việc làm và thực hiện đầy đủ những điều đã cam kết trong
+                                hợp đồng lao động;</p>
+                            <p>- Thanh toán đầy đủ, đúng hạn các chế độ và quyền lợi cho người lao
+                                động theo hợp đồng lao động, thỏa ước lao động tập thể (nếu có);</p>
+                            <p>- Tùy theo kết quả hoạt động kinh doanh và điều kiện thực tế, Doanh
+                                nghiệp sẽ có các ưu đãi xứng đáng cho nhân viên.</p>
+
+                            <h5 style="font-weight: normal;">2. Quyền lợi</h5>
+                            <p>- Điều hành người lao động hoàn thành công việc theo hợp đồng lao
+                                động (bố trí, điều chuyển, tạm ngừng công tác,…);</p>
+                            <p>- Tạm hoãn, chấm dứt hợp đồng lao động, kỷ luật người lao động theo
+                                quy định của pháp luật, thoả ước lao động tập thể (nếu có) và nội
+                                quy lao động của doanh nghiệp.</p>
+                            <p>- Có quyền đòi bồi thường, khiếu nại với cơ quan liên đới để bảo vệ
+                                quyền lợi của mình nếu Người lao động vi phạm Pháp luật hay các điều
+                                khoản của hợp đồng lao động.</p>
+                        </div>
+
+                        <div class="contract-section">
+                            <h4>Điều 7. Điều khoản thi hành</h4>
+                            <p>- Những vấn đề về lao động không ghi trong hợp đồng lao động này thì
+                                áp dụng quy định của thoả ước tập thể, trường hợp chưa có thoả ước
+                                thì áp dụng quy định của pháp luật lao động;</p>
+                            <p>- Hợp đồng này được lập thành 2 bản có giá trị pháp lý như nhau, mỗi
+                                bên giữ 1 bản và có hiệu lực kể từ ngày <span t-field="c.date_start" /></p>
+                        </div>
+
+                        <!-- Signatures -->
+                        <table class="signature-table">
+                            <tr>
+                                <td class="signature-cell">
+                                    <strong>NGƯỜI SỬ DỤNG LAO ĐỘNG</strong><br /> (Ký, ghi rõ họ
+                                    tên)<br /><br /><br /><br />
+                                        <div style="margin-top: 40px;">
+                                        <span>Mr.TranBaDung</span>
+                                    </div>
+                                </td>
+                                <td class="signature-cell">
+                                    <strong>NGƯỜI LAO ĐỘNG</strong><br /> (Ký, ghi rõ họ tên)<br /><br /><br /><br />
+                                        <div
+                                        style="margin-top: 40px;">
+                                        <span t-field="c.employee_id.name" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
-                </t>
+                </div>
+                <!-- </t> -->
             </t>
         </t>
     </template>
