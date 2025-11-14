@@ -63,3 +63,13 @@ addons/*/static/*/build/
 *.swp
 *.tmp
 *.orig
+hrm_attendance_integration/data/ir_sequence.xml
+hrm_attendance_integration/models/hr_attendance_adjustment_request.py
+hrm_attendance_integration/models/hr_attendance_timesheet.py
+hrm_attendance_integration/security/ir_rule.xml
+hrm_attendance_integration/views/hr_attendance_adjustment_request_views.xml
+hrm_attendance_integration/views/hr_attendance_timesheet_views.xml
+hrm_attendance_integration/views/wizard_views.xml
+hrm_attendance_integration/wizard/__init__.py
+hrm_attendance_integration/wizard/hr_attendance_adjustment_reject_wizard.py
+hrm_attendance_integration/wizard/hr_attendance_timesheet_reject_wizard.py

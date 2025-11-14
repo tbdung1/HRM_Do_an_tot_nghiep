@@ -1,0 +1,71 @@
+<odoo>
+    <!-- Tree view -->
+    <record id="view_hr_attendance_adjustment_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.adjustment.tree</field>
+        <field name="model">hr.attendance.adjustment</field>
+        <field name="arch" type="xml">
+            <tree string="Attendance Adjustments" create="true" edit="false">
+                <field name="employee_id"/>
+                <field name="check_in_new"/>
+                <field name="check_out_new"/>
+                <field name="state"/>
+                <field name="update_by"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_hr_attendance_adjustment_form" model="ir.ui.view">
+        <field name="name">hr.attendance.adjustment.form</field>
+        <field name="model">hr.attendance.adjustment</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Adjustment">
+                <sheet>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,manager_approved,rejected"/>
+
+                        <button name="action_submit" type="object" string="Gửi phê duyệt" class="btn-primary" invisible="state != 'draft'" groups="base.group_user"/>
+
+                        <!-- Nút cho quản lý -->
+                        <button name="action_update_attendance" type="object" string="Duyệt" class="btn-success" groups="hr.group_hr_manager" invisible="state != 'submitted'"/>
+
+                        <button name="action_reject" type="object" string="Từ chối" class="btn-danger" groups="hr.group_hr_manager" invisible="state != 'submitted'"/>
+                    </header>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_history" type="object" class="oe_stat_button" icon="fa-history">
+                            <field name="adjustment_count" widget="statinfo" string="Lịch sử yêu cầu"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="attendance_id"/>
+                            <field name="check_in_new" widget="datetime" options="{'datepicker': {'enabled': false}}"/>
+                            <field name="check_out_new" widget="datetime" options="{'datepicker': {'enabled': false}}"/>
+                            <field name="reason"/>
+                        </group>
+                        <group>
+                            <field name="update_by" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hr_attendance_adjustment" model="ir.actions.act_window">
+        <field name="name">Attendance Adjustment</field>
+        <field name="res_model">hr.attendance.adjustment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tạo yêu cầu điều chỉnh thời gian check-in/check-out.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_hr_attendance_adjustment_root" name="Điều chỉnh chấm công" parent="hr_attendance.menu_hr_attendance_root" action="action_hr_attendance_adjustment"/>
+</odoo>

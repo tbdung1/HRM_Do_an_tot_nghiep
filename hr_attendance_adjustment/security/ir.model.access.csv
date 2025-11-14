@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_attendance_adjustment_user,hr.attendance.adjustment.user,model_hr_attendance_adjustment,base.group_user,1,1,1,0
+access_hr_attendance_adjustment_hr,hr.attendance.adjustment.hr,model_hr_attendance_adjustment,hr.group_hr_user,1,1,1,1
+access_hr_attendance_adjustment_hr_manager,hr.attendance.adjustment.hr_manager,model_hr_attendance_adjustment,hr.group_hr_manager,1,1,1,1
