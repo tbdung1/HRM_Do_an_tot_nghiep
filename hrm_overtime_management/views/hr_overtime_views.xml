@@ -156,8 +156,8 @@
               groups="base.group_user"/> -->
     <menuitem id="menu_hr_overtime_all_records"
         name="All Overtime"
-        parent="hrm_attendance_integration.menu_hrm_applicants_section"
-        sequence="30"/>
+        parent="hrm_attendance_integration.menu_attendace_section"
+        sequence="30" />
     <menuitem id="hr_overtime_menu" name="Overtime Request"
         parent="menu_hr_overtime_all_records"
         action="hr_overtime_action"
