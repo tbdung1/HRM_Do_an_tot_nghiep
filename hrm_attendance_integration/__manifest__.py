@@ -5,7 +5,7 @@
     'description': 'Module quản lý ứng viên, quy trình tuyển dụng',
     'category': 'Human Resources',
     'author': 'Phuc Le',
-    'depends': ['hr', 'hrm_base', 'hr_attendance'],
+    'depends': ['hr', 'hrm_base', 'hr_attendance', 'hr_attendance_adjustment'],
     "data": [
         "security/ir.model.access.csv",
         # "views/hrm_attendance_views.xml",
