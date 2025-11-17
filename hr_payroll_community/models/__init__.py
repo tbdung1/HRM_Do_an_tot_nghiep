@@ -32,6 +32,7 @@ from . import hr_salary_rule
 from . import hr_payslip_line
 from . import hr_payslip_run
 from . import hr_payslip_worked_days
+from . import hr_payslip_overtime_line
 from . import hr_rule_input
 from . import hr_salary_rule_category
 from . import res_config_settings

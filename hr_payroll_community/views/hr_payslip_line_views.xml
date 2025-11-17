@@ -108,6 +108,7 @@
                         <field name="number" readonly="state != 'draft'"/>
                         <field name="struct_id" readonly="state != 'draft'"/>
                         <field name="name" readonly="state != 'draft'"/>
+                        <field name="total_amount" readonly="state != 'draft'"/>
                         <field name="credit_note" readonly="state != 'draft'"/>
                     </group>
                     <notebook>
@@ -154,6 +155,33 @@
                                     </group>
                                 </form>
                             </field>
+                            <separator string="Overtime Details"/>
+                            <field name="overtime_line_ids" colspan="4" nolabel="1" readonly="state != 'draft'">
+                                <tree string="Overtime Data" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="date"/>
+                                    <field name="number_of_hours" sum="Total Hours"/>
+                                    <field name="rate"/>
+                                    <field name="hourly_wage"/>
+                                    <field name="amount" sum="Total Amount"/>
+                                    <field name="contract_id" invisible="1"/>
+                                </tree>
+                                <form string="Overtime Line">
+                                    <group col="4">
+                                        <field name="name"/>
+                                        <field name="code"/>
+                                        <field name="date"/>
+                                        <field name="sequence"/>
+                                        <field name="number_of_hours"/>
+                                        <field name="rate"/>
+                                        <field name="hourly_wage"/>
+                                        <field name="amount"/>
+                                        <field name="contract_id"/>
+                                    </group>
+                                </form>
+                            </field>
                         </page>
                         <page string="Salary Computation">
                             <field name="line_ids" colspan="4" nolabel="1" readonly="state != 'draft'">
@@ -194,7 +222,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Accounting Information">
+                        <!-- <page string="Accounting Information">
                             <group>
                                 <group string="Miscellaneous">
                                     <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
@@ -207,7 +235,7 @@
                             <div colspan="4">
                                 <field name="note" placeholder="Add an internal note..." readonly="state != 'draft'"/>
                             </div>
-                        </page>
+                        </page> -->
                     </notebook>
                 </sheet>
             </form>

@@ -90,6 +90,11 @@ class HrPayslip(models.Model):
                                      'payslip_id',
                                      string='Payslip Inputs',
                                      help="Choose Payslip Input")
+    overtime_line_ids = fields.One2many('hr.payslip.overtime.line',
+                                        'payslip_id',
+                                        string='Payslip Overtime Lines',
+                                        copy=True,
+                                        help="Overtime lines for this payslip with detailed information")
     paid = fields.Boolean(string='Made Payment Order ? ',
                           copy=False, help="Is Payment Order")
     note = fields.Text(string='Internal Note', help="Description for Payslip")
@@ -109,6 +114,13 @@ class HrPayslip(models.Model):
     payslip_count = fields.Integer(compute='_compute_payslip_count',
                                    string="Payslip Computation Details",
                                    help="Set Payslip Count")
+    total_amount = fields.Monetary(compute='_compute_total_amount',
+                                   string="Total Salary",
+                                   currency_field='currency_id',
+                                   help="Total amount of all payslip lines")
+    currency_id = fields.Many2one('res.currency', string='Currency',
+                                  related='company_id.currency_id',
+                                  readonly=True)
 
     def _compute_details_by_salary_rule_category_ids(self):
         """Compute function for Salary Rule Category for getting
@@ -121,6 +133,12 @@ class HrPayslip(models.Model):
         """Compute function for getting Total count of Payslips"""
         for payslip in self:
             payslip.payslip_count = len(payslip.line_ids)
+
+    def _compute_total_amount(self):
+        """Compute function for getting Total Salary Amount"""
+        for payslip in self:
+            # Sum of all totals from details_by_salary_rule_category_ids
+            payslip.total_amount = sum(payslip.details_by_salary_rule_category_ids.mapped('total'))
 
     @api.constrains('date_from', 'date_to')
     def _check_dates(self):
@@ -211,6 +229,9 @@ class HrPayslip(models.Model):
             payslip.line_ids.unlink()
             # delete old worked days lines
             payslip.worked_days_line_ids.unlink()
+            # delete old overtime lines
+            payslip.overtime_line_ids.unlink()
+            
             # set the list of contract for which the rules have to be applied
             # if we don't give the contract, then the rules to apply should be
             # for all current contracts of the employee
@@ -223,13 +244,18 @@ class HrPayslip(models.Model):
             worked_days_lines_data = self.get_worked_day_lines(contracts, payslip.date_from, payslip.date_to)
             worked_days_lines = [(0, 0, line) for line in worked_days_lines_data]
             
-            # Re-compute payslip lines - pass worked_days_lines_data
+            # Re-compute overtime lines
+            overtime_lines_data = self.get_overtime_lines(contracts, payslip.date_from, payslip.date_to)
+            overtime_lines = [(0, 0, line) for line in overtime_lines_data]
+            
+            # Re-compute payslip lines - pass worked_days_lines_data and overtime_lines_data
             lines = [(0, 0, line) for line in
-                     self._get_payslip_lines(contract_ids, payslip.id, worked_days_lines_data)]
+                     self._get_payslip_lines(contract_ids, payslip.id, worked_days_lines_data, overtime_lines_data)]
             
             payslip.write({
                 'line_ids': lines,
                 'worked_days_line_ids': worked_days_lines,
+                'overtime_line_ids': overtime_lines,
                 'number': number
             })
         return True
@@ -349,7 +375,95 @@ class HrPayslip(models.Model):
         return res
 
     @api.model
-    def _get_payslip_lines(self, contract_ids, payslip_id, worked_days_lines_data=None):
+    def get_overtime_lines(self, contracts, date_from, date_to):
+        """
+        Get overtime lines for the given contracts and date range.
+        Returns a list of overtime line data with date, hours, and rate information.
+        
+        @param contracts: Browse record of contracts
+        @param date_from: Start date
+        @param date_to: End date
+        @return: List of dictionaries containing overtime line data
+        """
+        res = []
+        
+        # Check if hr.overtime model exists
+        if 'hr.overtime' not in self.env:
+            return res
+        
+        for contract in contracts:
+            # Search for approved overtime requests in the period
+            # More flexible search: match employee and period, contract can be empty or matching
+            domain = [
+                ('employee_id', '=', contract.employee_id.id),
+                ('state', '=', 'approved'),
+                '|',
+                ('date_from', '>=', date_from),
+                ('date_to', '>=', date_from),
+            ]
+            
+            # Add date_to condition
+            domain.extend([
+                '|',
+                ('date_from', '<=', date_to),
+                ('date_to', '<=', date_to),
+            ])
+            
+            overtime_requests = self.env['hr.overtime'].search(domain)
+            
+            import logging
+            _logger = logging.getLogger(__name__)
+            _logger.info(f"=== OVERTIME DEBUG ===")
+            _logger.info(f"Employee: {contract.employee_id.name}")
+            _logger.info(f"Contract: {contract.id}")
+            _logger.info(f"Period: {date_from} to {date_to}")
+            _logger.info(f"Found {len(overtime_requests)} overtime requests")
+            
+            for overtime in overtime_requests:
+                _logger.info(f"  - OT: {overtime.name}, Date: {overtime.date_from} to {overtime.date_to}, Hours: {overtime.days_no_tmp}, State: {overtime.state}, test: {overtime.overtime_type_id}")
+                
+                # Calculate hourly wage from contract
+                hourly_wage = 0.0
+                if hasattr(contract, 'over_hour') and contract.over_hour:
+                    hourly_wage = contract.over_hour
+                elif contract.wage:
+                    # Estimate hourly wage: monthly wage / (working hours per month)
+                    # Assuming 22 working days * 8 hours = 176 hours per month
+                    hourly_wage = contract.wage / 176.0
+                
+                # Get rate from overtime type rules
+                rate = 1.0
+                if overtime.overtime_type_id and overtime.overtime_type_id.rule_line_ids:
+                    for rule in overtime.overtime_type_id.rule_line_ids:
+                        _logger.info(f"Test 1:  {rule.hrs_amount}")
+                        if rule.from_hrs <= overtime.days_no_tmp <= rule.to_hrs:
+                            rate = rule.hrs_amount / 100
+                            _logger.info(f"Rate:  {rate}")
+                            break
+                
+                # Create overtime line data
+                overtime_line_data = {
+                    'name': overtime.name or 'Overtime',
+                    'sequence': 20,
+                    'code': 'OT',
+                    'date': overtime.date_from.date() if overtime.date_from else date_from,
+                    'number_of_hours': overtime.days_no_tmp if overtime.duration_type == 'hours' else overtime.days_no_tmp * 8,
+                    'rate': rate,
+                    'hourly_wage': hourly_wage,
+                    'contract_id': contract.id,
+                }
+                
+                # Set overtime_id if exists
+                if overtime and overtime.id:
+                    overtime_line_data['overtime_id'] = overtime.id
+                
+                res.append(overtime_line_data)
+                _logger.info(f"  Added overtime line: hours={overtime_line_data['number_of_hours']}, rate will be computed, wage={hourly_wage}")
+        
+        return res
+
+    @api.model
+    def _get_payslip_lines(self, contract_ids, payslip_id, worked_days_lines_data=None, overtime_lines_data=None):
         """Function for getting Payslip Lines"""
 
         def _sum_salary_rule_category(localdict, category, amount):
@@ -483,6 +597,85 @@ class HrPayslip(models.Model):
                 res = self._sum(code, from_date, to_date)
                 return res and res[1] or 0.0
 
+        class OvertimeLine(object):
+            """Wrapper to access overtime line fields"""
+            def __init__(self, record):
+                self._record = record
+            
+            def __getattr__(self, attr):
+                """Get attribute directly from record"""
+                if attr == '_record':
+                    return object.__getattribute__(self, '_record')
+                
+                record = object.__getattribute__(self, '_record')
+                if not record:
+                    return 0.0
+                
+                # Direct field access from recordset
+                if attr in ('number_of_hours', 'rate', 'amount', 'hourly_wage'):
+                    try:
+                        value = getattr(record, attr)
+                        return float(value) if value else 0.0
+                    except:
+                        return 0.0
+                
+                return 0.0
+            
+            def __bool__(self):
+                record = object.__getattribute__(self, '_record')
+                return bool(record)
+            
+            __nonzero__ = __bool__
+
+        class Overtime(BrowsableObject):
+            """Class for accessing overtime data in salary rules"""
+
+            def __getattr__(self, attr):
+                """
+                Override to return a wrapper object that provides access to overtime record attributes
+                """
+                # Let BrowsableObject handle these
+                if attr in ('employee_id', 'dict', 'env'):
+                    return BrowsableObject.__getattribute__(self, attr)
+                
+                # Get dict using object.__getattribute__ to avoid recursion
+                try:
+                    overtime_dict = object.__getattribute__(self, 'dict')
+                except AttributeError:
+                    return OvertimeLine(None)
+                
+                # Get the record from dict
+                record = overtime_dict.get(attr, None) if overtime_dict else None
+                
+                # Return a wrapper
+                return OvertimeLine(record)
+
+            def _sum(self, code, from_date, to_date=None):
+                """Function for getting sum of overtime hours and amount"""
+                if to_date is None:
+                    to_date = fields.Date.today()
+                self.env.cr.execute("""
+                    SELECT sum(number_of_hours) as number_of_hours, 
+                    sum(amount) as amount
+                    FROM hr_payslip as hp, hr_payslip_overtime_line as pol
+                    WHERE hp.employee_id = %s AND hp.state = 'done'
+                    AND hp.date_from >= %s AND hp.date_to <= %s AND hp.id = 
+                    pol.payslip_id AND pol.code = %s""",
+                                    (
+                                        self.employee_id, from_date, to_date,
+                                        code))
+                return self.env.cr.fetchone()
+
+            def sum_hours(self, code, from_date, to_date=None):
+                """Function for getting sum of overtime hours"""
+                res = self._sum(code, from_date, to_date)
+                return res and res[0] or 0.0
+
+            def sum_amount(self, code, from_date, to_date=None):
+                """Function for getting sum of overtime amount"""
+                res = self._sum(code, from_date, to_date)
+                return res and res[1] or 0.0
+
         class Payslips(BrowsableObject):
             """a class that will be used into the python code, mainly for
             usability purposes"""
@@ -510,6 +703,7 @@ class HrPayslip(models.Model):
         rules_dict = {}
         worked_days_dict = {}
         inputs_dict = {}
+        overtime_dict = {}
         blacklist = []
         payslip = self.env['hr.payslip'].browse(payslip_id)
         
@@ -526,17 +720,90 @@ class HrPayslip(models.Model):
             for worked_days_line in payslip.worked_days_line_ids:
                 worked_days_dict[worked_days_line.code] = worked_days_line
         
+        # Build overtime_dict from passed data or from payslip
+        if overtime_lines_data:
+            # Create simple wrapper objects from dict data for computation
+            class SimpleOvertimeLine:
+                """Simple wrapper for overtime line data"""
+                def __init__(self, data):
+                    self.name = data.get('name', '')
+                    self.code = data.get('code', 'OT')
+                    self.date = data.get('date')
+                    self.number_of_hours = float(data.get('number_of_hours', 0.0))
+                    self.rate = float(data.get('rate', 1.0))
+                    self.hourly_wage = float(data.get('hourly_wage', 0.0))
+                    self.amount = self.number_of_hours * self.rate * self.hourly_wage
+                    self.contract_id = data.get('contract_id')
+                    self.overtime_id = data.get('overtime_id')
+                    self.id = False  # Not saved to DB yet
+            
+            # Group overtime lines by code and aggregate
+            from collections import defaultdict
+            code_groups = defaultdict(list)
+            
+            for ot_data in overtime_lines_data:
+                wrapper = SimpleOvertimeLine(ot_data)
+                code_groups[ot_data.get('code')].append(wrapper)
+            
+            # Create aggregated wrapper for each code
+            class AggregatedOvertimeLine:
+                """Aggregated overtime line for multiple entries with same code"""
+                def __init__(self, lines):
+                    self.lines = lines
+                    self.code = lines[0].code if lines else 'OT'
+                    self.number_of_hours = sum(line.number_of_hours for line in lines)
+                    self.amount = sum(line.amount for line in lines)
+                    # For rate and hourly_wage, use weighted average or first line's values
+                    if self.number_of_hours > 0:
+                        self.rate = sum(line.rate * line.number_of_hours for line in lines) / self.number_of_hours
+                        self.hourly_wage = sum(line.hourly_wage * line.number_of_hours for line in lines) / self.number_of_hours
+                    else:
+                        self.rate = lines[0].rate if lines else 1.0
+                        self.hourly_wage = lines[0].hourly_wage if lines else 0.0
+                    self.id = False
+            
+            for code, lines in code_groups.items():
+                overtime_dict[code] = AggregatedOvertimeLine(lines)
+                
+        elif hasattr(payslip, 'overtime_line_ids'):
+            # Fallback to existing overtime lines - also need to aggregate
+            from collections import defaultdict
+            code_groups = defaultdict(list)
+            
+            for overtime_line in payslip.overtime_line_ids:
+                code_groups[overtime_line.code].append(overtime_line)
+            
+            # Create aggregated wrapper for database records
+            class AggregatedOvertimeLineDB:
+                """Aggregated overtime line for multiple DB records with same code"""
+                def __init__(self, lines):
+                    self.lines = lines
+                    self.code = lines[0].code if lines else 'OT'
+                    self.number_of_hours = sum(line.number_of_hours for line in lines)
+                    self.amount = sum(line.amount for line in lines)
+                    if self.number_of_hours > 0:
+                        self.rate = sum(line.rate * line.number_of_hours for line in lines) / self.number_of_hours
+                        self.hourly_wage = sum(line.hourly_wage * line.number_of_hours for line in lines) / self.number_of_hours
+                    else:
+                        self.rate = lines[0].rate if lines else 1.0
+                        self.hourly_wage = lines[0].hourly_wage if lines else 0.0
+                    self.id = False
+            
+            for code, lines in code_groups.items():
+                overtime_dict[code] = AggregatedOvertimeLineDB(lines)
+        
         for input_line in payslip.input_line_ids:
             inputs_dict[input_line.code] = input_line
         categories = BrowsableObject(payslip.employee_id.id, {}, self.env)
         inputs = InputLine(payslip.employee_id.id, inputs_dict, self.env)
         worked_days = WorkedDays(payslip.employee_id.id, worked_days_dict,
                                  self.env)
+        overtime = Overtime(payslip.employee_id.id, overtime_dict, self.env)
         payslips = Payslips(payslip.employee_id.id, payslip, self.env)
         rules = BrowsableObject(payslip.employee_id.id, rules_dict, self.env)
         baselocaldict = {'categories': categories, 'rules': rules,
                          'payslip': payslips, 'worked_days': worked_days,
-                         'inputs': inputs, 'payslip_obj': payslip}
+                         'inputs': inputs, 'overtime': overtime, 'payslip_obj': payslip}
         # get the ids of the structures on the contracts and their
         # parent id as well
         contracts = self.env['hr.contract'].browse(contract_ids)
