@@ -348,7 +348,64 @@ class HrPayslip(models.Model):
                             'hours']
                         leaves[item]['number_of_days'] \
                             += c_leaves[item]['hours'] / work_hours
-            res.extend(leaves.values())
+            # ===== XỬ LÝ NGHỈ PHÉP: Chỉ hiển thị nghỉ phép đã duyệt được trả lương =====
+            # KHÔNG extend leaves.values() ở đây nữa để tránh duplicate
+            
+            import logging
+            _logger = logging.getLogger(__name__)
+            
+            if 'hr.leave' in self.env:
+                # Lấy các ngày nghỉ phép đã được duyệt (state='validate')
+                approved_leaves = self.env['hr.leave'].search([
+                    ('employee_id', '=', contract.employee_id.id),
+                    ('state', '=', 'validate'),  
+                    ('date_from', '<=', day_to),
+                    ('date_to', '>=', day_from),
+                ])
+                
+                _logger.info(f"=== APPROVED LEAVE DEBUG ===")
+                _logger.info(f"Employee: {contract.employee_id.name}")
+                _logger.info(f"Period: {date_from} to {date_to}")
+                _logger.info(f"Found {len(approved_leaves)} approved leaves")
+                
+                # Nhóm các nghỉ phép theo loại (leave type)
+                leave_by_type = {}
+                for leave in approved_leaves:
+                    leave_type = leave.holiday_status_id
+                    
+                    if leave_type.unpaid:
+                        _logger.info(f"  - Skip unpaid leave: {leave.name}")
+                        continue
+                    
+                    if leave_type not in leave_by_type:
+                        leave_by_type[leave_type] = {
+                            'days': 0.0,
+                            'hours': 0.0,
+                        }
+                    
+                    # Cộng dồn số ngày và giờ
+                    leave_by_type[leave_type]['days'] += leave.number_of_days
+                    leave_by_type[leave_type]['hours'] += leave.number_of_hours
+                    
+                    _logger.info(f"  - Leave: {leave.name}, Type: {leave_type.name}, "
+                               f"Days: {leave.number_of_days}, Hours: {leave.number_of_hours}, "
+                               f"State: {leave.state}")
+                
+                # Thêm vào kết quả - CHỈ các nghỉ phép đã duyệt được trả lương
+                for leave_type, data in leave_by_type.items():
+                    leave_line = {
+                        'name': _("Paid Leave: %s") % leave_type.name,
+                        'sequence': 15,  # Hiển thị sau WORK100 nhưng trước các loại leave khác
+                        'code': f'LEAVE_{leave_type.code or leave_type.id}',
+                        'number_of_days': data['days'],
+                        'number_of_hours': data['hours'],
+                        'number_of_work_days': data['days'],  # Tính như ngày làm việc
+                        'contract_id': contract.id,
+                    }
+                    res.append(leave_line)
+                    _logger.info(f"  Added paid leave line: {leave_type.name}, "
+                               f"Days: {data['days']}, Hours: {data['hours']}")
+            
         return res
 
     @api.model

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!--    Template for Payslip Report-->
+    <!--    Template for Payslip Report-->
     <template id="report_payslip">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
@@ -71,30 +71,32 @@
                                 <tr>
                                     <th>Code</th>
                                     <th>Name</th>
-                                    <th>Quantity/rate</th>
                                     <th>Amount</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip)"
-                                    t-as="line">
+                                <tr t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip)" t-as="line">
                                     <td>
                                         <span t-field="line.code"/>
                                     </td>
                                     <td>
                                         <span t-field="line.name"/>
                                     </td>
+
                                     <td>
-                                        <span t-field="line.quantity"/>
+                                        <span t-esc="line.amount" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
                                     </td>
                                     <td>
-                                        <span t-esc="line.amount"
-                                              t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        <span t-esc="line.total" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
                                     </td>
-                                    <td>
-                                        <span t-esc="line.total"
-                                              t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-center">
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td >
+                                        <span t-field="o.total_amount"/>
                                     </td>
                                 </tr>
                             </tbody>
