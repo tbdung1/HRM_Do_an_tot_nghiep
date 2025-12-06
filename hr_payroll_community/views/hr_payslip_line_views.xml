@@ -136,7 +136,7 @@
                                     </group>
                                 </form>
                             </field>
-                            <separator string="Other Inputs"/>
+                            <!-- <separator string="Other Inputs"/>
                             <field name="input_line_ids" colspan="4" nolabel="1" readonly="state != 'draft'">
                                 <tree string="Input Data" editable="bottom">
                                     <field name="name"/>
@@ -154,7 +154,7 @@
                                         <field name="contract_id"/>
                                     </group>
                                 </form>
-                            </field>
+                            </field> -->
                             <separator string="Overtime Details"/>
                             <field name="overtime_line_ids" colspan="4" nolabel="1" readonly="state != 'draft'">
                                 <tree string="Overtime Data" editable="bottom">

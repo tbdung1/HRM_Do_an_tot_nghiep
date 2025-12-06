@@ -16,3 +16,5 @@ access_hr_contract_advantage_template_hr_user,access.hr.contract.advantage.templ
 access_hr_payslip_employees,access.hr.payslip.employees,model_hr_payslip_employees,base.group_user,1,1,1,1
 access_group_user,access.user,model_hr_payslip_employees,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
 access_group_user,access.user,model_payslip_lines_contribution_register,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
+access_hr_payslip_generate_all,access.hr.payslip.generate.all,model_hr_payslip_generate_all,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
+access_hr_payslip_generate_all_manager,access.hr.payslip.generate.all.manager,model_hr_payslip_generate_all,hr_payroll_community.group_hr_payroll_community_manager,1,1,1,1

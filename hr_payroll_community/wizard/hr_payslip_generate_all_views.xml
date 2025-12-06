@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="hr_payslip_generate_all_view_form" model="ir.ui.view">
+        <field name="name">hr.payslip.generate.all.view.form</field>
+        <field name="model">hr.payslip.generate.all</field>
+        <field name="arch" type="xml">
+            <form string="Generate Payslips for All Employees">
+                <sheet>
+                    <div class="oe_title mb-3">
+                        <h1>
+                            <i class="fa fa-users text-primary"/>
+ Generate Payslips for All Employees
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Payroll Period">
+                            <field name="date_from" required="1"/>
+                            <field name="date_to" required="1"/>
+                        </group>
+
+                        <group string="Batch Settings">
+                            <field name="create_batch"/>
+                            <field name="batch_name" invisible="create_batch == False" required="create_batch"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Email Settings">
+                            <field name="send_email"/>
+                            <div class="text-muted" invisible="send_email == False">
+                                <i class="fa fa-info-circle"/>
+ Payslips will be sent to employees' work email addresses
+                            </div>
+                        </group>
+                        <group string="Summary">
+                            <div class="alert alert-success" role="alert" style="margin: 0;">
+                                <i class="fa fa-check-circle"/>
+                                <strong>
+                                    <field name="employee_count" readonly="1"/>
+ eligible employees</strong> 
+                                found with active contracts in this period.
+                            </div>
+                        </group>
+                    </group>
+
+                </sheet>
+                <footer>
+                    <button name="action_generate_payslips" string="Generate Payslips" type="object" class="btn-primary" icon="fa-cogs"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_hr_payslip_generate_all" model="ir.actions.act_window">
+        <field name="name">Generate Payslips for All Employees</field>
+        <field name="res_model">hr.payslip.generate.all</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_hr_payslip"/>
+        <field name="binding_view_types">list</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_hr_payslip_generate_all" name="Generate All Payslips" parent="menu_hr_payroll_community_root" action="action_hr_payslip_generate_all" sequence="15"/>
+</odoo>

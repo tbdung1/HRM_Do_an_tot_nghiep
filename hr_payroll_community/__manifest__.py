@@ -16,6 +16,7 @@
         'data/hr_payroll_sequence.xml',
         'wizard/hr_payslips_employees_views.xml',
         'wizard/payslip_lines_contribution_register_views.xml',
+        'wizard/hr_payslip_generate_all_views.xml',
         'report/hr_payroll_report.xml',
         'report/report_contribution_register_templates.xml',
         'report/report_payslip_templates.xml',

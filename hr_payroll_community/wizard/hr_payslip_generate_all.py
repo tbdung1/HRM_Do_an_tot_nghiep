@@ -20,86 +20,121 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from datetime import date, datetime
+from datetime import date
 from dateutil.relativedelta import relativedelta
-
-from odoo import fields, models, _
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
-class HrPayslipRun(models.Model):
-    """Create new model for getting Payslip Batches"""
-    _name = 'hr.payslip.run'
-    _description = 'Payslip Batches'
+class HrPayslipGenerateAll(models.TransientModel):
+    """Wizard để tự động tạo bảng lương cho tất cả nhân viên có hợp đồng đang chạy"""
+    _name = 'hr.payslip.generate.all'
+    _description = 'Generate Payslips for All Active Employees'
 
-    name = fields.Char(required=True, help="Name for Payslip Batches",
-                       string="Name")
-    slip_ids = fields.One2many('hr.payslip',
-                               'payslip_run_id',
-                               string='Payslips',
-                               help="Choose Payslips for Batches")
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('close', 'Close'),
-    ], string='Status', index=True, readonly=True, copy=False, default='draft',
-                               help="Status for Payslip Batches")
-    date_start = fields.Date(string='Date From', required=True,
-                             help="start date for batch",
-                             default=lambda self: fields.Date.to_string(
-                                 date.today().replace(day=1)))
-    date_end = fields.Date(string='Date To', required=True,
-                           help="End date for batch",
-                           default=lambda self: fields.Date.to_string(
-                               (datetime.now() + relativedelta(months=+1, day=1,
-                                                               days=-1)).date())
-                           )
-    credit_note = fields.Boolean(string='Credit Note',
-                                 help="If its checked, indicates that all"
-                                      "payslips generated from here are refund"
-                                      "payslips.")
-    is_validate = fields.Boolean(compute='_compute_is_validate')
+    date_from = fields.Date(
+        string='Date From', 
+        required=True,
+        default=lambda self: fields.Date.today().replace(day=1),
+        help="Start date for payslip period"
+    )
+    date_to = fields.Date(
+        string='Date To', 
+        required=True,
+        default=lambda self: (date.today().replace(day=1) + relativedelta(months=1, days=-1)),
+        help="End date for payslip period"
+    )
+    create_batch = fields.Boolean(
+        string='Create Payslip Batch',
+        default=True,
+        help="If checked, all payslips will be grouped in a batch"
+    )
+    batch_name = fields.Char(
+        string='Batch Name',
+        compute='_compute_batch_name',
+        store=True,
+        readonly=False,
+        help="Name of the payslip batch"
+    )
+    employee_count = fields.Integer(
+        string='Eligible Employees',
+        compute='_compute_employee_count',
+        help="Number of employees with active contracts in the period"
+    )
+    send_email = fields.Boolean(
+        string='Send Email to Employees',
+        default=False,
+        help="If checked, payslip will be sent to employees via email"
+    )
 
-    def _compute_is_validate(self):
-        for record in self:
-            if record.slip_ids and record.slip_ids.filtered(
-                    lambda slip: slip.state == 'draft'):
-                record.is_validate = True
+    @api.depends('date_from', 'date_to')
+    def _compute_batch_name(self):
+        """Tự động tạo tên batch từ kỳ lương"""
+        for wizard in self:
+            if wizard.date_from and wizard.date_to:
+                wizard.batch_name = _("Payroll %s - %s") % (
+                    wizard.date_from.strftime('%m/%Y'),
+                    wizard.date_to.strftime('%m/%Y')
+                )
             else:
-                record.is_validate = False
+                wizard.batch_name = _("Payroll Batch")
 
-    def action_validate_payslips(self):
-        if self.slip_ids:
-            for slip in self.slip_ids.filtered(
-                    lambda slip: slip.state == 'draft'):
-                slip.action_payslip_done()
+    @api.depends('date_from', 'date_to')
+    def _compute_employee_count(self):
+        """Tính số nhân viên đủ điều kiện"""
+        for wizard in self:
+            if wizard.date_from and wizard.date_to:
+                employees = wizard._get_eligible_employees()
+                wizard.employee_count = len(employees)
+            else:
+                wizard.employee_count = 0
 
-    def action_payslip_run(self):
-        """Function for state change"""
-        return self.write({'state': 'draft'})
-
-    def close_payslip_run(self):
-        """Function for state change"""
-        return self.write({'state': 'close'})
-
-    def action_generate_all_payslips(self):
+    def _get_eligible_employees(self):
         """
-        Tự động tạo bảng lương cho tất cả nhân viên có hợp đồng đang chạy
+        Lấy danh sách nhân viên có hợp đồng đang chạy trong kỳ
         """
         self.ensure_one()
         
         # Tìm tất cả hợp đồng active trong kỳ
         contracts = self.env['hr.contract'].search([
             ('state', '=', 'open'),
-            ('date_start', '<=', self.date_end),
+            ('date_start', '<=', self.date_to),
             '|',
             ('date_end', '=', False),
-            ('date_end', '>=', self.date_start),
+            ('date_end', '>=', self.date_from),
         ])
         
+        # Lấy danh sách nhân viên từ các hợp đồng
         employees = contracts.mapped('employee_id')
+        
+        _logger.info(f"Found {len(employees)} employees with active contracts from {self.date_from} to {self.date_to}")
+        
+        return employees
+
+    def action_generate_payslips(self):
+        """
+        Tạo bảng lương cho tất cả nhân viên có hợp đồng đang chạy
+        """
+        self.ensure_one()
+        
+        # Lấy danh sách nhân viên đủ điều kiện
+        employees = self._get_eligible_employees()
         
         if not employees:
             raise UserError(_("No employees found with active contracts in the selected period!"))
+        
+        # Tạo batch nếu cần
+        payslip_run = False
+        if self.create_batch:
+            payslip_run = self.env['hr.payslip.run'].create({
+                'name': self.batch_name,
+                'date_start': self.date_from,
+                'date_end': self.date_to,
+                'state': 'draft',
+            })
+            _logger.info(f"Created payslip batch: {self.batch_name}")
         
         # Tạo bảng lương cho từng nhân viên
         payslips = self.env['hr.payslip']
@@ -111,19 +146,20 @@ class HrPayslipRun(models.Model):
                 # Kiểm tra xem đã có payslip trong kỳ chưa
                 existing_payslip = self.env['hr.payslip'].search([
                     ('employee_id', '=', employee.id),
-                    ('date_from', '=', self.date_start),
-                    ('date_to', '=', self.date_end),
+                    ('date_from', '=', self.date_from),
+                    ('date_to', '=', self.date_to),
                     ('state', '!=', 'cancel'),
                 ], limit=1)
                 
                 if existing_payslip:
+                    _logger.info(f"Payslip already exists for {employee.name}, skipping...")
                     skipped_count += 1
                     continue
                 
                 # Lấy thông tin từ onchange_employee_id
                 slip_data = self.env['hr.payslip'].onchange_employee_id(
-                    self.date_start, 
-                    self.date_end, 
+                    self.date_from, 
+                    self.date_to, 
                     employee.id, 
                     contract_id=False
                 )
@@ -134,11 +170,14 @@ class HrPayslipRun(models.Model):
                     'name': slip_data['value'].get('name'),
                     'struct_id': slip_data['value'].get('struct_id'),
                     'contract_id': slip_data['value'].get('contract_id'),
-                    'date_from': self.date_start,
-                    'date_to': self.date_end,
+                    'date_from': self.date_from,
+                    'date_to': self.date_to,
                     'company_id': employee.company_id.id,
-                    'payslip_run_id': self.id,
                 }
+                
+                # Thêm batch nếu có
+                if payslip_run:
+                    payslip_vals['payslip_run_id'] = payslip_run.id
                 
                 # Thêm input lines và worked days lines
                 if slip_data['value'].get('input_line_ids'):
@@ -156,9 +195,9 @@ class HrPayslipRun(models.Model):
                 payslips += payslip
                 created_count += 1
                 
+                _logger.info(f"Created payslip for {employee.name}")
+                
             except Exception as e:
-                import logging
-                _logger = logging.getLogger(__name__)
                 _logger.error(f"Failed to create payslip for {employee.name}: {str(e)}")
                 skipped_count += 1
                 continue
@@ -166,51 +205,63 @@ class HrPayslipRun(models.Model):
         # Tính toán tất cả payslips
         if payslips:
             payslips.action_compute_sheet()
+            _logger.info(f"Computed {len(payslips)} payslips")
         
-        # Hiển thị thông báo
-        message = _("Payslips Generated Successfully!\\n\\n")
-        message += _("Created: %d payslips\\n") % created_count
+        # Gửi email nếu được chọn
+        email_sent_count = 0
+        email_failed_count = 0
+        if self.send_email and payslips:
+            email_sent_count, email_failed_count = self._send_payslip_emails(payslips)
+        
+        # Hiển thị thông báo kết quả
+        message = _("Payslips Generated Successfully!\n\n")
+        message += _("Created: %d payslips\n") % created_count
         if skipped_count > 0:
-            message += _("Skipped: %d payslips (already exist or error)") % skipped_count
+            message += _("Skipped: %d payslips (already exist or error)\n") % skipped_count
+        if self.send_email:
+            message += _("\nEmail sent: %d\n") % email_sent_count
+            if email_failed_count > 0:
+                message += _("Email failed: %d\n") % email_failed_count
         
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Success'),
-                'message': message,
-                'type': 'success',
-                'sticky': False,
+        # Quay về view phù hợp
+        if payslip_run:
+            # Quay về batch form
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Payslip Batch'),
+                'res_model': 'hr.payslip.run',
+                'res_id': payslip_run.id,
+                'view_mode': 'form',
+                'target': 'current',
             }
-        }
+        else:
+            # Quay về danh sách payslips
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Generated Payslips'),
+                'res_model': 'hr.payslip',
+                'view_mode': 'tree,form',
+                'domain': [('id', 'in', payslips.ids)],
+                'target': 'current',
+            }
     
-    def action_send_payslip_emails(self):
+    def _send_payslip_emails(self, payslips):
         """
-        Gửi email phiếu lương cho tất cả nhân viên trong batch
+        Gửi email phiếu lương cho nhân viên
+        
+        @param payslips: recordset của hr.payslip
+        @return: tuple (sent_count, failed_count)
         """
-        self.ensure_one()
-        
-        if not self.slip_ids:
-            raise UserError(_("No payslips found in this batch!"))
-        
-        # Chỉ gửi email cho payslip đã done
-        payslips_to_send = self.slip_ids.filtered(lambda p: p.state == 'done')
-        
-        if not payslips_to_send:
-            raise UserError(_("No confirmed payslips found. Please confirm payslips before sending emails."))
-        
         sent_count = 0
         failed_count = 0
         
         # Lấy hoặc tạo email template
         template = self._get_or_create_email_template()
         
-        for payslip in payslips_to_send:
+        for payslip in payslips:
             try:
                 # Kiểm tra nhân viên có email không
                 if not payslip.employee_id.work_email:
-                    import logging
-                    _logger = logging.getLogger(__name__)
                     _logger.warning(f"Employee {payslip.employee_id.name} has no email address")
                     failed_count += 1
                     continue
@@ -218,29 +269,13 @@ class HrPayslipRun(models.Model):
                 # Gửi email sử dụng template
                 template.send_mail(payslip.id, force_send=True, raise_exception=False)
                 sent_count += 1
+                _logger.info(f"Sent payslip email to {payslip.employee_id.name} ({payslip.employee_id.work_email})")
                 
             except Exception as e:
-                import logging
-                _logger = logging.getLogger(__name__)
                 _logger.error(f"Failed to send email to {payslip.employee_id.name}: {str(e)}")
                 failed_count += 1
         
-        # Hiển thị thông báo
-        message = _("Email Sending Completed!\n\n")
-        message += _("Successfully sent: %d emails\n") % sent_count
-        if failed_count > 0:
-            message += _("Failed: %d emails") % failed_count
-        
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Email Sent'),
-                'message': message,
-                'type': 'success' if failed_count == 0 else 'warning',
-                'sticky': False,
-            }
-        }
+        return sent_count, failed_count
     
     def _get_or_create_email_template(self):
         """
