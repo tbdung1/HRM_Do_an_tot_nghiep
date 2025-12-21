@@ -43,9 +43,9 @@ class HrmContractDraft(models.Model):
     def _gender_label(self):
         self.ensure_one()
         gender_mapping = {
-            "male": "Nam",
-            "female": "Nữ",
-            "other": "Khác",
+            "male": _("Male"),
+            "female": _("Female"),
+            "other": _("Other"),
         }
         return gender_mapping.get(self.gender)
         # return dict(self._fields["gender"]._description_selection(self.env)).get(self.gender)
@@ -63,8 +63,8 @@ class HrmContractDraft(models.Model):
         self.employee_submit = self.env.user.employee_id
         hr_groups = ["hr_contract.group_hr_contract_manager"]
         self.notify_hr(
-            subject=_("Yêu cầu làm phê duyệt hợp đồng - %s") % self.name,
-            message=_("Nhân viên %s đã gửi yêu cầu làm phê duyệt hợp đồng")
+            subject=_("Contract Approval Request - %s") % self.name,
+            message=_("Employee %s has submitted a contract approval request")
             % self.employee_submit.name,
             additional_hr_groups=hr_groups,
         )
@@ -72,8 +72,8 @@ class HrmContractDraft(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Thành công",
-                "message": "Đã gửi yêu cầu duyệt!",
+                "title": _("Success"),
+                "message": _("Approval request sent!"),
                 "type": "success",
                 "sticky": False,
                 "next": {
@@ -85,15 +85,15 @@ class HrmContractDraft(models.Model):
     def action_reject_contract(self):
         self.state_hr_contract = "rejected"
         self.notify_staff(
-            message=_("Đã từ chối hợp đồng - %s") % self.name,
+            message=_("Contract Rejected - %s") % self.name,
             employee_id=self.employee_submit,
         )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Thành công",
-                "message": "Không duyệt hợp đồng",
+                "title": _("Success"),
+                "message": _("Contract not approved"),
                 "type": "success",
                 "sticky": False,
                 "next": {
@@ -107,15 +107,15 @@ class HrmContractDraft(models.Model):
         for record in self:
             # record.map_to_hr_contract()
             record.notify_staff(
-                message=_("Đã phê duyệt hợp đồng - %s") % self.name,
+                message=_("Contract Approved - %s") % self.name,
                 employee_id=self.employee_submit,
             )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Thành công",
-                "message": "Đã duyệt thành công!",
+                "title": _("Success"),
+                "message": _("Approved successfully!"),
                 "type": "success",
                 "sticky": False,
                 "next": {

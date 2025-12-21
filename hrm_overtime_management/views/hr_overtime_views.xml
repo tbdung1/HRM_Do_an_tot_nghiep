@@ -51,7 +51,7 @@
                             <field name='attchd_copy'
                                    filename="attchd_copy_name"
                                    readonly="state != 'draft'"/>
-                            <field name='type' readonly="state != 'draft'"/>
+                            <field name='type' readonly="1"/>
                             <field name='overtime_type_id'
                                    groups="hr.group_hr_user"
                                    readonly="state != 'f_approve'"

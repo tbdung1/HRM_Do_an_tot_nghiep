@@ -91,10 +91,6 @@ class HrmAttendanceSupplement(models.Model):
             if rec.employee_id.user_id != self.env.user:
                 raise ValidationError("Bạn không có quyền gửi yêu cầu này.")
             rec.state = 'submitted'
-            rec.activity_schedule(
-                'mail.mail_activity_data_todo',
-                note=f"Yêu cầu bổ sung chấm công từ {rec.employee_id.name}"
-            )
             rec.message_post(body="📤 Yêu cầu đã được gửi để phê duyệt.")
 
     def action_approve(self):
@@ -176,13 +172,6 @@ class HrmAttendanceSupplement(models.Model):
             })
             
             rec.message_post(body=f"✅ Yêu cầu đã được duyệt. Đã tạo {len(created_attendances)} bản ghi chấm công.")
-            
-            # Thông báo cho nhân viên
-            rec.activity_schedule(
-                'mail.mail_activity_data_todo',
-                user_id=rec.employee_id.user_id.id,
-                note="Yêu cầu bổ sung chấm công của bạn đã được duyệt."
-            )
 
     def action_reject(self):
         for rec in self:
@@ -191,13 +180,6 @@ class HrmAttendanceSupplement(models.Model):
             
             rec.state = 'rejected'
             rec.message_post(body="❌ Yêu cầu bị từ chối.")
-            
-            # Thông báo cho nhân viên
-            rec.activity_schedule(
-                'mail.mail_activity_data_todo',
-                user_id=rec.employee_id.user_id.id,
-                note="Yêu cầu bổ sung chấm công của bạn đã bị từ chối."
-            )
 
     def action_view_attendance(self):
         """Xem bản ghi attendance đã tạo"""

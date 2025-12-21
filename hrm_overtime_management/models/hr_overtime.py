@@ -21,6 +21,7 @@
 #############################################################################
 from dateutil import relativedelta
 import pandas as pd
+from pytz import timezone, UTC
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.addons.resource.models.utils import HOURS_PER_DAY
@@ -121,7 +122,7 @@ class HrOvertime(models.Model):
     attchd_copy_name = fields.Char('File Name',
                                    help="Name of the attached file")
     type = fields.Selection([('cash', 'Cash'), ('leave', 'Leave')],
-                            default="leave", required=True, string="Type",
+                            default="cash", required=True, string="Type",
                             help="Type of the overtime request")
     overtime_type_id = fields.Many2one('overtime.type',
                                        domain="[('type','=',type), "
@@ -200,35 +201,107 @@ class HrOvertime(models.Model):
                     'days_no_tmp': hours if sheet.duration_type == 'hours' else days_no,
                 })
 
-    @api.onchange('overtime_type_id')
-    def _get_hour_amount(self):
-        """Calculate the overtime amount based on the selected overtime type,
-        duration type, and contract details."""
-        if self.overtime_type_id.rule_line_ids and self.duration_type == 'hours':
-            for recd in self.overtime_type_id.rule_line_ids:
-                if recd.from_hrs < self.days_no_tmp <= recd.to_hrs and self.contract_id:
-                    if self.contract_id.over_hour:
-                        cash_amount = self.contract_id.over_hour * recd.hrs_amount
-                        self.cash_hrs_amount = cash_amount
-                    else:
-                        raise UserError(
-                            _("Hour Overtime Needs Hour Wage in Employee Contract."))
-        elif self.overtime_type_id.rule_line_ids and self.duration_type == 'days':
-            for recd in self.overtime_type_id.rule_line_ids:
-                if recd.from_hrs < self.days_no_tmp <= recd.to_hrs and self.contract_id:
-                    if self.contract_id.over_day:
-                        cash_amount = self.contract_id.over_day * recd.hrs_amount
-                        self.cash_day_amount = cash_amount
-                    else:
-                        raise UserError(
-                            _("Day Overtime Needs Day Wage in Employee Contract."))
+    @api.constrains("date_from", "date_to", "employee_id")
+    def _check_overtime_outside_work_hours(self):
+        """Validate that overtime does NOT overlap with working hours"""
+        for rec in self:
+            if not rec.date_from or not rec.date_to or not rec.employee_id:
+                continue
+
+            calendar = rec.employee_id.resource_calendar_id
+            if not calendar:
+                raise ValidationError(
+                    _("Employee %s does not have a work schedule.")
+                    % rec.employee_id.name
+                )
+
+            # BƯỚC 1: Chuyển datetime sang timezone-aware (UTC+7)
+            vietnam_tz = timezone("Asia/Ho_Chi_Minh")  # UTC+7
+
+            # Odoo lưu datetime dạng UTC, chuyển sang UTC+7
+            date_from_utc = rec.date_from.replace(tzinfo=UTC)
+            date_to_utc = rec.date_to.replace(tzinfo=UTC)
+
+            date_from_vn = date_from_utc.astimezone(vietnam_tz)
+            date_to_vn = date_to_utc.astimezone(vietnam_tz)
+
+            # BƯỚC 2: Lấy tất cả work intervals trong khoảng thời gian OT
+            try:
+                work_intervals = calendar._attendance_intervals_batch(
+                    date_from_vn,  # ← Có tzinfo (UTC+7)
+                    date_to_vn,  # ← Có tzinfo (UTC+7)
+                    resources=rec.employee_id.resource_id,
+                )[rec.employee_id.resource_id.id]
+            except Exception as e:
+                raise ValidationError(_("Error checking work schedule: %s") % str(e))
+
+            # BƯỚC 3: Kiểm tra overlap
+            if work_intervals:
+                overlapping = []
+                for start, stop, attendance in work_intervals:
+                    # Chuyển về UTC+7 để hiển thị
+                    start_vn = start.astimezone(vietnam_tz)
+                    stop_vn = stop.astimezone(vietnam_tz)
+                    overlapping.append(
+                        f"• {start_vn.strftime('%d/%m/%Y %H:%M')} - {stop_vn.strftime('%H:%M')}"
+                    )
+
+                raise ValidationError(
+                    _(
+                        "❌ Overtime OVERLAPS with working hours:\n\n%s\n\n"
+                        "📋 Overtime requested: %s - %s\n"
+                        "⚠️ Overtime must be OUTSIDE scheduled work hours.\n\n"
+                    )
+                    % (
+                        "\n".join(overlapping),
+                        date_from_vn.strftime("%d/%m/%Y %H:%M"),
+                        date_to_vn.strftime("%d/%m/%Y %H:%M"),
+                    )
+                )
+
+    @api.onchange("overtime_type_id")
+    def _auto_select_overtime_type(self):
+        """Auto-select overtime type based on calculated hours"""
+        if not self.overtime_type_id:
+            return
+
+        for rule in self.overtime_type_id.rule_line_ids:
+            if rule.from_hrs <= self.days_no_tmp <= rule.to_hrs:
+                return
+
+        # Nếu không tìm thấy rule phù hợp
+        if self.overtime_type_id:
+            raise UserError(
+                _("No matching overtime rule found for the entered hours."))
+    # @api.onchange('overtime_type_id')
+    # def _get_hour_amount(self):
+    #     """Calculate the overtime amount based on the selected overtime type,
+    #     duration type, and contract details."""
+    #     if self.overtime_type_id.rule_line_ids and self.duration_type == 'hours':
+    #         for recd in self.overtime_type_id.rule_line_ids:
+    #             if recd.from_hrs < self.days_no_tmp <= recd.to_hrs and self.contract_id:
+    #                 if self.contract_id.over_hour:
+    #                     cash_amount = self.contract_id.over_hour * recd.hrs_amount
+    #                     self.cash_hrs_amount = cash_amount
+    #                 else:
+    #                     raise UserError(
+    #                         _("Hour Overtime Needs Hour Wage in Employee Contract."))
+    #     elif self.overtime_type_id.rule_line_ids and self.duration_type == 'days':
+    #         for recd in self.overtime_type_id.rule_line_ids:
+    #             if recd.from_hrs < self.days_no_tmp <= recd.to_hrs and self.contract_id:
+    #                 if self.contract_id.over_day:
+    #                     cash_amount = self.contract_id.over_day * recd.hrs_amount
+    #                     self.cash_day_amount = cash_amount
+    #                 else:
+    #                     raise UserError(
+    #                         _("Day Overtime Needs Day Wage in Employee Contract."))
 
     def action_submit_to_finance(self):
         """Submit the overtime request for finance approval."""
         # notification to employee
         self.notify_hr(
-            subject=f"Yêu cầu làm thêm giờ - {self.employee_id.name}",
-            message=f"Nhân viên {self.employee_id.name} đã gửi yêu cầu làm thêm {self.days_no_tmp} giờ từ {self.date_from} đến {self.date_to}",
+            subject=f"Request Overtime - {self.employee_id.name}",
+            message=f"Employee {self.employee_id.name} has submitted an overtime request for {self.days_no_tmp} hours from {self.date_from} to {self.date_to}",
             priority="2",
         )
         return self.sudo().write({
@@ -238,33 +311,33 @@ class HrOvertime(models.Model):
     def action_approve(self):
         """Approve the overtime request and create a leave record if the type
         is 'leave'"""
-        if self.overtime_type_id.type == 'leave':
-            if self.duration_type == 'days':
-                holiday_vals = {
-                    'name': 'Overtime',
-                    'holiday_status_id': self.overtime_type_id.leave_type_id.id,
-                    'number_of_days': self.days_no_tmp,
-                    'notes': self.desc,
-                    'holiday_type': 'employee',
-                    'employee_id': self.employee_id.id,
-                    'state': 'confirm',
-                }
-            else:
-                day_hour = self.days_no_tmp / HOURS_PER_DAY
-                holiday_vals = {
-                    'name': 'Overtime',
-                    'holiday_status_id': self.overtime_type_id.leave_type_id.id,
-                    'number_of_days': day_hour,
-                    'notes': self.desc,
-                    'holiday_type': 'employee',
-                    'employee_id': self.employee_id.id,
-                    'state': 'confirm',
-                }
-            holiday = self.env['hr.leave.allocation'].sudo().create(
-                holiday_vals)
-            self.leave_id = holiday.id
+        # if self.overtime_type_id.type == 'leave':
+        #     if self.duration_type == 'days':
+        #         holiday_vals = {
+        #             'name': 'Overtime',
+        #             'holiday_status_id': self.overtime_type_id.leave_type_id.id,
+        #             'number_of_days': self.days_no_tmp,
+        #             'notes': self.desc,
+        #             'holiday_type': 'employee',
+        #             'employee_id': self.employee_id.id,
+        #             'state': 'confirm',
+        #         }
+        #     else:
+        #         day_hour = self.days_no_tmp / HOURS_PER_DAY
+        #         holiday_vals = {
+        #             'name': 'Overtime',
+        #             'holiday_status_id': self.overtime_type_id.leave_type_id.id,
+        #             'number_of_days': day_hour,
+        #             'notes': self.desc,
+        #             'holiday_type': 'employee',
+        #             'employee_id': self.employee_id.id,
+        #             'state': 'confirm',
+        #         }
+        #     holiday = self.env['hr.leave.allocation'].sudo().create(
+        #         holiday_vals)
+        #     self.leave_id = holiday.id
         if self.employee_id.user_id:
-            message = f"Yêu cầu làm thêm giờ đã được duyệt - {self.name} | Người duyệt: {self.env.user.name} | Thời gian: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')}"
+            message = f"Overtime approved - {self.name} | Approved by: {self.env.user.name} | Time: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')}"
             self.notify_staff(message=message, employee_id=self.employee_id)
 
         self.state = 'approved'
@@ -272,7 +345,7 @@ class HrOvertime(models.Model):
     def action_reject(self):
         """Set the state of the overtime request to 'refused'."""
         if self.employee_id.user_id:
-            message = f"Yêu cầu làm thêm giờ đã được từ chối - {self.name} | Người từ chối: {self.env.user.name} | Thời gian: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')}"
+            message = f"Overtime rejected - {self.name} | Rejected by: {self.env.user.name} | Time: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')}"
             self.notify_staff(message=message, employee_id=self.employee_id)
 
         self.state = 'refused'

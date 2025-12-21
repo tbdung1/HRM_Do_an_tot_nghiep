@@ -29,7 +29,7 @@ class OvertimeType(models.Model):
 
     name = fields.Char('Name', help="Name of the overtime type.")
     type = fields.Selection([('cash', 'Cash'),
-                             ('leave', 'Leave ')], string="Type",
+                             ('leave', 'Leave ')], string="Type", default="cash", readonly=True,
                             help="Type of overtime, whether in cash or leave.")
 
     duration_type = fields.Selection([('hours', 'Hour'),

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
         <!-- Define a payroll structure with a reference to the 'hr_salary_rule_overtime' salary rule -->
-        <record id="hr_payroll_community.structure_base" model="hr.payroll.structure">
+        <!-- <record id="hr_payroll_community.structure_base" model="hr.payroll.structure">
             <field eval="[(4, ref('hr_salary_rule_overtime'))]"
                    name="rule_ids"/>
-        </record>
+        </record> -->
         <!-- Define an overtime type for leave hours -->
         <record id="hr_overtime_type_demo_leave_hour" model="overtime.type">
             <field name="name">Leave Hour</field>

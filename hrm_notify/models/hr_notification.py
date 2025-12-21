@@ -104,7 +104,7 @@ class HrNotification(models.Model):
                 "priority": priority,
                 "source_model": source_model,
                 "source_record_id": source_record_id,
-                "state": "sent", 
+                "state": "sent",
             }
 
             notification = self.create(notification_vals)
@@ -171,18 +171,26 @@ class HrNotification(models.Model):
 
         current_time = fields.Datetime.now().strftime("%d/%m/%Y %H:%M")
 
-        formatted_message = f"""
-Thông báo HR mới
+        formatted_message = _(
+            """
+New HR Notification
 ━━━━━━━━━━━━━━━━━━━━
-Tiêu đề: {subject}
-|  Từ: {employee_name}
-|  Phòng ban: {department}
-|  Thời gian: {current_time}
+Title: {subject}
+|  From: {employee_name}
+|  Department: {department}
+|  Time: {current_time}
 
-|  Nội dung:
+|  Content:
 {message_body}
 
 """
+        ).format(
+            subject=subject,
+            employee_name=employee_name,
+            department=department,
+            current_time=current_time,
+            message_body=message_body,
+        )
 
         return formatted_message
 
@@ -216,7 +224,7 @@ class HrNotificationMixin(models.AbstractModel):
         hr_partner = self.env.user.partner_id
         chan_info = self.env["discuss.channel"].channel_get([employee_partner.id])
         channel = self.env["discuss.channel"].browse(chan_info["id"])
-        
+
         channel.with_context(mail_create_nosubscribe=True).message_post(
             body=message,
             author_id=hr_partner.id,

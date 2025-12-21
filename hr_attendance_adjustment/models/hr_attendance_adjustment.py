@@ -76,10 +76,6 @@ class HrmAttendanceAdjustment(models.Model):
             if rec.employee_id.user_id != self.env.user:
                 raise ValidationError("Bạn không có quyền gửi yêu cầu này.")
             rec.state = 'submitted'
-            rec.activity_schedule(
-                'mail.mail_activity_data_todo',
-                note=f"Yêu cầu điều chỉnh chấm công từ {rec.employee_id.name}"
-            )
 
 
     def action_reject(self):
@@ -100,11 +96,6 @@ class HrmAttendanceAdjustment(models.Model):
             rec.update_by = self.env.user
             rec.state = 'manager_approved'
             rec.message_post(body="🛠 Đã cập nhật bảng công. Gửi lại cho nhân viên xác nhận.")
-            rec.activity_schedule(
-                'mail.mail_activity_data_todo',
-                user_id=rec.employee_id.user_id.id,
-                note="Bảng công của bạn đã được cập nhật. Vui lòng xác nhận lại."
-            )
 
     def action_view_history(self):
         """Xem lịch sử các yêu cầu điều chỉnh của attendance này"""
