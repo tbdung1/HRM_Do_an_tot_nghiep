@@ -8,7 +8,7 @@
     'depends': ['hr', 'hrm_base', 'hr_attendance', 'hr_attendance_adjustment', 'hr_attendance_supplement'],
     "data": [
         "security/ir.model.access.csv",
-        # "views/hrm_attendance_views.xml",
+        "views/res_config_setting_views.xml",
         "views/hrm_attendance_menu_views.xml",
         "security/hr_attendance_security.xml.xml",
         "data/cron.xml",

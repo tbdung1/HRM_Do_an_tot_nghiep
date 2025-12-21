@@ -153,3 +153,60 @@ class HrmAttendance(models.Model):
                 'is_auto_checkout': True,
                 'auto_checkout_time': current_time,
             })
+
+    def _get_allowed_time_config(self):
+        """Lấy config thời gian cho phép check-in/check-out"""
+        params = self.env['ir.config_parameter'].sudo()
+        return {
+            'check_in_start': params.get_param('hrm_attendance.check_in_start_time', '07:00'),
+            'check_in_end': params.get_param('hrm_attendance.check_in_end_time', '09:00'),
+            'check_out_start': params.get_param('hrm_attendance.check_out_start_time', '16:00'),
+            'check_out_end': params.get_param('hrm_attendance.check_out_end_time', '19:00'),
+            'enable_time_restriction': params.get_param('hrm_attendance.enable_time_restriction', 'False') == 'True',
+        }
+
+    def _check_time_allowed(self, check_time, action_type):
+        """
+        Kiểm tra thời gian có được phép check-in/check-out không
+        :param check_time: datetime object
+        :param action_type: 'check_in' hoặc 'check_out'
+        """
+        config = self._get_allowed_time_config()
+        
+        if not config['enable_time_restriction']:
+            return True, ""
+        
+        current_time = check_time.time()
+        
+        if action_type == 'check_in':
+            start_time = datetime.strptime(config['check_in_start'], '%H:%M').time()
+            end_time = datetime.strptime(config['check_in_end'], '%H:%M').time()
+            time_range = f"{config['check_in_start']} - {config['check_in_end']}"
+        else:  # check_out
+            start_time = datetime.strptime(config['check_out_start'], '%H:%M').time()
+            end_time = datetime.strptime(config['check_out_end'], '%H:%M').time()
+            time_range = f"{config['check_out_start']} - {config['check_out_end']}"
+        
+        if not (start_time <= current_time <= end_time):
+            return False, f"Không thể {action_type.replace('_', ' ')} ngoài khung giờ cho phép ({time_range})"
+        
+        return True, ""
+ 
+
+    @api.constrains('check_in')
+    def _check_check_in_time(self):
+        """Kiểm tra thời gian check-in"""
+        for record in self:
+            if record.check_in:
+                is_allowed, message = self._check_time_allowed(record.check_in, 'check_in')
+                if not is_allowed:
+                    raise exceptions.ValidationError(message)
+
+    @api.constrains('check_out')
+    def _check_check_out_time(self):
+        """Kiểm tra thời gian check-out"""
+        for record in self:
+            if record.check_out and not record.is_auto_checkout:
+                is_allowed, message = self._check_time_allowed(record.check_out, 'check_out')
+                if not is_allowed:
+                    raise exceptions.ValidationError(message)
