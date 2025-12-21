@@ -63,10 +63,10 @@ class HrmAttendanceAdjustment(models.Model):
             self.check_in_new = self.attendance_id.check_in
             self.check_out_new = self.attendance_id.check_out
     state = fields.Selection([
-         ('draft', 'Nháp'),
-        ('submitted', 'Chờ phê duyệt'),
-        ('manager_approved', 'Đã duyệt'),
-        ('rejected', 'Từ chối'),
+         ('draft', 'Draft'),
+        ('submitted', 'Awaiting Approval'),
+        ('manager_approved', 'Approved'),
+        ('rejected', 'Rejected'),
     ], string='Status', default='draft', tracking=True)
     update_by = fields.Many2one('res.users', string='Updated By')
 

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Root Menus -->
-    <menuitem id="menu_hr_payroll_community_root" name="Payroll" sequence="45"
-              web_icon="hr_payroll_community,static/description/icon.png"/>
+    <menuitem id="menu_hr_payroll_community_root" name="Payroll123" sequence="45"
+              web_icon="hr_payroll_community,static/description/icon.png"
+              groups="hr.group_hr_user"/>
     <menuitem id="menu_hr_payroll_community_configuration" name="Configuration"
               parent="menu_hr_payroll_community_root"
               sequence="100"

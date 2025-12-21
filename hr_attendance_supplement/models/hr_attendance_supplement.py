@@ -8,7 +8,7 @@ class HrmAttendanceSupplement(models.Model):
     _description = 'HRM Attendance Supplement'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    employee_id = fields.Many2one('hr.employee', string='Nhân viên', required=True, default=lambda self: self.env.user.employee_id)
+    employee_id = fields.Many2one('hr.employee', string='Employee', required=True, default=lambda self: self.env.user.employee_id)
     can_submit = fields.Boolean(compute='_compute_user_rights', store=False)
     can_approve = fields.Boolean(compute='_compute_user_rights', store=False)
 
@@ -26,36 +26,36 @@ class HrmAttendanceSupplement(models.Model):
             record.can_approve = is_hr_manager and record.state == 'submitted'
 
     supplement_type = fields.Selection([
-        ('full_day', 'Cả Ngày'),
-        ('half_day', 'Nửa Ngày'),
-    ], string='Loại', required=True, default='full_day', tracking=True)
+        ('full_day', 'Full Day'),
+        ('half_day', 'Half Day'),
+    ], string='Type', required=True, default='full_day', tracking=True)
     
-    # Cho cả ngày
-    date_from = fields.Date(string='Từ Ngày', tracking=True)
-    date_to = fields.Date(string='Đến Ngày', tracking=True)
+    # For full day
+    date_from = fields.Date(string='From Date', tracking=True)
+    date_to = fields.Date(string='To Date', tracking=True)
     
-    # Cho nửa ngày
-    single_date = fields.Date(string='Ngày', tracking=True)
+    # For half day
+    single_date = fields.Date(string='Date', tracking=True)
     period = fields.Selection([
-        ('morning', 'Sáng'),
-        ('afternoon', 'Chiều'),
-    ], string='Lựa Chọn', tracking=True)
+        ('morning', 'Morning'),
+        ('afternoon', 'Afternoon'),
+    ], string='Period', tracking=True)
     
-    reason = fields.Text(string='Lý do bổ sung', required=True)
+    reason = fields.Text(string='Reason', required=True)
     attachment_ids = fields.Many2many('ir.attachment', 'hr_attendance_supplement_attachment_rel', 
                                       'supplement_id', 'attachment_id', 
-                                      string='File đính kèm')
+                                      string='Attachments')
     
     state = fields.Selection([
-        ('draft', 'Nháp'),
-        ('submitted', 'Chờ phê duyệt'),
-        ('approved', 'Đã duyệt'),
-        ('rejected', 'Từ chối'),
-    ], string='Trạng thái', default='draft', tracking=True)
+        ('draft', 'Draft'),
+        ('submitted', 'Submitted'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ], string='Status', default='draft', tracking=True)
     
-    approved_by = fields.Many2one('res.users', string='Người duyệt', readonly=True)
-    created_attendance_ids = fields.Many2many('hr.attendance', string='Bản ghi chấm công', readonly=True)
-    attendance_count = fields.Integer(string='Số bản ghi', compute='_compute_attendance_count')
+    approved_by = fields.Many2one('res.users', string='Approved By', readonly=True)
+    created_attendance_ids = fields.Many2many('hr.attendance', string='Attendance Records', readonly=True)
+    attendance_count = fields.Integer(string='Number of Records', compute='_compute_attendance_count')
 
     @api.depends('created_attendance_ids')
     def _compute_attendance_count(self):
