@@ -69,7 +69,7 @@ class HrNotification(models.Model):
 
         # Thêm các groups bổ sung nếu có
         if additional_groups:
-            hr_groups.extend(additional_groups)
+            hr_groups = additional_groups[:]
 
         hr_users = self.env["res.users"]
 

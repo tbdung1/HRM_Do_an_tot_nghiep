@@ -12,7 +12,9 @@ class HrmContractDraft(models.Model):
     _description = "HrmContractDraft"
     _inherit = ["hr.contract", "hr.notification.mixin", "mail.thread"]
 
-    employee_submit = fields.Many2one("hr.employee", "Employee Submit", default=lambda self: self.env.user.employee_id)
+    employee_submit = fields.Many2one(
+        "hr.employee", "Employee Submit", default=lambda self: self.env.user.employee_id
+    )
     emp_name = fields.Char("Employee Name")
     gender = fields.Selection(
         [("male", "Male"), ("female", "Female"), ("other", "Other")],
@@ -41,9 +43,9 @@ class HrmContractDraft(models.Model):
     def _gender_label(self):
         self.ensure_one()
         gender_mapping = {
-            'male' : 'Nam',
-            'female' : 'Nữ',
-            'other' : 'Khác',
+            "male": "Nam",
+            "female": "Nữ",
+            "other": "Khác",
         }
         return gender_mapping.get(self.gender)
         # return dict(self._fields["gender"]._description_selection(self.env)).get(self.gender)
@@ -55,16 +57,16 @@ class HrmContractDraft(models.Model):
     #     ).report_action(self)
 
     def action_submit_contract(self):
-        for record in self:
-            if record.state_hr_contract != "draft":
-                raise UserError(_("Only contracts in draft state can be submitted."))
-            record.state_hr_contract = "submitted"
+        if self.state_hr_contract != "draft":
+            raise UserError(_("Only contracts in draft state can be submitted."))
+        self.state_hr_contract = "submitted"
+        self.employee_submit = self.env.user.employee_id
         hr_groups = ["hr_contract.group_hr_contract_manager"]
         self.notify_hr(
-            subject=f"Yêu cầu làm phê duyệt hợp đồng - {self.emp_name}",
-            message=f"Nhân viên {self.emp_name} đã gửi yêu cầu làm phê duyệt hợp đồng",
+            subject=_("Yêu cầu làm phê duyệt hợp đồng - %s") % self.name,
+            message=_("Nhân viên %s đã gửi yêu cầu làm phê duyệt hợp đồng")
+            % self.employee_submit.name,
             additional_hr_groups=hr_groups,
-            priority="2",
         )
         return {
             "type": "ir.actions.client",
@@ -74,13 +76,16 @@ class HrmContractDraft(models.Model):
                 "message": "Đã gửi yêu cầu duyệt!",
                 "type": "success",
                 "sticky": False,
+                "next": {
+                    "type": "ir.actions.act_window_close",
+                },
             },
         }
 
     def action_reject_contract(self):
         self.state_hr_contract = "rejected"
         self.notify_staff(
-            message=f"Đã từ chối hợp đồng - {self.emp_name}",
+            message=_("Đã từ chối hợp đồng - %s") % self.name,
             employee_id=self.employee_submit,
         )
         return {
@@ -91,6 +96,9 @@ class HrmContractDraft(models.Model):
                 "message": "Không duyệt hợp đồng",
                 "type": "success",
                 "sticky": False,
+                "next": {
+                    "type": "ir.actions.act_window_close",
+                },
             },
         }
 
@@ -98,7 +106,10 @@ class HrmContractDraft(models.Model):
         self.state_hr_contract = "approved"
         for record in self:
             # record.map_to_hr_contract()
-            record.notify_staff(message=f"Đã phê duyệt hợp đồng - {self.emp_name}", employee_id=self.employee_submit)
+            record.notify_staff(
+                message=_("Đã phê duyệt hợp đồng - %s") % self.name,
+                employee_id=self.employee_submit,
+            )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -107,6 +118,9 @@ class HrmContractDraft(models.Model):
                 "message": "Đã duyệt thành công!",
                 "type": "success",
                 "sticky": False,
+                "next": {
+                    "type": "ir.actions.act_window_close",
+                },
             },
         }
 

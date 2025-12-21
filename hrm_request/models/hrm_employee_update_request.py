@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 class HrmEmployeeUpdateRequest(models.Model):
     _name = "hrm.employee.update.request"
     _description = "Employee Information Update Request"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "hr.notification.mixin"]
     _order = "create_date desc"
     _rec_name = "display_name"
 
@@ -271,8 +271,11 @@ class HrmEmployeeUpdateRequest(models.Model):
                 raise UserError(_("Only draft requests can be submitted"))
             if not record.has_changes:
                 raise UserError(_("Please select at least one field to update"))
-
             record.state = "submitted"
+            self.notify_hr(
+                subject=_("Yêu cầu chỉnh sửa hồ sơ - %s") % self.employee_id.name,
+                message=_("Nhân viên %s đã gửi yêu cầu chỉnh sửa hồ sơ") % self.employee_id.name,
+            )
 
         return {
             "type": "ir.actions.client",
@@ -300,37 +303,18 @@ class HrmEmployeeUpdateRequest(models.Model):
 
             # Update employee information
             record._update_employee_data()
-
-            record.message_post(
-                body=f"""
-                ✅ Yêu cầu cập nhật thông tin đã được duyệt
-                    Người duyệt: {self.env.user.name}
-                    Thời gian: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')}
-                    Nhân viên: {record.employee_id.name}
-                Thông tin nhân viên đã được cập nhật thành công.
-            """,
-                subject="Yêu cầu cập nhật thông tin đã được duyệt",
-                subtype_xmlid="mail.mt_note",
-            )
-
             if record.employee_id.user_id:
-                updated_fields = record._get_updated_fields_summary()
-                chat_message = f"✅ Yêu cầu cập nhật thông tin đã được duyệt - {record.name} | Người duyệt: {self.env.user.name} | Thời gian: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')} | {updated_fields}"
-
-                # Tìm channel chính xác giữa HR User và Employee
-                hr_partner = self.env.user.partner_id
-                employee_partner = record.employee_id.user_id.partner_id
-
-                chan_info = self.env['discuss.channel'].channel_get([employee_partner.id])
-                channel = self.env['discuss.channel'].browse(chan_info['id'])
-
-                # Gửi tin nhắn vào đúng channel này
-                channel.with_context(mail_create_nosubscribe=True).message_post(
-                    body=chat_message,
-                    author_id=hr_partner.id,
-                    message_type='comment',
-                    subtype_xmlid='mail.mt_comment',
+                message = (
+                    _(
+                        "Yêu cầu chỉnh sửa hồ sơ đã được duyệt - %s | Người duyệt: %s | Thời gian: %s"
+                    )
+                    % (
+                        record.name,
+                        self.env.user.name,
+                        fields.Datetime.now().strftime('%d/%m/%Y %H:%M')
+                    )
                 )
+                self.notify_staff(message=message, employee_id=record.employee_id)
 
         return {
             "type": "ir.actions.client",
@@ -349,6 +333,15 @@ class HrmEmployeeUpdateRequest(models.Model):
             raise UserError(_("Only HR users can reject requests"))
         for record in self:
             record.state = "rejected"
+            if record.employee_id.user_id:
+                message = _(
+                    "Yêu cầu chỉnh sửa hồ sơ đã bị từ chối - %s | Người từ chối: %s | Thời gian: %s"
+                ) % (
+                    record.name,
+                    self.env.user.name,
+                    fields.Datetime.now().strftime("%d/%m/%Y %H:%M"),
+                )
+                self.notify_staff(message=message, employee_id=record.employee_id)
 
         return {
             "type": "ir.actions.client",
