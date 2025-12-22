@@ -34,7 +34,7 @@
  Payslips will be sent to employees' work email addresses
                             </div>
                         </group>
-                        <group string="Summary">
+                        <!-- <group string="Summary">
                             <div class="alert alert-success" role="alert" style="margin: 0;">
                                 <i class="fa fa-check-circle"/>
                                 <strong>
@@ -42,7 +42,7 @@
  eligible employees</strong> 
                                 found with active contracts in this period.
                             </div>
-                        </group>
+                        </group> -->
                     </group>
 
                 </sheet>
