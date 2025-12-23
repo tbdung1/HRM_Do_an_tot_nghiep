@@ -129,42 +129,23 @@ class HrmContract(models.Model):
             contract.sudo()._sent_notify(contract)
 
     def action_active_contract(self):
-        self.ensure_one()
         for rec in self:
             if rec.state != "draft":
                 raise UserError(_("Only contracts in draft state can be activated."))
             rec.sudo().write({"state": "open"})
 
     def action_cancel_contract(self):
-        self.ensure_one()
         for rec in self:
-            if rec.state == "open":
-                attachments = self.env["ir.attachment"].search(
-                    [("res_model", "=", self._name), ("res_id", "=", rec.id)]
-                )
-                if not attachments:
+            if rec.state == "open": 
+                if not rec.notes:
                     raise UserError(
                         _(
-                            'Cannot cancel contract "%s" without supporting documents. '
-                            "Please attach required documents first.",
+                            "Cannot cancel contract %s without notes." %
                             rec.name,
                         )
                     )
             rec.sudo().write({"state": "cancel"})
-
-    def write(self, vals):
-        if vals.get("state") == "cancel":
-            for rec in self.filtered(lambda r: r.state == "open"):
-                attachments = self.env["ir.attachment"].search(
-                    [("res_model", "=", self._name), ("res_id", "=", rec.id)]
-                )
-                if not attachments:
-                    raise UserError(
-                        _(
-                            'Cannot cancel contract "%s" without supporting documents. '
-                            "Please attach required documents first.",
-                            rec.name,
-                        )
-                    )
-
-        return super().write(vals)
+    
+    def action_set_to_draft(self):
+        for rec in self:
+            rec.sudo().write({"state": "draft"})

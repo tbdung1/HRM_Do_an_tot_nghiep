@@ -46,26 +46,27 @@
                         type="object"
                         string="Submit"
                         class="oe_highlight"
-                        invisible="state_hr_contract != 'draft' and state_hr_contract != 'rejected'"
-                        groups="!hr_contract.group_hr_contract_manager"
-                        confirm="Are you sure you want to submit this contract for approval?" />
+                        invisible="state_hr_contract != 'draft'"
+                        groups="hr_contract.group_hr_contract_employee_manager" />
 
                     <button name="action_approve_contract"
                         type="object"
                         string="Approve"
                         class="oe_highlight"
                         invisible="state_hr_contract != 'submitted'"
-                        groups="hr_contract.group_hr_contract_manager"
-                        confirm="Are you sure you want to submit this contract for approval?" />
+                        groups="hr_contract.group_hr_contract_manager" />
 
                     <button name="action_reject_contract"
                         type="object"
                         string="Reject"
                         class="oe_highlight"
                         invisible="state_hr_contract != 'submitted' and state_hr_contract != 'approved'"
-                        groups="hr_contract.group_hr_contract_manager"
-                        confirm="Are you sure you want to submit this contract for approval?" />
-                    
+                        groups="hr_contract.group_hr_contract_manager" />
+                    <button name="action_set_to_draft"
+                        type="object"
+                        string="Set to Draft"
+                        invisible="state_hr_contract == 'draft'"
+                        class="oe_highlight" />
 
                 
                 </header>
@@ -126,19 +127,7 @@
                             <field name="company_country_id" invisible="1" />
                             <field name="country_code" invisible="1" />
                             <field name="calendar_mismatch" invisible="1" />
-                            <label for="resource_calendar_id" />
-                            <div id="resource_calendar_warning" class="d-flex align-items-center">
-                                <field name="resource_calendar_id"
-                                    groups="!hr_contract.group_hr_contract_manager"
-                                    required="1"
-                                    options="{'no_open': True, 'no_create': True}" />
-                                <field name="resource_calendar_id"
-                                    groups="hr_contract.group_hr_contract_manager"
-                                    required="1" readonly="state_hr_contract != 'draft'" />
-                                <widget
-                                    name="contract_warning_tooltip"
-                                    invisible="not calendar_mismatch or state_hr_contract != 'approved'" />
-                            </div>
+                            <field name="resource_calendar_id" readonly="state_hr_contract != 'draft'" />
                         </group>
                         <group name="top_info_right">
                             <field name="structure_type_id"

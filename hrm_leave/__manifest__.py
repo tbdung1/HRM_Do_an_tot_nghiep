@@ -17,7 +17,7 @@ Long description of module's purpose
     # always loaded
     "data": [
         "security/ir.model.access.csv",
-        # "views/hrm_leave_views.xml",
+        "views/hrm_leave_type_views.xml",
         "views/hrm_time_off_menu_views.xml",
     ],
 

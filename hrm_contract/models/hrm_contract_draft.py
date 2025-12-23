@@ -55,6 +55,8 @@ class HrmContractDraft(models.Model):
     #     return self.env.ref(
     #         "hrm_contract.action_report_hrm_contract_draft_pdf"
     #     ).report_action(self)
+    def action_set_to_draft(self):
+        self.state_hr_contract = "draft"
 
     def action_submit_contract(self):
         if self.state_hr_contract != "draft":
@@ -68,19 +70,19 @@ class HrmContractDraft(models.Model):
             % self.employee_submit.name,
             additional_hr_groups=hr_groups,
         )
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Success"),
-                "message": _("Approval request sent!"),
-                "type": "success",
-                "sticky": False,
-                "next": {
-                    "type": "ir.actions.act_window_close",
-                },
-            },
-        }
+        # return {
+        #     "type": "ir.actions.client",
+        #     "tag": "display_notification",
+        #     "params": {
+        #         "title": _("Success"),
+        #         "message": _("Approval request sent!"),
+        #         "type": "success",
+        #         "sticky": False,
+        #         "next": {
+        #             "type": "ir.actions.act_window_close",
+        #         },
+        #     },
+        # }
 
     def action_reject_contract(self):
         self.state_hr_contract = "rejected"
@@ -88,19 +90,19 @@ class HrmContractDraft(models.Model):
             message=_("Contract Rejected - %s") % self.name,
             employee_id=self.employee_submit,
         )
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Success"),
-                "message": _("Contract not approved"),
-                "type": "success",
-                "sticky": False,
-                "next": {
-                    "type": "ir.actions.act_window_close",
-                },
-            },
-        }
+        # return {
+        #     "type": "ir.actions.client",
+        #     "tag": "display_notification",
+        #     "params": {
+        #         "title": _("Success"),
+        #         "message": _("Contract not approved"),
+        #         "type": "success",
+        #         "sticky": False,
+        #         "next": {
+        #             "type": "ir.actions.act_window_close",
+        #         },
+        #     },
+        # }
 
     def action_approve_contract(self):
         self.state_hr_contract = "approved"
@@ -110,19 +112,19 @@ class HrmContractDraft(models.Model):
                 message=_("Contract Approved - %s") % self.name,
                 employee_id=self.employee_submit,
             )
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Success"),
-                "message": _("Approved successfully!"),
-                "type": "success",
-                "sticky": False,
-                "next": {
-                    "type": "ir.actions.act_window_close",
-                },
-            },
-        }
+        # return {
+        #     "type": "ir.actions.client",
+        #     "tag": "display_notification",
+        #     "params": {
+        #         "title": _("Success"),
+        #         "message": _("Approved successfully!"),
+        #         "type": "success",
+        #         "sticky": False,
+        #         "next": {
+        #             "type": "ir.actions.act_window_close",
+        #         },
+        #     },
+        # }
 
     # def map_to_hr_contract(self):
     #     self.ensure_one()

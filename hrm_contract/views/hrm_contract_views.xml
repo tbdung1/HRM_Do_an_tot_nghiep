@@ -6,23 +6,15 @@
         <field name="model">hr.contract</field>
         <field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='state'][@groups='hr_contract.group_hr_contract_manager']" position="attributes">
+                <attribute name="options">{'clickable': 0}</attribute>
+            </xpath>
             <xpath expr="//header" position="inside">
-                <button type="object" name="action_active_contract" string="Kích hoạt" invisible="state != 'draft'"></button>
-                <button type="object" name="action_cancel_contract" string="Hủy hợp đồng" invisible="state != 'open' and state != 'close'"></button>
+                <button type="object" name="action_active_contract" string="Active" invisible="state != 'draft'"></button>
+                <button type="object" name="action_cancel_contract" string="Cancel" invisible="state != 'open' and state != 'close'"></button>
+                <button type="object" name="action_set_to_draft" string="Set to Draft" invisible="state == 'draft'"></button>
             </xpath>
 
-            <xpath
-                expr="//header/field[@name='state'][@groups='!hr_contract.group_hr_contract_manager']"
-                position="attributes">
-                <attribute name="groups">
-                    !hr_contract.group_hr_contract_manager,!hr_contract.group_hr_contract_employee_manager</attribute>
-            </xpath>
-
-            <xpath
-                expr="//header/field[@name='state'][@groups='hr_contract.group_hr_contract_manager']"
-                position="attributes">
-                <attribute name="groups">hr_contract.group_hr_contract_manager,hr_contract.group_hr_contract_employee_manager</attribute>
-            </xpath>
             <xpath expr="//group[@name='salary']" position="inside">
                 <label for="allowance" />
                 <div class="o_row mw-50" name="allowance">
