@@ -27,6 +27,7 @@ from pytz import utc
 
 from odoo import models
 from odoo.tools import float_utils
+import logging
 
 # This will generate 16th of days
 ROUNDING_FACTOR = 16
@@ -94,6 +95,15 @@ class ResourceMixin(models.AbstractModel):
             ('check_in', '<=', to_datetime),
             ('check_out', '!=', False),  # Chỉ lấy những bản ghi đã checkout
         ])
+
+        bonus_records = self.env['hr.payroll.adjustment'].search([
+            ('employee_id', '=', self.id),
+            ('state', '=', 'approved'),
+            ('adjustment_type', '=', 'bonus'),
+            ('approved_date', '>=', from_datetime),
+            ('approved_date', '<=', to_datetime),
+        ])
+        logging.info("Bonus Records: %s", bonus_records)
         
         # Tính số ngày dựa trên số giờ làm việc của từng ngày
         daily_hours = defaultdict(float)
