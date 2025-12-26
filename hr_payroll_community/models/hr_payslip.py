@@ -111,6 +111,11 @@ class HrPayslip(models.Model):
     payslip_run_id = fields.Many2one('hr.payslip.run',
                                      string='Payslip Batches',
                                      copy=False, help="Choose Payslip Run")
+    payroll_batch_id = fields.Many2one('hr.payroll.batch',
+                                       string='Bảng Lương Tháng',
+                                       copy=False, 
+                                       help="Bảng lương tháng chứa phiếu lương này",
+                                       index=True)
     payslip_count = fields.Integer(compute='_compute_payslip_count',
                                    string="Payslip Computation Details",
                                    help="Set Payslip Count")

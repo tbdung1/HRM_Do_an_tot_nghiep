@@ -31,6 +31,7 @@ from . import hr_payslip_input
 from . import hr_salary_rule
 from . import hr_payslip_line
 from . import hr_payslip_run
+from . import hr_payroll_batch
 from . import hr_payslip_worked_days
 from . import hr_payslip_overtime_line
 from . import hr_rule_input
