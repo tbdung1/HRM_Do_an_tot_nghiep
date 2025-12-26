@@ -75,6 +75,12 @@ class HrPayrollBatch(models.Model):
         help="Danh sách phiếu lương của nhân viên trong bảng lương này"
     )
     
+    payslip_run_id = fields.Many2one(
+        'hr.payslip.run',
+        string='Payslip Run',
+        readonly=True,
+        help="Liên kết với payslip run (để tương thích với hệ thống cũ)"
+    )
     
     employee_count = fields.Integer(
         string='Số Nhân Viên',

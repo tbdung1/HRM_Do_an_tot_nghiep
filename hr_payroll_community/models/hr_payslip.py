@@ -95,6 +95,11 @@ class HrPayslip(models.Model):
                                         string='Payslip Overtime Lines',
                                         copy=True,
                                         help="Overtime lines for this payslip with detailed information")
+    adjustment_line_ids = fields.One2many('hr.payslip.adjustment.line',
+                                         'payslip_id',
+                                         string='Payslip Adjustment Lines',
+                                         copy=True,
+                                         help="Adjustment lines for this payslip (bonuses and penalties)")
     paid = fields.Boolean(string='Made Payment Order ? ',
                           copy=False, help="Is Payment Order")
     note = fields.Text(string='Internal Note', help="Description for Payslip")
@@ -236,6 +241,8 @@ class HrPayslip(models.Model):
             payslip.worked_days_line_ids.unlink()
             # delete old overtime lines
             payslip.overtime_line_ids.unlink()
+            # delete old adjustment lines
+            payslip.adjustment_line_ids.unlink()
             
             # set the list of contract for which the rules have to be applied
             # if we don't give the contract, then the rules to apply should be
@@ -253,14 +260,19 @@ class HrPayslip(models.Model):
             overtime_lines_data = self.get_overtime_lines(contracts, payslip.date_from, payslip.date_to)
             overtime_lines = [(0, 0, line) for line in overtime_lines_data]
             
-            # Re-compute payslip lines - pass worked_days_lines_data and overtime_lines_data
+            # Re-compute adjustment lines
+            adjustment_lines_data = self.get_adjustment_lines(contracts, payslip.date_from, payslip.date_to)
+            adjustment_lines = [(0, 0, line) for line in adjustment_lines_data]
+            
+            # Re-compute payslip lines - pass worked_days_lines_data, overtime_lines_data, and adjustment_lines_data
             lines = [(0, 0, line) for line in
-                     self._get_payslip_lines(contract_ids, payslip.id, worked_days_lines_data, overtime_lines_data)]
+                     self._get_payslip_lines(contract_ids, payslip.id, worked_days_lines_data, overtime_lines_data, adjustment_lines_data)]
             
             payslip.write({
                 'line_ids': lines,
                 'worked_days_line_ids': worked_days_lines,
                 'overtime_line_ids': overtime_lines,
+                'adjustment_line_ids': adjustment_lines,
                 'number': number
             })
         return True
@@ -525,7 +537,69 @@ class HrPayslip(models.Model):
         return res
 
     @api.model
-    def _get_payslip_lines(self, contract_ids, payslip_id, worked_days_lines_data=None, overtime_lines_data=None):
+    def get_adjustment_lines(self, contracts, date_from, date_to):
+        """
+        Get adjustment lines (bonus/penalty) for the given contracts and date range.
+        Returns a list of adjustment line data.
+        
+        @param contracts: Browse record of contracts
+        @param date_from: Start date
+        @param date_to: End date
+        @return: List of dictionaries containing adjustment line data
+        """
+        res = []
+        
+        # Check if hr.payroll.adjustment model exists
+        if 'hr.payroll.adjustment' not in self.env:
+            return res
+        
+        for contract in contracts:
+            # Search for approved adjustment requests in the period
+            domain = [
+                ('employee_id', '=', contract.employee_id.id),
+                ('state', '=', 'approved'),
+                ('date', '>=', date_from),
+                ('date', '<=', date_to),
+            ]
+            
+            adjustment_requests = self.env['hr.payroll.adjustment'].search(domain)
+            
+            import logging
+            _logger = logging.getLogger(__name__)
+            _logger.info(f"=== ADJUSTMENT DEBUG ===")
+            _logger.info(f"Employee: {contract.employee_id.name}")
+            _logger.info(f"Contract: {contract.id}")
+            _logger.info(f"Period: {date_from} to {date_to}")
+            _logger.info(f"Found {len(adjustment_requests)} adjustment requests")
+            
+            for adjustment in adjustment_requests:
+                _logger.info(f"  - Adjustment: {adjustment.name}, Date: {adjustment.date}, Amount: {adjustment.amount}, Type: {adjustment.adjustment_type}, State: {adjustment.state}")
+                
+                # Determine code based on adjustment type
+                code = 'BONUS' if adjustment.adjustment_type == 'bonus' else 'PENALTY'
+                
+                # Create adjustment line data
+                adjustment_line_data = {
+                    'name': adjustment.reason or adjustment.name,
+                    'sequence': 30,
+                    'code': code,
+                    'date': adjustment.date,
+                    'adjustment_type': adjustment.adjustment_type,
+                    'amount': adjustment.amount,
+                    'contract_id': contract.id,
+                }
+                
+                # Set adjustment_id if exists
+                if adjustment and adjustment.id:
+                    adjustment_line_data['adjustment_id'] = adjustment.id
+                
+                res.append(adjustment_line_data)
+                _logger.info(f"  Added adjustment line: amount={adjustment_line_data['amount']}, type={adjustment_line_data['adjustment_type']}")
+        
+        return res
+
+    @api.model
+    def _get_payslip_lines(self, contract_ids, payslip_id, worked_days_lines_data=None, overtime_lines_data=None, adjustment_lines_data=None):
         """Function for getting Payslip Lines"""
 
         def _sum_salary_rule_category(localdict, category, amount):
@@ -738,6 +812,81 @@ class HrPayslip(models.Model):
                 res = self._sum(code, from_date, to_date)
                 return res and res[1] or 0.0
 
+        class AdjustmentLine(object):
+            """Wrapper to access adjustment line fields"""
+            def __init__(self, record):
+                self._record = record
+            
+            def __getattr__(self, attr):
+                """Get attribute directly from record"""
+                if attr == '_record':
+                    return object.__getattribute__(self, '_record')
+                
+                record = object.__getattribute__(self, '_record')
+                if not record:
+                    return 0.0
+                
+                # Direct field access from recordset
+                if attr in ('amount', 'adjustment_type'):
+                    try:
+                        value = getattr(record, attr)
+                        if attr == 'amount':
+                            return float(value) if value else 0.0
+                        return value
+                    except:
+                        return 0.0 if attr == 'amount' else ''
+                
+                return 0.0
+            
+            def __bool__(self):
+                record = object.__getattribute__(self, '_record')
+                return bool(record)
+            
+            __nonzero__ = __bool__
+
+        class Adjustment(BrowsableObject):
+            """Class for accessing adjustment data in salary rules"""
+
+            def __getattr__(self, attr):
+                """
+                Override to return a wrapper object that provides access to adjustment record attributes
+                """
+                # Let BrowsableObject handle these
+                if attr in ('employee_id', 'dict', 'env'):
+                    return BrowsableObject.__getattribute__(self, attr)
+                
+                # Get dict using object.__getattribute__ to avoid recursion
+                try:
+                    adjustment_dict = object.__getattribute__(self, 'dict')
+                except AttributeError:
+                    return AdjustmentLine(None)
+                
+                # Get the record from dict
+                record = adjustment_dict.get(attr, None) if adjustment_dict else None
+                
+                # Return a wrapper
+                return AdjustmentLine(record)
+
+            def _sum(self, code, from_date, to_date=None):
+                """Function for getting sum of adjustment amount"""
+                if to_date is None:
+                    to_date = fields.Date.today()
+                self.env.cr.execute("""
+                    SELECT sum(amount) as amount
+                    FROM hr_payslip as hp, hr_payslip_adjustment_line as pal
+                    WHERE hp.employee_id = %s AND hp.state = 'done'
+                    AND hp.date_from >= %s AND hp.date_to <= %s AND hp.id = 
+                    pal.payslip_id AND pal.code = %s""",
+                                    (
+                                        self.employee_id, from_date, to_date,
+                                        code))
+                return self.env.cr.fetchone()
+
+            def sum_amount(self, code, from_date, to_date=None):
+                """Function for getting sum of adjustment amount"""
+                res = self._sum(code, from_date, to_date)
+                return res and res[0] or 0.0
+
         class Payslips(BrowsableObject):
             """a class that will be used into the python code, mainly for
             usability purposes"""
@@ -766,6 +915,7 @@ class HrPayslip(models.Model):
         worked_days_dict = {}
         inputs_dict = {}
         overtime_dict = {}
+        adjustment_dict = {}
         blacklist = []
         payslip = self.env['hr.payslip'].browse(payslip_id)
         
@@ -854,6 +1004,61 @@ class HrPayslip(models.Model):
             for code, lines in code_groups.items():
                 overtime_dict[code] = AggregatedOvertimeLineDB(lines)
         
+        # Build adjustment_dict from passed data or from payslip
+        if adjustment_lines_data:
+            # Create wrapper for dict data
+            class SimpleAdjustmentLine:
+                """Wrapper for adjustment data from dict"""
+                def __init__(self, data):
+                    self.code = data.get('code', 'BONUS')
+                    self.adjustment_type = data.get('adjustment_type', 'bonus')
+                    self.amount = float(data.get('amount', 0.0))
+                    self.contract_id = data.get('contract_id')
+                    self.adjustment_id = data.get('adjustment_id')
+                    self.id = False  # Not saved to DB yet
+            
+            # Group adjustment lines by code and aggregate
+            from collections import defaultdict
+            code_groups = defaultdict(list)
+            
+            for adj_data in adjustment_lines_data:
+                wrapper = SimpleAdjustmentLine(adj_data)
+                code_groups[adj_data.get('code')].append(wrapper)
+            
+            # Create aggregated wrapper for each code
+            class AggregatedAdjustmentLine:
+                """Aggregated adjustment line for multiple entries with same code"""
+                def __init__(self, lines):
+                    self.lines = lines
+                    self.code = lines[0].code if lines else 'BONUS'
+                    self.adjustment_type = lines[0].adjustment_type if lines else 'bonus'
+                    self.amount = sum(line.amount for line in lines)
+                    self.id = False
+            
+            for code, lines in code_groups.items():
+                adjustment_dict[code] = AggregatedAdjustmentLine(lines)
+                
+        elif hasattr(payslip, 'adjustment_line_ids'):
+            # Fallback to existing adjustment lines - also need to aggregate
+            from collections import defaultdict
+            code_groups = defaultdict(list)
+            
+            for adjustment_line in payslip.adjustment_line_ids:
+                code_groups[adjustment_line.code].append(adjustment_line)
+            
+            # Create aggregated wrapper for database records
+            class AggregatedAdjustmentLineDB:
+                """Aggregated adjustment line for multiple DB records with same code"""
+                def __init__(self, lines):
+                    self.lines = lines
+                    self.code = lines[0].code if lines else 'BONUS'
+                    self.adjustment_type = lines[0].adjustment_type if lines else 'bonus'
+                    self.amount = sum(line.amount for line in lines)
+                    self.id = False
+            
+            for code, lines in code_groups.items():
+                adjustment_dict[code] = AggregatedAdjustmentLineDB(lines)
+        
         for input_line in payslip.input_line_ids:
             inputs_dict[input_line.code] = input_line
         categories = BrowsableObject(payslip.employee_id.id, {}, self.env)
@@ -861,11 +1066,12 @@ class HrPayslip(models.Model):
         worked_days = WorkedDays(payslip.employee_id.id, worked_days_dict,
                                  self.env)
         overtime = Overtime(payslip.employee_id.id, overtime_dict, self.env)
+        adjustment = Adjustment(payslip.employee_id.id, adjustment_dict, self.env)
         payslips = Payslips(payslip.employee_id.id, payslip, self.env)
         rules = BrowsableObject(payslip.employee_id.id, rules_dict, self.env)
         baselocaldict = {'categories': categories, 'rules': rules,
                          'payslip': payslips, 'worked_days': worked_days,
-                         'inputs': inputs, 'overtime': overtime, 'payslip_obj': payslip}
+                         'inputs': inputs, 'overtime': overtime, 'adjustment': adjustment, 'payslip_obj': payslip}
         # get the ids of the structures on the contracts and their
         # parent id as well
         contracts = self.env['hr.contract'].browse(contract_ids)

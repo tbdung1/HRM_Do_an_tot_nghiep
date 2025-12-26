@@ -86,6 +86,13 @@ class HrPayrollAdjustment(models.Model):
         default=lambda self: self.env.company
     )
     
+    payslip_id = fields.Many2one(
+        'hr.payslip',
+        string='Phiếu lương',
+        readonly=True,
+        help='Phiếu lương có sử dụng điều chỉnh này'
+    )
+    
     notes = fields.Text(string='Ghi chú')
 
     @api.model
