@@ -64,6 +64,4 @@
         <field name="binding_view_types">list</field>
     </record>
 
-    <!-- Menu Item -->
-    <menuitem id="menu_hr_payslip_generate_all" name="Generate All Payslips" parent="menu_hr_payroll_community_root" action="action_hr_payslip_generate_all" sequence="15"/>
 </odoo>

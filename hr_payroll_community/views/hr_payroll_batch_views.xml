@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="hr_payroll_batch_view_tree" model="ir.ui.view">
+        <field name="name">hr.payroll.batch.view.tree</field>
+        <field name="model">hr.payroll.batch</field>
+        <field name="arch" type="xml">
+            <tree string="Bảng Lương Tháng" decoration-info="state=='draft'" decoration-success="state=='done'" decoration-muted="state=='cancel'">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="employee_count"/>
+                <field name="payslip_count"/>
+                <field name="total_amount" widget="monetary"/>
+                <field name="state" widget="badge" decoration-info="state=='draft'" decoration-success="state=='done'" decoration-warning="state in ('generating', 'generated', 'computed')" decoration-danger="state=='cancel'"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="hr_payroll_batch_view_form" model="ir.ui.view">
+        <field name="name">hr.payroll.batch.view.form</field>
+        <field name="model">hr.payroll.batch</field>
+        <field name="arch" type="xml">
+            <form string="Bảng Lương Tháng">
+                <header>
+                    <button name="action_generate_payslips" string="Tạo Phiếu Lương" type="object" class="oe_highlight" invisible="state != 'draft'" icon="fa-plus-square"/>
+                    <button name="action_compute_payslips" string="Tính Toán" type="object" class="oe_highlight" invisible="state not in ['generated', 'computed']" icon="fa-calculator"/>
+                    <button name="action_send_emails" string="Gửi Email" type="object" invisible="state not in ['computed', 'done']" icon="fa-envelope"/>
+                    <button name="action_mark_done" string="Hoàn Thành" type="object" class="oe_highlight" invisible="state != 'computed'" icon="fa-check"/>
+                    <button name="action_set_to_draft" string="Về Nháp" type="object" invisible="state in ['draft', 'done']" icon="fa-undo"/>
+                    <button name="action_cancel" string="Hủy" type="object" invisible="state == 'done'" confirm="Bạn có chắc muốn hủy bảng lương này?" icon="fa-times"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated,computed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_payslips" type="object" class="oe_stat_button" icon="fa-money">
+                            <field name="payslip_count" widget="statbutton" string="Phiếu Lương"/>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Ví dụ: Bảng Lương 12/2024"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Thông Tin Kỳ Lương">
+                            <field name="date_from" required="1"/>
+                            <field name="date_to" required="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        
+                        <group string="Thống Kê">
+                            <field name="employee_count"/>
+                            <field name="total_amount" widget="monetary"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group string="Cài Đặt Email">
+                            <field name="send_email"/>
+                            <field name="email_sent_count" readonly="1" invisible="email_sent_count == 0"/>
+                        </group>
+                        
+                        <group string="Ghi Chú">
+                            <field name="notes" nolabel="1" placeholder="Ghi chú về bảng lương này..."/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Phiếu Lương" name="payslips">
+                            <field name="payslip_ids" nolabel="1">
+                                <tree string="Phiếu Lương" decoration-info="state=='draft'" decoration-success="state=='done'" decoration-muted="state=='cancel'">
+                                    <field name="number"/>
+                                    <field name="employee_id"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="struct_id"/>
+                                    <field name="total_amount" sum="Total" widget="monetary"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="hr_payroll_batch_view_search" model="ir.ui.view">
+        <field name="name">hr.payroll.batch.view.search</field>
+        <field name="model">hr.payroll.batch</field>
+        <field name="arch" type="xml">
+            <search string="Tìm Kiếm Bảng Lương">
+                <field name="name" string="Tên" filter_domain="[('name', 'ilike', self)]"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                
+                <filter string="Nháp" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Đã Tạo" name="generated" domain="[('state', '=', 'generated')]"/>
+                <filter string="Đã Tính" name="computed" domain="[('state', '=', 'computed')]"/>
+                <filter string="Hoàn Thành" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Đã Hủy" name="cancel" domain="[('state', '=', 'cancel')]"/>
+                
+                <separator/>
+                <filter string="Tháng Này" name="this_month" domain="[
+                    ('date_from', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),
+                    ('date_to', '&lt;=', ((context_today().replace(day=1) + relativedelta(months=1, days=-1)).strftime('%Y-%m-%d')))
+                ]"/>
+                <filter string="Tháng Trước" name="last_month" domain="[
+                    ('date_from', '&gt;=', ((context_today().replace(day=1) - relativedelta(months=1)).strftime('%Y-%m-%d'))),
+                    ('date_to', '&lt;=', ((context_today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-%d')))
+                ]"/>
+                
+                <group expand="0" string="Nhóm Theo">
+                    <filter string="Trạng Thái" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Tháng" name="group_month" context="{'group_by': 'date_from:month'}"/>
+                    <filter string="Công Ty" name="group_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="hr_payroll_batch_view_kanban" model="ir.ui.view">
+        <field name="name">hr.payroll.batch.view.kanban</field>
+        <field name="model">hr.payroll.batch</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="state"/>
+                <field name="employee_count"/>
+                <field name="payslip_count"/>
+                <field name="total_amount"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="row">
+                                <div class="col-12">
+                                    <strong>
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    <span>
+                                        <i class="fa fa-calendar"/> <field name="date_from"/> - <field name="date_to"/>
+                                    </span>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <field name="state" widget="badge" decoration-info="state=='draft'" decoration-success="state=='done'"/>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    <i class="fa fa-users"/> <field name="employee_count"/> NV
+                                </div>
+                                <div class="col-6">
+                                    <i class="fa fa-file-text-o"/> <field name="payslip_count"/> Phiếu
+                                </div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-12">
+                                    <strong><field name="total_amount" widget="monetary"/></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hr_payroll_batch" model="ir.actions.act_window">
+        <field name="name">Bảng Lương Tháng</field>
+        <field name="res_model">hr.payroll.batch</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="hr_payroll_batch_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tạo Bảng Lương Tháng Mới
+            </p>
+            <p>
+                Bảng lương tháng giúp bạn quản lý và tạo phiếu lương cho tất cả nhân viên trong một kỳ lương.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_hr_payroll_batch" 
+              name="Bảng Lương Tháng" 
+              parent="menu_hr_payroll_community_root" 
+              action="action_hr_payroll_batch" 
+              sequence="10"/>
+</odoo>
