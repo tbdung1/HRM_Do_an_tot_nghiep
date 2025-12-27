@@ -182,6 +182,29 @@
                                     </group>
                                 </form>
                             </field>
+                            <separator string="Adjustment Details (Bonus/Penalty)"/>
+                            <field name="adjustment_line_ids" colspan="4" nolabel="1" readonly="state != 'draft'">
+                                <tree string="Adjustment Data" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="adjustment_type"/>
+                                    <field name="date"/>
+                                    <field name="amount" sum="Total Amount"/>
+                                    <field name="contract_id" invisible="1"/>
+                                </tree>
+                                <form string="Adjustment Line">
+                                    <group col="4">
+                                        <field name="name"/>
+                                        <field name="code"/>
+                                        <field name="adjustment_type"/>
+                                        <field name="date"/>
+                                        <field name="sequence"/>
+                                        <field name="amount"/>
+                                        <field name="contract_id"/>
+                                    </group>
+                                </form>
+                            </field>
                         </page>
                         <page string="Salary Computation">
                             <field name="line_ids" colspan="4" nolabel="1" readonly="state != 'draft'">
