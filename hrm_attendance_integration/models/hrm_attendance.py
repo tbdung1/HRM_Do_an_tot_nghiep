@@ -1,4 +1,4 @@
-from odoo import models, fields, api, exceptions
+from odoo import models, fields, api, exceptions, _
 from datetime import datetime, time, timedelta
 import ipaddress
 import logging
@@ -30,24 +30,24 @@ class HrmAttendance(models.Model):
         """Kiểm tra IP có được phép check-in hay không"""
         for record in self:
             _logger.info(f"Checking IP: {record.check_in_ip}")
-            
+
             if not record.check_in_ip:
                 raise exceptions.ValidationError(
                     'Không thể xác định địa chỉ IP. Vui lòng kiểm tra kết nối mạng!'
                 )
-            
+
             allowed_ips = self.env['ir.config_parameter'].sudo().get_param(
                 'hrm_attendance.allowed_ips', ''
             )
             _logger.info(f"Allowed IPs: {allowed_ips}")
             _logger.info(f"Client IP: {record.check_in_ip}")
-            
+
             if not allowed_ips:
                 continue
-            
+
             allowed_ip_list = [ip.strip() for ip in allowed_ips.split(',')]
             client_ip = record.check_in_ip
-            
+
             is_allowed = False
             for allowed_ip in allowed_ip_list:
                 try:
@@ -67,7 +67,7 @@ class HrmAttendance(models.Model):
                 except ValueError as e:
                     _logger.warning(f"Invalid IP format {allowed_ip}: {e}")
                     continue
-            
+
             if not is_allowed:
                 raise exceptions.ValidationError(
                     f'Không được phép check-in từ IP {client_ip}. '
@@ -91,9 +91,9 @@ class HrmAttendance(models.Model):
     def create(self, vals):
         """Lấy IP của client khi tạo bản ghi attendance"""
         _logger.info("=== CREATE ATTENDANCE ===")
-        
+
         client_ip = None
-        
+
         # Thử lấy IP từ request trước
         try:
             import odoo
@@ -103,27 +103,27 @@ class HrmAttendance(models.Model):
                     client_ip = request.httprequest.environ.get('HTTP_X_REAL_IP') or \
                                request.httprequest.environ.get('HTTP_X_FORWARDED_FOR') or \
                                request.httprequest.remote_addr
-                    
+
                     # Nếu là localhost, lấy IP thực của máy
                     if client_ip in ['127.0.0.1', 'localhost', '::1']:
                         client_ip = self._get_local_ip()
                         _logger.info(f"Localhost detected, using local IP: {client_ip}")
                     else:
                         client_ip = client_ip.split(',')[0].strip()
-                    
+
                     _logger.info(f"IP from request: {client_ip}")
         except Exception as e:
             _logger.error(f"Error getting IP from request: {e}")
-        
+
         # Nếu không lấy được từ request, lấy IP local
         if not client_ip:
             client_ip = self._get_local_ip()
             _logger.info(f"Using local IP: {client_ip}")
-        
+
         if client_ip:
             vals['check_in_ip'] = client_ip
             _logger.info(f"Final IP saved: {vals['check_in_ip']}")
-        
+
         return super(HrmAttendance, self).create(vals)
 
     def _cron_auto_checkout_forgot_records(self):
@@ -172,12 +172,12 @@ class HrmAttendance(models.Model):
         :param action_type: 'check_in' hoặc 'check_out'
         """
         config = self._get_allowed_time_config()
-        
+
         if not config['enable_time_restriction']:
             return True, ""
-        
-        current_time = check_time.time()
-        
+
+        current_time = fields.Datetime.context_timestamp(self, check_time).time()
+
         if action_type == 'check_in':
             start_time = datetime.strptime(config['check_in_start'], '%H:%M').time()
             end_time = datetime.strptime(config['check_in_end'], '%H:%M').time()
@@ -186,12 +186,11 @@ class HrmAttendance(models.Model):
             start_time = datetime.strptime(config['check_out_start'], '%H:%M').time()
             end_time = datetime.strptime(config['check_out_end'], '%H:%M').time()
             time_range = f"{config['check_out_start']} - {config['check_out_end']}"
-        
+
         if not (start_time <= current_time <= end_time):
-            return False, f"Không thể {action_type.replace('_', ' ')} ngoài khung giờ cho phép ({time_range})"
-        
+            return False, _("Can not %s out of time allowed (%s)") % (action_type.replace('_', ' '), time_range)
+
         return True, ""
- 
 
     @api.constrains('check_in')
     def _check_check_in_time(self):

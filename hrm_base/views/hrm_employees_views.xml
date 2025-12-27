@@ -33,15 +33,6 @@
                 <xpath expr="//field[@name='country_id']" position="before">
                         <field name="tax_identification_number" />
                 </xpath>
-                <xpath expr="//field[@name='job_id']" position="attributes">
-                    <attribute name="domain">[
-                        '|',
-                        ('company_id', '=', False),
-                        ('company_id', 'in', [company_id]),
-                        ('department_id', '=', department_id)
-                        ]
-                    </attribute>
-                </xpath>
                 <xpath expr="//field[@name='identification_id']" position="replace"/>
                 <xpath expr="//field[@name='ssnid']" position="replace" />
                 <xpath expr="//field[@name='passport_id']" position="replace" />
