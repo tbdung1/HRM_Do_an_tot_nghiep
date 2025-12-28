@@ -390,7 +390,7 @@ class HrPayslip(models.Model):
                 for leave in approved_leaves:
                     leave_type = leave.holiday_status_id
                     
-                    if leave_type.unpaid:
+                    if leave_type.code not in ['PAID', 'TRIP']:
                         _logger.info(f"  - Skip unpaid leave: {leave.name}")
                         continue
                     

@@ -284,7 +284,7 @@ class HrmEmployeeUpdateRequest(models.Model):
                 "title": "Thành công",
                 "message": "Yêu cầu cập nhật thông tin đã được gửi đi!",
                 "type": "success",
-                "sticky": True,
+                "sticky": False,
                 "next": {"type": "ir.actions.act_window_close"},
             },
         }
@@ -324,6 +324,7 @@ class HrmEmployeeUpdateRequest(models.Model):
                 "message": "Yêu cầu cập nhật thông tin đã được duyệt!",
                 "type": "success",
                 "sticky": False,
+                "next": {"type": "ir.actions.act_window_close"},
             },
         }
 
@@ -351,6 +352,7 @@ class HrmEmployeeUpdateRequest(models.Model):
                 "message": "Đã từ chối yêu cầu cập nhật thông tin!",
                 "type": "success",
                 "sticky": False,
+                "next": {"type": "ir.actions.act_window_close"},
             },
         }
 
@@ -371,6 +373,7 @@ class HrmEmployeeUpdateRequest(models.Model):
                 "message": "Đã trở về trạng thái nháp!",
                 "type": "success",
                 "sticky": False,
+                "next": {"type": "ir.actions.act_window_close"},
             },
         }
 

@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+
     <!-- Tree View -->
     <record id="view_hr_payroll_adjustment_tree" model="ir.ui.view">
         <field name="name">hr.payroll.adjustment.tree</field>
         <field name="model">hr.payroll.adjustment</field>
         <field name="arch" type="xml">
-            <tree string="Trợ cấp và Khấu trừ" 
-                  decoration-info="state=='draft'"
-                  decoration-warning="state=='submitted'"
-                  decoration-success="state=='approved'"
-                  decoration-danger="state=='refused'">
-                <field name="name"/>
-                <field name="employee_id"/>
-                <field name="department_id"/>
-                <field name="date"/>
-                <field name="adjustment_type" widget="badge" 
-                       decoration-success="adjustment_type=='bonus'"
-                       decoration-warning="adjustment_type=='penalty'"/>
-                <field name="amount" widget="monetary" options="{'currency_field': 'company_id'}"/>
-                <field name="state" widget="badge" 
-                       decoration-info="state=='draft'"
-                       decoration-warning="state=='submitted'"
-                       decoration-success="state=='approved'"
-                       decoration-danger="state=='refused'"/>
-                <field name="company_id" invisible="1"/>
+            <tree string="Trợ cấp và Khấu trừ"
+                decoration-info="state=='draft'"
+                decoration-warning="state=='submitted'"
+                decoration-success="state=='approved'"
+                decoration-danger="state=='refused'">
+                <field name="name" />
+                <field name="employee_id" />
+                <field name="department_id" />
+                <field name="date" />
+                <field name="adjustment_type" widget="badge"
+                    decoration-success="adjustment_type=='bonus'"
+                    decoration-warning="adjustment_type=='penalty'" />
+                <field name="amount" widget="monetary" options="{'currency_field': 'company_id'}" />
+                <field name="state" widget="badge"
+                    decoration-info="state=='draft'"
+                    decoration-warning="state=='submitted'"
+                    decoration-success="state=='approved'"
+                    decoration-danger="state=='refused'" />
+                <field name="company_id" invisible="1" />
             </tree>
         </field>
     </record>
@@ -36,61 +36,61 @@
         <field name="arch" type="xml">
             <form string="Trợ cấp và Khấu trừ">
                 <header>
-                    <button name="action_submit" string="Gửi yêu cầu" 
-                            type="object" class="oe_highlight"
-                            invisible="state != 'draft'"/>
-                    <button name="action_approve" string="Duyệt" 
-                            type="object" class="oe_highlight"
-                            invisible="state != 'submitted'"
-                            groups="hr.group_hr_manager"/>
-                    <button name="action_refuse" string="Từ chối" 
-                            type="object"
-                            invisible="state != 'submitted'"
-                            groups="hr.group_hr_manager"/>
-                    <button name="action_set_to_draft" string="Đưa về nháp" 
-                            type="object"
-                            invisible="state not in ['refused', 'submitted']"/>
-                    <field name="state" widget="statusbar" 
-                           statusbar_visible="draft,submitted,approved"/>
+                    <button name="action_submit" string="Gửi yêu cầu"
+                        type="object" class="oe_highlight"
+                        invisible="state != 'draft'" />
+                    <button name="action_approve" string="Duyệt"
+                        type="object" class="oe_highlight"
+                        invisible="state != 'submitted'"
+                        groups="hr.group_hr_manager" />
+                    <button name="action_refuse" string="Từ chối"
+                        type="object"
+                        invisible="state != 'submitted'"
+                        groups="hr.group_hr_manager" />
+                    <button name="action_set_to_draft" string="Đưa về nháp"
+                        type="object"
+                        invisible="state not in ['refused', 'approved']" />
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,submitted,approved" />
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" readonly="1"/>
+                            <field name="name" readonly="1" />
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="employee_id" 
-                                   options="{'no_create': True, 'no_create_edit': True}"
-                                   readonly="state != 'draft'"/>
-                            <field name="department_id"/>
-                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="employee_id"
+                                options="{'no_create': True, 'no_create_edit': True}"
+                                readonly="state != 'draft'" />
+                            <field name="department_id" />
+                            <field name="date" readonly="state != 'draft'" />
                         </group>
                         <group>
-                            <field name="adjustment_type" widget="radio" 
-                                   readonly="state != 'draft'"/>
-                            <field name="amount" readonly="state != 'draft'"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="adjustment_type" widget="radio"
+                                readonly="state != 'draft'" />
+                            <field name="amount" readonly="state != 'draft'" />
+                            <field name="company_id" groups="base.group_multi_company" />
                         </group>
                     </group>
                     <group>
-                        <field name="reason" readonly="state != 'draft'"/>
+                        <field name="reason" readonly="state != 'draft'" />
                     </group>
                     <group invisible="state not in ['approved', 'refused']">
                         <group>
-                            <field name="approved_by" readonly="1"/>
-                            <field name="approved_date" readonly="1"/>
+                            <field name="approved_by" readonly="1" />
+                            <field name="approved_date" readonly="1" />
                         </group>
                     </group>
                     <group>
-                        <field name="notes" placeholder="Ghi chú thêm..."/>
+                        <field name="notes" placeholder="Ghi chú thêm..." />
                     </group>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids" groups="base.group_user"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" groups="base.group_user" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
                 </div>
             </form>
         </field>
@@ -102,29 +102,32 @@
         <field name="model">hr.payroll.adjustment</field>
         <field name="arch" type="xml">
             <search string="Tìm kiếm Trợ cấp và Khấu trừ">
-                <field name="name"/>
-                <field name="employee_id"/>
-                <field name="department_id"/>
-                <filter string="Nháp" name="draft" domain="[('state', '=', 'draft')]"/>
-                <filter string="Đã gửi" name="submitted" domain="[('state', '=', 'submitted')]"/>
-                <filter string="Đã duyệt" name="approved" domain="[('state', '=', 'approved')]"/>
-                <filter string="Từ chối" name="refused" domain="[('state', '=', 'refused')]"/>
-                <separator/>
-                <filter string="Thưởng" name="bonus" domain="[('adjustment_type', '=', 'bonus')]"/>
-                <filter string="Phạt" name="penalty" domain="[('adjustment_type', '=', 'penalty')]"/>
-                <separator/>
-                <filter string="Yêu cầu của tôi" name="my_requests" 
-                        domain="[('employee_id.user_id', '=', uid)]"/>
-                <separator/>
-                <filter string="Tháng này" name="this_month" 
-                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
-                                ('date', '&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d'))]"/>
+                <field name="name" />
+                <field name="employee_id" />
+                <field name="department_id" />
+                <filter string="Nháp" name="draft" domain="[('state', '=', 'draft')]" />
+                <filter string="Đã gửi" name="submitted" domain="[('state', '=', 'submitted')]" />
+                <filter string="Đã duyệt" name="approved" domain="[('state', '=', 'approved')]" />
+                <filter string="Từ chối" name="refused" domain="[('state', '=', 'refused')]" />
+                <separator />
+                <filter string="Thưởng" name="bonus" domain="[('adjustment_type', '=', 'bonus')]" />
+                <filter string="Phạt" name="penalty" domain="[('adjustment_type', '=', 'penalty')]" />
+                <separator />
+                <filter string="Yêu cầu của tôi" name="my_requests"
+                    domain="[('employee_id.user_id', '=', uid)]" />
+                <separator />
+                <filter string="Tháng này" name="this_month"
+                    domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                ('date', '&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d'))]" />
                 <group expand="0" string="Nhóm theo">
-                    <filter string="Nhân viên" name="group_employee" context="{'group_by': 'employee_id'}"/>
-                    <filter string="Phòng ban" name="group_department" context="{'group_by': 'department_id'}"/>
-                    <filter string="Loại" name="group_type" context="{'group_by': 'adjustment_type'}"/>
-                    <filter string="Trạng thái" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Ngày yêu cầu" name="group_date" context="{'group_by': 'date'}"/>
+                    <filter string="Nhân viên" name="group_employee"
+                        context="{'group_by': 'employee_id'}" />
+                    <filter string="Phòng ban" name="group_department"
+                        context="{'group_by': 'department_id'}" />
+                    <filter string="Loại" name="group_type"
+                        context="{'group_by': 'adjustment_type'}" />
+                    <filter string="Trạng thái" name="group_state" context="{'group_by': 'state'}" />
+                    <filter string="Ngày yêu cầu" name="group_date" context="{'group_by': 'date'}" />
                 </group>
             </search>
         </field>
@@ -148,9 +151,9 @@
 
     <!-- Menu Items -->
     <menuitem id="menu_hr_payroll_adjustment"
-              name="Trợ cấp - Khấu trừ"
-              parent="hr_payroll_community.menu_hr_payroll_community_root"
-              action="action_hr_payroll_adjustment"
-              sequence="30"/>
+        name="Trợ cấp - Khấu trừ"
+        parent="hr_payroll_community.menu_hr_payroll_community_root"
+        action="action_hr_payroll_adjustment"
+        sequence="30" />
 
 </odoo>

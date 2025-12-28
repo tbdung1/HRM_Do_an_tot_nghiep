@@ -125,7 +125,6 @@ class HrPayrollAdjustment(models.Model):
                 'approved_by': self.env.user.id,
                 'approved_date': fields.Datetime.now()
             })
-            record.message_post(body=_('Yêu cầu đã được duyệt bởi %s') % self.env.user.name)
 
     def action_refuse(self):
         """HR từ chối yêu cầu"""
@@ -137,19 +136,17 @@ class HrPayrollAdjustment(models.Model):
                 'approved_by': self.env.user.id,
                 'approved_date': fields.Datetime.now()
             })
-            record.message_post(body=_('Yêu cầu đã bị từ chối bởi %s') % self.env.user.name)
 
     def action_set_to_draft(self):
         """Đưa về trạng thái nháp"""
         for record in self:
-            if record.state not in ['refused', 'submitted']:
+            if record.state not in ['refused', 'approved']:
                 raise UserError(_('Không thể đưa về trạng thái nháp!'))
             record.write({
                 'state': 'draft',
                 'approved_by': False,
                 'approved_date': False
             })
-            record.message_post(body=_('Yêu cầu đã được đưa về trạng thái Nháp'))
 
     def unlink(self):
         """Chỉ cho phép xóa ở trạng thái nháp"""
