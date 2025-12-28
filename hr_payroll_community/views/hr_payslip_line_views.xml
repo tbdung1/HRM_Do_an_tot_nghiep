@@ -79,8 +79,8 @@
             <form string="Payslip">
                 <header>
                     <button string="Confirm" name="action_payslip_done" type="object" invisible="state != 'draft'" class="oe_highlight"/>
-                    <button string="Refund" name="action_refund_sheet" invisible="state not in ('confirm', 'done')" type='object'/>
-                    <button string="Set to Draft" name="action_payslip_draft" type="object" invisible="state != 'cancel'"/>
+                    <!-- <button string="Refund" name="action_refund_sheet" invisible="state not in ('confirm', 'done')" type='object'/> -->
+                    <button string="Set to Draft" name="action_payslip_draft" type="object" invisible="state == 'draft'"/>
                     <button string="Compute Sheet" name="action_compute_sheet" type="object" invisible="state != 'draft'" class="oe_highlight"/>
                     <button string="Cancel Payslip" name="action_payslip_cancel" type="object" invisible="state in ('draft','hr_check','confirm','verify','cancel')"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft"/>
@@ -109,7 +109,7 @@
                         <field name="struct_id" readonly="state != 'draft'"/>
                         <field name="name" readonly="state != 'draft'"/>
                         <field name="total_amount" readonly="state != 'draft'"/>
-                        <field name="credit_note" readonly="state != 'draft'"/>
+                        <!-- <field name="credit_note" readonly="state != 'draft'"/> -->
                     </group>
                     <notebook>
                         <page string="Worked Days &amp; Inputs">
@@ -212,9 +212,9 @@
                                     <field name="name"/>
                                     <field name="code"/>
                                     <field name="category_id"/>
-                                    <field name="sequence" invisible="1"/>
+                                    <!-- <field name="sequence" invisible="1"/>
                                     <field name="quantity"/>
-                                    <field name="rate"/>
+                                    <field name="rate"/> -->
                                     <field name="salary_rule_id"/>
                                     <field name="amount"/>
                                     <field name="total"/>
@@ -224,9 +224,9 @@
                                         <field name="name"/>
                                         <field name="code"/>
                                         <field name="category_id"/>
-                                        <field name="sequence"/>
+                                        <!-- <field name="sequence"/>
                                         <field name="quantity"/>
-                                        <field name="rate"/>
+                                        <field name="rate"/> -->
                                         <field name="amount"/>
                                         <field name="total"/>
                                         <field name="salary_rule_id"/>

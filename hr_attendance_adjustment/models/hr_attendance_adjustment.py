@@ -81,7 +81,7 @@ class HrmAttendanceAdjustment(models.Model):
     def action_reject(self):
         for rec in self:
             rec.state = 'rejected'
-            rec.message_post(body="❌ Yêu cầu bị từ chối.")
+            rec.message_post(body="Yêu cầu bị từ chối.")
 
     def action_update_attendance(self):
         """HR cập nhật lại hr.attendance sau khi giám đốc BP duyệt"""
@@ -95,7 +95,7 @@ class HrmAttendanceAdjustment(models.Model):
                 })
             rec.update_by = self.env.user
             rec.state = 'manager_approved'
-            rec.message_post(body="🛠 Đã cập nhật bảng công. Gửi lại cho nhân viên xác nhận.")
+            rec.message_post(body="Đã cập nhật bảng công. Gửi lại cho nhân viên xác nhận.")
 
     def action_view_history(self):
         """Xem lịch sử các yêu cầu điều chỉnh của attendance này"""

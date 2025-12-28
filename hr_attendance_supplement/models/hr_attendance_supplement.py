@@ -91,7 +91,7 @@ class HrmAttendanceSupplement(models.Model):
             if rec.employee_id.user_id != self.env.user:
                 raise ValidationError("Bạn không có quyền gửi yêu cầu này.")
             rec.state = 'submitted'
-            rec.message_post(body="📤 Yêu cầu đã được gửi để phê duyệt.")
+            rec.message_post(body="Yêu cầu đã được gửi để phê duyệt.")
 
     def action_approve(self):
         """HR duyệt và tạo bản ghi attendance mới"""
@@ -171,7 +171,7 @@ class HrmAttendanceSupplement(models.Model):
                 'created_attendance_ids': [(6, 0, created_attendances)],
             })
             
-            rec.message_post(body=f"✅ Yêu cầu đã được duyệt. Đã tạo {len(created_attendances)} bản ghi chấm công.")
+            rec.message_post(body=f"Yêu cầu đã được duyệt. Đã tạo {len(created_attendances)} bản ghi chấm công.")
 
     def action_reject(self):
         for rec in self:
@@ -179,7 +179,7 @@ class HrmAttendanceSupplement(models.Model):
                 raise ValidationError("Chỉ có thể từ chối yêu cầu ở trạng thái 'Chờ phê duyệt'.")
             
             rec.state = 'rejected'
-            rec.message_post(body="❌ Yêu cầu bị từ chối.")
+            rec.message_post(body="Yêu cầu bị từ chối.")
 
     def action_view_attendance(self):
         """Xem bản ghi attendance đã tạo"""
