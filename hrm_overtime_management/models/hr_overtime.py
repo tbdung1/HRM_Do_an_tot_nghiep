@@ -336,6 +336,9 @@ class HrOvertime(models.Model):
         #     holiday = self.env['hr.leave.allocation'].sudo().create(
         #         holiday_vals)
         #     self.leave_id = holiday.id
+        if not self.overtime_type_id:
+            raise UserError(
+                _("Vui lòng chọn loại tăng ca trước khi phê duyệt."))
         if self.employee_id.user_id:
             message = f"Overtime approved - {self.name} | Approved by: {self.env.user.name} | Time: {fields.Datetime.now().strftime('%d/%m/%Y %H:%M')}"
             self.notify_staff(message=message, employee_id=self.employee_id)

@@ -99,7 +99,7 @@ class HrPayrollBatch(models.Model):
     )
 
     payslip_count = fields.Integer(
-        string="Số Phiếu Lương",
+        string="Phiếu Lương",
         compute="_compute_statistics",
         store=True,
         help="Tổng số phiếu lương đã tạo",

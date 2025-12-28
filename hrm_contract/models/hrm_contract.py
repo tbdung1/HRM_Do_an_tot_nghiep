@@ -12,10 +12,14 @@ class HrmContract(models.Model):
     _inherit = "hr.contract"
 
     allowance = fields.Monetary(
-        "Allowance",
+        "Trợ cấp",
         tracking=True,
-        help="Employee's monthly allowance.",
+        help="Trợ cấp hàng tháng của nhân viên.",
         group_operator="avg",
+    )
+    
+    date_end = fields.Date(
+        string="Ngày kết thúc hợp đồng",
     )
 
     def _gender_label(self):

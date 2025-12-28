@@ -1,0 +1,79 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hrm_leave
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-28 09:10+0000\n"
+"PO-Revision-Date: 2025-12-28 09:10+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hrm_leave
+#: model:ir.ui.menu,name:hrm_leave.hrm_holidays_menu_manager_approve_allocations
+msgid "Allocations"
+msgstr "Phân bổ"
+
+#. module: hrm_leave
+#: model:ir.ui.menu,name:hrm_leave.menu_hrm_time_off_configuration
+msgid "Configuration"
+msgstr "Cấu hình"
+
+#. module: hrm_leave
+#: model:ir.ui.menu,name:hrm_leave.menu_hrm_time_off_dashboard
+msgid "Dashboard Time Off"
+msgstr "Bảng điều khiển nghỉ phép"
+
+#. module: hrm_leave
+#: model:ir.ui.menu,name:hrm_leave.menu_hrm_time_off_management
+msgid "Management"
+msgstr "Quản lý"
+
+#. module: hrm_leave
+#: model:ir.ui.menu,name:hrm_leave.menu_hrm_time_off_open_allocation
+msgid "My Allocations"
+msgstr "Phân bổ của tôi"
+
+#. module: hrm_leave
+#: model:ir.ui.menu,name:hrm_leave.menu_hrm_my_leave
+msgid "My Leave"
+msgstr "Nghỉ phép của tôi"
+
+#. module: hrm_leave
+#: model:ir.ui.menu,name:hrm_leave.menu_hrm_holidays_dashboard
+#: model:ir.ui.menu,name:hrm_leave.menu_hrm_holidays_dashboard_child
+msgid "Overview"
+msgstr "Tổng quan"
+
+#. module: hrm_leave
+#: model:ir.ui.menu,name:hrm_leave.menu_hrm_time_off_report
+msgid "Report"
+msgstr "Báo cáo"
+
+#. module: hrm_leave
+#: model:ir.model,name:hrm_leave.model_hr_leave
+#: model:ir.ui.menu,name:hrm_leave.menu_hrm_time_off_management_time_off
+msgid "Time Off"
+msgstr "Nghỉ phép"
+
+#. module: hrm_leave
+#: model:ir.ui.menu,name:hrm_leave.hr_holidays_status_menu_configuration
+msgid "Time Off Types"
+msgstr "Loại nghỉ phép"
+
+#. module: hrm_leave
+#: model:ir.ui.menu,name:hrm_leave.menu_hrm_available_holidays_report_tree
+msgid "by Employee"
+msgstr "Theo nhân viên"
+
+#. module: hrm_leave
+#: model:ir.ui.menu,name:hrm_leave.menu_hrm_holidays_summary_all
+msgid "by Type"
+msgstr "Theo loại"
+

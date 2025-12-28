@@ -189,7 +189,7 @@
     </record>
 
     <menuitem id="menu_hrm_contract_hr_menu"
-        name="Contracts (HR)"
+        name="Hợp đồng (nhân sự)"
         parent="hrm_base.menu_hrm_employees_section"
         action="action_hrm_contract_draft"
         groups="hr_contract.group_hr_contract_employee_manager"

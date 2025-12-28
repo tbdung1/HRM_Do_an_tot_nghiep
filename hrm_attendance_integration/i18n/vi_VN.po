@@ -1,0 +1,190 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hrm_attendance_integration
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-28 10:16+0000\n"
+"PO-Revision-Date: 2025-12-28 17:20+0700\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.8\n"
+
+#. module: hrm_attendance_integration
+#: model_terms:ir.ui.view,arch_db:hrm_attendance_integration.res_config_settings_view_form_inherit
+msgid "07:00"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model_terms:ir.ui.view,arch_db:hrm_attendance_integration.res_config_settings_view_form_inherit
+msgid "09:00"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model_terms:ir.ui.view,arch_db:hrm_attendance_integration.res_config_settings_view_form_inherit
+msgid "16:00"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model_terms:ir.ui.view,arch_db:hrm_attendance_integration.res_config_settings_view_form_inherit
+msgid "19:00"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model:ir.ui.menu,name:hrm_attendance_integration.menu_attendace_adjustment
+msgid "Adjustment"
+msgstr "Điều chỉnh"
+
+#. module: hrm_attendance_integration
+#: model:ir.actions.act_window,name:hrm_attendance_integration.action_hrm_attendance_adjustment_list
+msgid "Adjustments"
+msgstr "Danh sách điều chỉnh"
+
+#. module: hrm_attendance_integration
+#: model:ir.actions.act_window,name:hrm_attendance_integration.action_hrm_attendance_list
+#: model:ir.model,name:hrm_attendance_integration.model_hr_attendance
+#: model:ir.ui.menu,name:hrm_attendance_integration.menu_attendace
+#: model:ir.ui.menu,name:hrm_attendance_integration.menu_attendace_section
+msgid "Attendance"
+msgstr "Chấm công"
+
+#. module: hrm_attendance_integration
+#: model_terms:ir.ui.view,arch_db:hrm_attendance_integration.res_config_settings_view_form_inherit
+msgid "Attendance Time Restrictions"
+msgstr "Hạn chế về thời gian chấm công"
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,field_description:hrm_attendance_integration.field_hr_attendance__is_auto_checkout
+msgid "Auto Checkout"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model:ir.actions.server,name:hrm_attendance_integration.ir_cron_auto_checkout_forgot_records_ir_actions_server
+msgid "Auto Checkout Forgot Records"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,field_description:hrm_attendance_integration.field_hr_attendance__auto_checkout_time
+msgid "Auto Checkout Time"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#. odoo-python
+#: code:addons/hrm_attendance_integration/models/hrm_attendance.py:0
+#, python-format
+msgid "Can not %s out of time allowed (%s)"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,field_description:hrm_attendance_integration.field_res_config_settings__check_in_end_time
+msgid "Check-in End Time"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,field_description:hrm_attendance_integration.field_hr_attendance__check_in_ip
+msgid "Check-in IP Address"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,field_description:hrm_attendance_integration.field_res_config_settings__check_in_start_time
+msgid "Check-in Start Time"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model_terms:ir.ui.view,arch_db:hrm_attendance_integration.res_config_settings_view_form_inherit
+msgid "Check-in Time Range"
+msgstr "Khoảng thời gian chấm công vào"
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,field_description:hrm_attendance_integration.field_res_config_settings__check_out_end_time
+msgid "Check-out End Time"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,field_description:hrm_attendance_integration.field_res_config_settings__check_out_start_time
+msgid "Check-out Start Time"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model_terms:ir.ui.view,arch_db:hrm_attendance_integration.res_config_settings_view_form_inherit
+msgid "Check-out Time Range"
+msgstr "Khoảng thời gian chấm công ra"
+
+#. module: hrm_attendance_integration
+#: model:ir.model,name:hrm_attendance_integration.model_res_config_settings
+msgid "Config Settings"
+msgstr "Cài đặt cấu hình"
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,field_description:hrm_attendance_integration.field_res_config_settings__enable_time_restriction
+#: model_terms:ir.ui.view,arch_db:hrm_attendance_integration.res_config_settings_view_form_inherit
+msgid "Enable Time Restriction"
+msgstr "Bật hạn chế thời gian"
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,help:hrm_attendance_integration.field_res_config_settings__enable_time_restriction
+msgid "Enable or disable check-in/check-out time restrictions"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model_terms:ir.ui.view,arch_db:hrm_attendance_integration.res_config_settings_view_form_inherit
+msgid "Enable time restrictions for check-in and check-out"
+msgstr "Hạn chế khoảng thời gian cho chấm công vào/ra"
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,help:hrm_attendance_integration.field_res_config_settings__check_in_start_time
+msgid "Format: HH:MM (e.g., 07:00)"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,help:hrm_attendance_integration.field_res_config_settings__check_in_end_time
+msgid "Format: HH:MM (e.g., 09:00)"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,help:hrm_attendance_integration.field_res_config_settings__check_out_start_time
+msgid "Format: HH:MM (e.g., 16:00)"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,help:hrm_attendance_integration.field_res_config_settings__check_out_end_time
+msgid "Format: HH:MM (e.g., 19:00)"
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model_terms:ir.ui.view,arch_db:hrm_attendance_integration.res_config_settings_view_form_inherit
+msgid "From"
+msgstr "Từ"
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,help:hrm_attendance_integration.field_hr_attendance__check_in_ip
+msgid "IP address from which the employee checked in."
+msgstr "Địa chỉ IP mà nhân viên check in"
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,help:hrm_attendance_integration.field_hr_attendance__is_auto_checkout
+msgid "Indicates if the checkout was done automatically by the system."
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model:ir.actions.act_window,name:hrm_attendance_integration.action_hrm_attendance_supplement_list
+#: model:ir.ui.menu,name:hrm_attendance_integration.menu_attendace_supplement
+msgid "Supplement"
+msgstr "Bổ sung"
+
+#. module: hrm_attendance_integration
+#: model:ir.model.fields,help:hrm_attendance_integration.field_hr_attendance__auto_checkout_time
+msgid "The time when the automatic checkout was performed."
+msgstr ""
+
+#. module: hrm_attendance_integration
+#: model_terms:ir.ui.view,arch_db:hrm_attendance_integration.res_config_settings_view_form_inherit
+msgid "To"
+msgstr "Đến"

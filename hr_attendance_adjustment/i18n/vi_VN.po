@@ -1,0 +1,340 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hr_attendance_adjustment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-28 08:23+0000\n"
+"PO-Revision-Date: 2025-12-28 15:29+0700\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: vi_VN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.8\n"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.ui.menu,name:hr_attendance_adjustment.menu_hr_attendance_adjustment_root
+#: model_terms:ir.ui.view,arch_db:hr_attendance_adjustment.view_hr_attendance_form_inherit_add_header
+msgid "Adjustment"
+msgstr "Điều chỉnh"
+
+#. module: hr_attendance_adjustment
+#: model_terms:ir.ui.view,arch_db:hr_attendance_adjustment.view_hr_attendance_adjustment_form
+msgid "Approve"
+msgstr "Duyệt"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields.selection,name:hr_attendance_adjustment.selection__hr_attendance_adjustment__state__manager_approved
+msgid "Approved"
+msgstr "Đã duyệt"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__message_attachment_count
+msgid "Attachment Count"
+msgstr "Số file đính kèm"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model,name:hr_attendance_adjustment.model_hr_attendance
+msgid "Attendance"
+msgstr "Chấm công"
+
+#. module: hr_attendance_adjustment
+#: model:ir.actions.act_window,name:hr_attendance_adjustment.action_hr_attendance_adjustment
+#: model_terms:ir.ui.view,arch_db:hr_attendance_adjustment.view_hr_attendance_adjustment_form
+msgid "Attendance Adjustment"
+msgstr "Điều chỉnh chấm cống"
+
+#. module: hr_attendance_adjustment
+#: model_terms:ir.ui.view,arch_db:hr_attendance_adjustment.view_hr_attendance_adjustment_tree
+msgid "Attendance Adjustments"
+msgstr "Điều chỉnh chấm công"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__attendance_id
+msgid "Attendance Record"
+msgstr "Bản ghi chấm công"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields.selection,name:hr_attendance_adjustment.selection__hr_attendance_adjustment__state__submitted
+msgid "Awaiting Approval"
+msgstr "Đang chờ phê duyệt"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__can_approve
+msgid "Can Approve"
+msgstr "Có thể duyệt"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__can_submit
+msgid "Can Submit"
+msgstr "Có thể gửi"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields.selection,name:hr_attendance_adjustment.selection__hr_attendance_adjustment__state__draft
+msgid "Draft"
+msgstr "Nháp"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__employee_id
+msgid "Employee"
+msgstr "Nhân viên"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,help:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model,name:hr_attendance_adjustment.model_hr_attendance_adjustment
+msgid "HRM Attendance Adjustment"
+msgstr "QLNS Điều chỉnh chấm công"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__id
+msgid "ID"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,help:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,help:hr_attendance_adjustment.field_hr_attendance_adjustment__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,help:hr_attendance_adjustment.field_hr_attendance_adjustment__message_has_error
+#: model:ir.model.fields,help:hr_attendance_adjustment.field_hr_attendance_adjustment__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__check_in_new
+msgid "New Check-In Time"
+msgstr "Chấm công giờ vào"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__check_out_new
+msgid "New Check-Out Time"
+msgstr "Chấm công giờ ra"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,help:hr_attendance_adjustment.field_hr_attendance_adjustment__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,help:hr_attendance_adjustment.field_hr_attendance_adjustment__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__reason
+msgid "Reason for Adjustment"
+msgstr "Lý do điều chỉnh"
+
+#. module: hr_attendance_adjustment
+#: model_terms:ir.ui.view,arch_db:hr_attendance_adjustment.view_hr_attendance_adjustment_form
+msgid "Reject"
+msgstr "Từ chối"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields.selection,name:hr_attendance_adjustment.selection__hr_attendance_adjustment__state__rejected
+msgid "Rejected"
+msgstr "Đã từ chối"
+
+#. module: hr_attendance_adjustment
+#: model_terms:ir.ui.view,arch_db:hr_attendance_adjustment.view_hr_attendance_adjustment_form
+msgid "Request History"
+msgstr "Lịch sử yêu cầu"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model_terms:ir.ui.view,arch_db:hr_attendance_adjustment.view_hr_attendance_adjustment_form
+msgid "Send Request"
+msgstr "Gửi yêu cầu"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__state
+msgid "Status"
+msgstr "Trạng thái"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,help:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__adjustment_count
+msgid "Số yêu cầu"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,help:hr_attendance_adjustment.field_hr_attendance_adjustment__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model_terms:ir.actions.act_window,help:hr_attendance_adjustment.action_hr_attendance_adjustment
+msgid "Tạo yêu cầu điều chỉnh thời gian check-in/check-out."
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__update_by
+msgid "Updated By"
+msgstr "Cập nhật bởi"
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,field_description:hr_attendance_adjustment.field_hr_attendance_adjustment__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: hr_attendance_adjustment
+#: model:ir.model.fields,help:hr_attendance_adjustment.field_hr_attendance_adjustment__website_message_ids
+msgid "Website communication history"
+msgstr ""

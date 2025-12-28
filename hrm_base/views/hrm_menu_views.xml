@@ -1,26 +1,26 @@
 <odoo>
   <data>
     <menuitem id="menu_hrm_root"
-      name="HRM"
+      name="Quản lý Nhân sự"
       sequence="10"
       groups="base.group_user" />
 
     <!-- Employees Section -->
     <menuitem id="menu_hrm_employees_section"
-      name="Employees"
+      name="Nhân viên"
       parent="menu_hrm_root"
       sequence="10" />
 
     <!-- MENU hiển thị tùy group -->
     <menuitem id="menu_hrm_employees_hr"
-      name="Employees"
+      name="Nhân viên"
       parent="menu_hrm_employees_section"
       action="action_hrm_employees_private"
       groups="hr.group_hr_user"
       sequence="1" />
 
     <menuitem id="menu_hrm_employees_public_menu"
-      name="Employees (Public)"
+      name="Nhân viên (cơ bản)"
       parent="menu_hrm_employees_section"
       action="action_hrm_employees_public"
       groups="base.group_user"
@@ -29,12 +29,12 @@
 
     <!-- Configuration Menu -->
     <menuitem id="menu_hrm_config"
-      name="Configuration"
+      name="Cấu hình"
       parent="menu_hrm_root"
       sequence="100" />
     
     <menuitem id="menu_hrm_time_off"
-      name="Time Off"
+      name="Nghỉ phép"
       parent="menu_hrm_root"
       sequence="20" />
 

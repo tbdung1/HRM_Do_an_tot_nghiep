@@ -1,0 +1,339 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hrm_notify
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-28 09:03+0000\n"
+"PO-Revision-Date: 2025-12-28 09:03+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hrm_notify
+#. odoo-python
+#: code:addons/hrm_notify/models/hr_notification.py:0
+#, python-format
+msgid ""
+"\n"
+"Thông báo từ HR\n"
+"━━━━━━━━━━━━━━━━━━━━\n"
+"Tiêu đề: {subject}\n"
+"|  Từ: {employee_name}\n"
+"|  Phòng Ban: {department}\n"
+"|  Thời Gian: {current_time}\n"
+"\n"
+"|  Nội Dung:\n"
+"{message_body}\n"
+"\n"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields.selection,name:hrm_notify.selection__hr_notification__state__cancelled
+msgid "Cancelled"
+msgstr "Đã hủy"
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__description
+msgid "Description"
+msgstr "Mô tả"
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields.selection,name:hrm_notify.selection__hr_notification__state__done
+msgid "Done"
+msgstr "Đã hoàn thành"
+
+#. module: hrm_notify
+#: model:ir.model.fields.selection,name:hrm_notify.selection__hr_notification__state__draft
+msgid "Draft"
+msgstr "Nháp"
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__employee_id
+msgid "From Employee"
+msgstr "Từ nhân viên"
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__user_id
+msgid "From User"
+msgstr "Từ người dùng"
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__hr_channel_id
+msgid "HR Channel"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model,name:hrm_notify.model_hr_notification_mixin
+msgid "HR Notification Mixin"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model,name:hrm_notify.model_hr_notification
+msgid "HR Notification System"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields.selection,name:hrm_notify.selection__hr_notification__priority__2
+msgid "High"
+msgstr "Cao"
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__id
+msgid "ID"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__source_record_id
+msgid "ID of the record that triggered this notification"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__message_has_error
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields.selection,name:hrm_notify.selection__hr_notification__state__in_progress
+msgid "In Progress"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields.selection,name:hrm_notify.selection__hr_notification__priority__0
+msgid "Low"
+msgstr "Thấp"
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__source_model
+msgid "Model that triggered this notification"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields.selection,name:hrm_notify.selection__hr_notification__priority__1
+msgid "Normal"
+msgstr "Bình thường"
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__priority
+msgid "Priority"
+msgstr "Độ ưu tiên"
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields.selection,name:hrm_notify.selection__hr_notification__state__sent
+msgid "Sent"
+msgstr "Đã gửi"
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__source_model
+msgid "Source Model"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__source_record_id
+msgid "Source Record ID"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__state
+msgid "State"
+msgstr "Trạng thái"
+
+#. module: hrm_notify
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__name
+msgid "Subject"
+msgstr "Chủ đề"
+
+#. module: hrm_notify
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields.selection,name:hrm_notify.selection__hr_notification__priority__3
+msgid "Urgent"
+msgstr "Khẩn cấp"
+
+#. module: hrm_notify
+#: model:ir.model.fields,field_description:hrm_notify.field_hr_notification__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: hrm_notify
+#: model:ir.model.fields,help:hrm_notify.field_hr_notification__website_message_ids
+msgid "Website communication history"
+msgstr ""

@@ -1,0 +1,223 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hrm_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-28 10:25+0000\n"
+"PO-Revision-Date: 2025-12-28 17:31+0700\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.8\n"
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__education_level__bachelor
+msgid "Bachelor"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model,name:hrm_base.model_hr_employee_base
+msgid "Basic Employee"
+msgstr "Người dùng cơ bản"
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__education_level__college
+msgid "College"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee__current_leave_id
+msgid "Current Time Off Type"
+msgstr "Loại ngày nghỉ hiện tại"
+
+#. module: hrm_base
+#: model:ir.ui.menu,name:hrm_base.menu_hrm_config
+msgid "Cấu hình"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__job_level__director
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_base__job_level__director
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_public__job_level__director
+msgid "Director"
+msgstr "Giám đốc"
+
+#. module: hrm_base
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee__education_level
+#: model:ir.model.fields,field_description:hrm_base.field_res_users__education_level
+msgid "Education Level"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model,name:hrm_base.model_hr_employee
+msgid "Employee"
+msgstr "Nhân viên"
+
+#. module: hrm_base
+#: model:ir.actions.act_window,name:hrm_base.action_hrm_employees_private
+#: model:ir.actions.act_window,name:hrm_base.action_hrm_employees_public
+#: model_terms:ir.ui.view,arch_db:hrm_base.view_hrm_employees_tree
+msgid "Employees"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__health_status__excellent
+msgid "Excellent"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__job_level__executive
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_base__job_level__executive
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_public__job_level__executive
+msgid "Executive"
+msgstr "Ban điều hành"
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__health_status__fair
+msgid "Fair"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__health_status__good
+msgid "Good"
+msgstr ""
+
+#. module: hrm_base
+#: model_terms:ir.ui.view,arch_db:hrm_base.view_hrm_employees_form
+#: model_terms:ir.ui.view,arch_db:hrm_base.view_res_users_form
+msgid "Health Information"
+msgstr "Thông tin sức khỏe"
+
+#. module: hrm_base
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee__health_insurance_number
+#: model:ir.model.fields,field_description:hrm_base.field_res_users__health_insurance_number
+msgid "Health Insurance Number"
+msgstr "Số bảo hiểm"
+
+#. module: hrm_base
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee__health_status
+#: model:ir.model.fields,field_description:hrm_base.field_res_users__health_status
+msgid "Health Status"
+msgstr "Trạng thái sức khỏe"
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__education_level__high_school
+msgid "High School"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee__id_number
+#: model:ir.model.fields,field_description:hrm_base.field_res_users__id_number
+msgid "ID Number"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__job_level__intern
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_base__job_level__intern
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_public__job_level__intern
+msgid "Intern"
+msgstr "Thực tập"
+
+#. module: hrm_base
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee__is_hr
+#: model:ir.model.fields,field_description:hrm_base.field_res_users__is_hr
+msgid "Is Hr"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee__job_level
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee_base__job_level
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee_public__job_level
+msgid "Job Level"
+msgstr "Cấp bậc chức danh"
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__job_level__lead
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_base__job_level__lead
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_public__job_level__lead
+msgid "Lead"
+msgstr "Trưởng nhóm"
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__job_level__manager
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_base__job_level__manager
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_public__job_level__manager
+msgid "Manager"
+msgstr "Quản lý"
+
+#. module: hrm_base
+#: model:ir.ui.menu,name:hrm_base.menu_hrm_time_off
+msgid "Nghỉ phép"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.ui.menu,name:hrm_base.menu_hrm_employees_hr
+#: model:ir.ui.menu,name:hrm_base.menu_hrm_employees_section
+msgid "Nhân viên"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.ui.menu,name:hrm_base.menu_hrm_employees_public_menu
+msgid "Nhân viên (cơ bản)"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee__person_email
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee_base__person_email
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee_public__person_email
+msgid "Personal Email"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee__person_phone
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee_base__person_phone
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee_public__person_phone
+msgid "Personal Phone"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__health_status__poor
+msgid "Poor"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model,name:hrm_base.model_hr_employee_public
+msgid "Public Employee"
+msgstr "Nhân viên chung"
+
+#. module: hrm_base
+#: model:ir.ui.menu,name:hrm_base.menu_hrm_root
+msgid "Quản lý Nhân sự"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__job_level__senior
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_base__job_level__senior
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_public__job_level__senior
+msgid "Senior"
+msgstr "Nhiều năm kinh nghiệm"
+
+#. module: hrm_base
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee__job_level__staff
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_base__job_level__staff
+#: model:ir.model.fields.selection,name:hrm_base.selection__hr_employee_public__job_level__staff
+msgid "Staff"
+msgstr "Nhân viên"
+
+#. module: hrm_base
+#: model:ir.model.fields,field_description:hrm_base.field_hr_employee__tax_identification_number
+#: model:ir.model.fields,field_description:hrm_base.field_res_users__tax_identification_number
+msgid "Tax Identification Number"
+msgstr ""
+
+#. module: hrm_base
+#: model:ir.model,name:hrm_base.model_res_users
+msgid "User"
+msgstr "Người dùng"

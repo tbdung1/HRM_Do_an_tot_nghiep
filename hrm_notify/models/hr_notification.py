@@ -173,14 +173,14 @@ class HrNotification(models.Model):
 
         formatted_message = _(
             """
-New HR Notification
+Thông báo từ HR
 ━━━━━━━━━━━━━━━━━━━━
-Title: {subject}
-|  From: {employee_name}
-|  Department: {department}
-|  Time: {current_time}
+Tiêu đề: {subject}
+|  Từ: {employee_name}
+|  Phòng Ban: {department}
+|  Thời Gian: {current_time}
 
-|  Content:
+|  Nội Dung:
 {message_body}
 
 """

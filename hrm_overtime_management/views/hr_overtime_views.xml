@@ -55,8 +55,7 @@
                             <field name='overtime_type_id'
                                 groups="hr.group_hr_user"
                                 readonly="state != 'f_approve'"
-                                invisible="state == 'draft'"
-                                required="state == 'f_approve'" />
+                                invisible="state == 'draft'"/>
                             <field name="cash_hrs_amount" force_save="1"
                                 invisible="state == 'draft' or type != 'cash' or duration_type != 'hours'" />
                             <field name="cash_day_amount" force_save="1"
