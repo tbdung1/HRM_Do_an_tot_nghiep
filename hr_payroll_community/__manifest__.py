@@ -15,6 +15,7 @@
         "security/ir.model.access.csv",
         "data/hr_payroll_sequence.xml",
         "data/hr_payroll_data.xml",
+        "data/payroll_batch_email_template.xml",
         "views/hr_contract_views.xml",
         "wizard/hr_payslips_employees_views.xml",
         "wizard/payslip_lines_contribution_register_views.xml",
