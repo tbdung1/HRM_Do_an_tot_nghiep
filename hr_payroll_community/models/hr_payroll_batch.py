@@ -457,11 +457,6 @@ class HrPayrollBatch(models.Model):
         return sent_count, failed_count
 
     def _get_or_create_email_template(self):
-        """
-        Lấy hoặc tạo email template cho payslip
-
-        @return: mail.template record
-        """
         # Tìm template có external ID
         template = self.env.ref(
             "hr_payroll_community.email_template_payslip", raise_if_not_found=False

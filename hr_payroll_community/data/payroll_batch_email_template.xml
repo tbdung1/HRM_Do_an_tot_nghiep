@@ -9,7 +9,7 @@
             <field name="subject">Phiếu lương tháng {{ object.date_from.strftime('%m/%Y') }}</field>
             <field name="email_from">{{ user.work_email }}</field>
             <field name="email_to">{{ object.employee_id.work_email }}</field>
-
+          
             <field name="body_html" type="html">
                 <div style="font-family: Arial, sans-serif; padding: 20px;">
                     <p> Kính gửi <strong>

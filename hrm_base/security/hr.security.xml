@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
 
         <!-- Record Rules for Employee
         <record id="hr_employee_rule_user_own" model="ir.rule">
@@ -26,5 +26,12 @@
             <field name="perm_create" eval="True" />
             <field name="perm_unlink" eval="True" />
         </record> -->
+        <record id="hr_employee_public_self_rule" model="ir.rule">
+            <field name="name">Employee public: only see own record</field>
+            <field name="model_id" ref="hr.model_hr_employee_public" />
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]" />
+        </record>
+
     </data>
 </odoo>
