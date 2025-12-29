@@ -585,7 +585,7 @@ class HrPayslip(models.Model):
                     'code': code,
                     'date': adjustment.date,
                     'adjustment_type': adjustment.adjustment_type,
-                    'amount': adjustment.amount,
+                    'amount': adjustment.amount if code == 'BONUS' else -adjustment.amount,
                     'contract_id': contract.id,
                 }
                 
