@@ -285,7 +285,7 @@ msgstr ""
 #. module: hr_payroll_community
 #: model:ir.actions.act_window,name:hr_payroll_community.hr_salary_rule_action
 msgid "All Children Rules"
-msgstr ""
+msgstr "Tất cả quy tắc"
 
 #. module: hr_payroll_community
 #: model:hr.salary.rule.category,name:hr_payroll_community.ALW
@@ -2500,7 +2500,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_payroll_community.hr_salary_rule_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll_community.hr_salary_rule_view_tree
 msgid "Salary Rules"
-msgstr ""
+msgstr "Quy tắc lương"
 
 #. module: hr_payroll_community
 #. odoo-python
@@ -2523,7 +2523,7 @@ msgstr "Cấu trúc lương"
 #: model:ir.actions.act_window,name:hr_payroll_community.hr_payroll_structure_action
 #: model:ir.ui.menu,name:hr_payroll_community.menu_hr_payroll_structure_view
 msgid "Salary Structures"
-msgstr ""
+msgstr "Cấu trúc lương"
 
 #. module: hr_payroll_community
 #: model:ir.model.fields,field_description:hr_payroll_community.field_hr_contract__schedule_pay
@@ -2628,7 +2628,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_payroll_community.hr_payslip_run_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll_community.hr_payslip_view_form
 msgid "Set to Draft"
-msgstr ""
+msgstr "Đưa về nháp"
 
 #. module: hr_payroll_community
 #: model:ir.actions.act_window,name:hr_payroll_community.res_config_settings_action

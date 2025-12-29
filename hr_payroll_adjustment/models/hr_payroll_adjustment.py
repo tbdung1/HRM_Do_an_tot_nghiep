@@ -101,11 +101,11 @@ class HrPayrollAdjustment(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('hr.payroll.adjustment') or _('New')
         return super(HrPayrollAdjustment, self).create(vals)
 
-    @api.constrains('amount')
-    def _check_amount(self):
-        for record in self:
-            if record.amount <= 0:
-                raise ValidationError(_('Số tiền phải lớn hơn 0!'))
+    # @api.constrains('amount')
+    # def _check_amount(self):
+    #     for record in self:
+    #         if record.amount <= 0:
+    #             raise ValidationError(_('Số tiền phải lớn hơn 0!'))
 
     def action_submit(self):
         """Gửi yêu cầu để HR duyệt"""

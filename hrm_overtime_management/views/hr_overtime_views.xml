@@ -126,14 +126,14 @@
         <field name="arch" type="xml">
             <tree string="Overtime Request">
                 <field name="employee_id" />
-                <field name="project_id" />
+                <field name="project_id" column_invisible="1" />
                 <field name="date_from" />
                 <field name="date_to" />
                 <field name="days_no_tmp" />
                 <field name="state" />
-                <field name="type" invisible="1" />
+                <field name="type" column_invisible="1" />
                 <field name="is_payslip_paid" groups="hr.group_hr_manager"
-                    readonly="1" invisible=" type != 'cash'"
+                    readonly="1" column_invisible="1"
                     widget="toggle_button" />
             </tree>
         </field>
