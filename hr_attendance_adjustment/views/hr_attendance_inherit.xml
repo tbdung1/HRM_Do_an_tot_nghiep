@@ -9,7 +9,20 @@
                     <button name="action_open_adjustment" string="Adjustment" type="object" class="btn-primary"/>
                 </header>
             </xpath>
+            <xpath expr="//field[@name='overtime_hours']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
 
+    <record id="view_hr_attendance_tree_inherit" model="ir.ui.view">
+        <field name="name">hr.attendance.form.tree.inherit</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='overtime_hours']" position="replace">
+                <field name="overtime_hours" string="Over Time" optional="hide" widget="float_time"/>
+            </xpath>
         </field>
     </record>
 </odoo>

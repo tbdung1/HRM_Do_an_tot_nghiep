@@ -10,7 +10,7 @@
                 <field name="date_from"/>
                 <field name="date_to"/>
                 <field name="employee_count"/>
-                <field name="payslip_count"/>
+                <!-- <field name="payslip_count"/> -->
                 <field name="total_amount" widget="monetary"/>
                 <field name="state" widget="badge" decoration-info="state=='draft'" decoration-success="state=='done'" decoration-warning="state in ('generating', 'generated', 'computed')" decoration-danger="state=='cancel'"/>
                 <field name="company_id" groups="base.group_multi_company"/>
@@ -25,12 +25,12 @@
         <field name="arch" type="xml">
             <form string="Bảng Lương Tháng">
                 <header>
-                    <button name="action_generate_payslips" string="Tạo Phiếu Lương" type="object" class="oe_highlight" invisible="state != 'draft'" icon="fa-plus-square"/>
-                    <button name="action_compute_payslips" string="Tính Toán" type="object" class="oe_highlight" invisible="state not in ['generated', 'computed']" icon="fa-calculator"/>
-                    <button name="action_send_emails" string="Gửi Email" type="object" invisible="state not in ['computed', 'done']" icon="fa-envelope"/>
-                    <button name="action_mark_done" string="Hoàn Thành" type="object" class="oe_highlight" invisible="state != 'computed'" icon="fa-check"/>
-                    <button name="action_set_to_draft" string="Về Nháp" type="object" invisible="state in ['draft', 'done']" icon="fa-undo"/>
-                    <button name="action_cancel" string="Hủy" type="object" invisible="state == 'done'" confirm="Bạn có chắc muốn hủy bảng lương này?" icon="fa-times"/>
+                    <button name="action_generate_payslips" string="Tạo Phiếu Lương" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_compute_payslips" string="Tính lương" type="object" class="oe_highlight" invisible="state not in ['generated', 'computed']"/>
+                    <button name="action_send_emails" string="Gửi Email" type="object" invisible="state not in ['computed', 'done']"/>
+                    <button name="action_mark_done" string="Hoàn Thành" type="object" class="oe_highlight" invisible="state != 'computed'"/>
+                    <button name="action_set_to_draft" string="Về Nháp" type="object" invisible="state in ['draft', 'done']"/>
+                    <button name="action_cancel" string="Hủy" type="object" invisible="state == 'done'" confirm="Bạn có chắc muốn hủy bảng lương này?"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,generated,computed,done"/>
                 </header>
                 <sheet>
@@ -53,13 +53,13 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                         
-                        <group string="Thống Kê">
+                        <group string="">
                             <field name="employee_count"/>
-                            <field name="total_amount" widget="monetary"/>
+                            <field name="notes" nolabel="1" placeholder="Ghi chú về bảng lương này..."/>
                         </group>
                     </group>
                     
-                    <group>
+                    <!-- <group>
                         <group string="Cài Đặt Email">
                             <field name="send_email"/>
                             <field name="email_sent_count" readonly="1" invisible="email_sent_count == 0"/>
@@ -68,7 +68,7 @@
                         <group string="Ghi Chú">
                             <field name="notes" nolabel="1" placeholder="Ghi chú về bảng lương này..."/>
                         </group>
-                    </group>
+                    </group> -->
                     
                     <notebook>
                         <page string="Phiếu Lương" name="payslips">
@@ -204,5 +204,5 @@
               name="Bảng Lương Tháng" 
               parent="menu_hr_payroll_community_root" 
               action="action_hr_payroll_batch" 
-              sequence="10"/>
+              sequence="1"/>
 </odoo>

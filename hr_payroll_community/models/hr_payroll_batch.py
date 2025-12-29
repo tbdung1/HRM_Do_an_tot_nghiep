@@ -370,8 +370,8 @@ class HrPayrollBatch(models.Model):
             batch.state = "done"
 
             # Đóng payslip run
-            if batch.payslip_run_id:
-                batch.payslip_run_id.action_close()
+            # if batch.payslip_run_id:
+            #     batch.payslip_run_id.action_close()
 
             batch.message_post(body=_("Bảng lương đã hoàn thành"))
 
