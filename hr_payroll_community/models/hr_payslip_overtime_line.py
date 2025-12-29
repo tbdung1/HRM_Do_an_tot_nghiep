@@ -67,4 +67,4 @@ class HrPayslipOvertimeLine(models.Model):
         Amount = Số giờ × Rate × Lương theo giờ
         """
         for record in self:
-            record.amount = record.number_of_hours * record.rate * record.hourly_wage
+            record.amount = round(record.number_of_hours * record.rate * record.hourly_wage)
